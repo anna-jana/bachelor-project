@@ -16,29 +16,41 @@ import matplotlib.pyplot as plt
 from scipy.special import jv, yv, jvp, yvp # first and second bessel functions
 
 # parameter
-N = 300 # number of steps
-t_init = 1.0 # inital time
-# t_end = 10.0 # end of the simulation
-m_a = 1e-20 # axion mass [eV]
-f_a = 1e10 # axion decay constant
-# theta_init = 1.0 # initial theta value after symmetry breaking
-phi_init = 10**9 * 10**16 # [eV]
-# phi_init == theta_init * f_a
-theta_init = phi_init / f_a
+N = 800 # number of steps
+m_a = 1 # axion mass [10^-20 eV] range from paper
+# the evolution of phi doent depent on the value of phi_init
+phi_init = 1 # [1]
 p = 1/2 # radiation dominated
 n = (3*p - 1) / 2 # nth bessel function
+
 # scale parameter
-a0 = 1.0
-a_end = 1e3
+# a = a0 * (t/t0)^p
+# a_dot = a0 * p / t0 * (t/t0)^(p - 1)
+# H = p / t
+# A*H(a_osc) = m_a
+# A p / t = m_a
+# t = A p / m_a
+# a_osc / a_i = (t / ti) ^ p = (A p / m_a ti) ^ p
+a0 = 1
+A = 1
+a_osc_prime = 300
+# only valid for a ~ t^p
+ma_times_ti = A * p / a_osc_prime**(1/p)
+t_init = ma_times_ti / m_a
+a_osc = a_osc_prime * a0
+# t_osc = A * p / m_a
+# a_osc = a0 * (t_osc / t_init) ** p
+a_end = a0 * 1e3
+# t_init = 1.0 # inital time [1 / (1e-20 eV)]
 t_end = t_init * (a_end / a0)**(1/p)
-t = np.linspace(t_init, t_end, N) # time
+t = np.logspace(np.log10(t_init), np.log10(t_end), N) # time
 a = a0*(t/t_init)**p
 a_prime = a / a0 # sclae factor relative to the initial scale factor
-a_dot = a0*p*(t/t_init)**(p - 1)
-H = a_dot / a
-bessel_arg_init = m_a * t_init
+a_dot = a0*p/t_init*(t/t_init)**(p - 1)
+H = a_dot / a # = p / t
 
 # initial conditions
+bessel_arg_init = m_a * t_init
 # from psi dot = 0
 alpha = (-3/2*p + 1/2) / t_init
 beta = t_init**(-3/2*p + 1/2)
@@ -46,17 +58,15 @@ A = alpha*jv(n, bessel_arg_init) + beta*jvp(n, bessel_arg_init)
 B = alpha*yv(n, bessel_arg_init) + beta*yvp(n, bessel_arg_init)
 
 # from psi = f_a * theta
-gamma = a0**(-3/2)*(t / t_init)**(-3/2*p + 1/2)
-C = gamma * jv(n, bessel_arg_init)
-D = gamma * yv(n, bessel_arg_init)
+C = a0**(-3/2) * jv(n, bessel_arg_init)
+D = a0**(-3/2) * yv(n, bessel_arg_init)
 
 # compute coeffs
 det = B*C - A*D
-C1 = B*f_a*theta_init / det
-C2 = A*f_a*theta_init / det
+C1 = B * phi_init / det
+C2 = A * phi_init / det
 
-# compute analytic solution for m_a = const and V = 1/2*m_a**2*phi**2 as well as a = a0 t**p
-# for the axion background field and its time derivative
+# compute analytic solution for the axion background field and its time derivative
 phi = a**(-3/2) * (t / t_init)**(1/2) * (C1*jv(n, m_a * t) + C2*yv(n, m_a * t))
 kappa = a0**(-3/2) / t_init**(-3/2*p + 1/2)
 phi_dot = kappa * ((-3/2*p + 1/2)*t**(-3/2*p - 1/2)*(C1*jv(n, m_a * t) + C2*yv(n, m_a * t)) + \
@@ -79,6 +89,7 @@ plt.ylabel(r"Axion Field $\phi$")
 # mass vs hubble
 plt.subplot(2, 2, 2)
 plt.loglog(a_prime, H, label="Hubble")
+# plt.loglog(a_prime, p / t, label="Hubble formula")
 plt.loglog(a_prime, np.ones(a_prime.size) * m_a / 2, label=r"$m_a / 2$")
 plt.legend()
 
@@ -93,4 +104,7 @@ plt.subplot(2, 2, 4)
 plt.loglog(a_prime, rho_a, label="Exact Density")
 plt.legend()
 
+plt.tight_layout()
 plt.show()
+
+# TODO: rescale phi to correct units
