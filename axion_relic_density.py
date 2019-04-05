@@ -33,7 +33,7 @@ n = (3*p - 1) / 2 # nth bessel function
 # a_osc / a_i = (t / ti) ^ p = (A p / m_a ti) ^ p
 a0 = 1
 A = 1
-a_osc_prime = 300
+a_osc_prime = 30
 # only valid for a ~ t^p
 ma_times_ti = A * p / a_osc_prime**(1/p)
 t_init = ma_times_ti / m_a
@@ -53,9 +53,8 @@ H = a_dot / a # = p / t
 bessel_arg_init = m_a * t_init
 # from psi dot = 0
 alpha = (-3/2*p + 1/2) / t_init
-beta = t_init**(-3/2*p + 1/2)
-A = alpha*jv(n, bessel_arg_init) + beta*jvp(n, bessel_arg_init)
-B = alpha*yv(n, bessel_arg_init) + beta*yvp(n, bessel_arg_init)
+A = alpha*jv(n, bessel_arg_init) + m_a*jvp(n, bessel_arg_init)
+B = alpha*yv(n, bessel_arg_init) + m_a*yvp(n, bessel_arg_init)
 
 # from psi = f_a * theta
 C = a0**(-3/2) * jv(n, bessel_arg_init)
@@ -63,8 +62,8 @@ D = a0**(-3/2) * yv(n, bessel_arg_init)
 
 # compute coeffs
 det = B*C - A*D
-C1 = B * phi_init / det
-C2 = A * phi_init / det
+C1 =   B * phi_init / det
+C2 = - A * phi_init / det
 
 # compute analytic solution for the axion background field and its time derivative
 phi = a**(-3/2) * (t / t_init)**(1/2) * (C1*jv(n, m_a * t) + C2*yv(n, m_a * t))
