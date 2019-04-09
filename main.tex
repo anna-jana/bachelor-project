@@ -1,0 +1,275 @@
+\documentclass[a4paper]{article}
+\usepackage[left=2.5cm, right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+
+\usepackage[komastyle]{scrpage2}
+\pagestyle{scrheadings}
+\setheadsepline{0.5pt}[\color{black}]
+% \usepackage[a4paper,margin=0.5in]{geometry}
+%\setkomafont{captionlabel}{\sffamily\bfseries}
+%\setcapindent{0em}
+%\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym,exscale,stmaryrd,amssymb,amsmath}
+\usepackage[nointegrals]{wasysym}
+\usepackage{eurosym}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+% \usepackage{subfigure}
+\usepackage{sidecap}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{subfig}
+\usepackage{fancyvrb}
+% \usepackage{subcaption}
+
+\title{Spezialisierungspraktikum: \\ Computation of the Axion Relic Density}
+
+
+
+\author{Janik Riess }
+\date{April 2019}
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+In this term paper I will discuss the
+computation of the axion relic density produced by the misalignment mechanism. The basic framework is
+described and analytic solution and approximation are computed.
+Furthermore the concepts for the numerical computation for more complicated models are layedout but not executed. Those will form the basics for the following bachelor thesis.
+
+The axion is a hypothetical particle that was introduced as a standard model
+extention to solve the strong CP problem using the Peccei-Quinn mechanism and axion like particles (ALPs) are also
+introduced in string theory. There are extremly light pseudo scalar bosons. ???????
+
+The misalignment mechanism is a non-thermal production mechanism for axion dark matter.
+Here the axion field is due to symmetry breaking during inflation driven by a potential
+to a mean value of zero today. ??????
+The axion field and therefore there density is descried by a classical field equation.
+This is justified my the low mass of the axion compared to the ????????
+and therefore in high occupation numbers leading to averaged collective behavior
+eg. classical motion. ???????
+By solving the equation of motion one can compute the density of the axion dark matter
+today as a function of the axion mass and the initial condition (field value)
+of the axion field and show that the axion model can contribute/produce the density parameter as it is measured for our universe today. ????????
+
+\section{The Equation of Motion}
+In this section the classical equation of motion for the axion field is derived from the action of a scalar field. Then it is simplified for the background field in a homogeneous universe. Also the initial conditions are discussed.
+
+\subsection{The Action}
+The action for a scalar field on a curved background is given after ????
+using the signature $(-, +, +, +)$ for the metric as
+\begin{align}
+    \label{eq:action}
+    S[\phi] = \int \mathrm{d}^4 \sqrt{-g} \left(- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right)
+\end{align}
+The measure $\mathrm{d}x^4 \sqrt{-g}$ accounds for the effect of a curved background while
+the lagrange density depscribs a massiv scala field without self interaction
+and a driving potential $V(\phi)$.
+
+\subsection{The Klein Gordon Equation on a curved background}
+Varying the action from equation \ref{eq:action} by $\phi \rightarrow \phi + \delta \phi$ gives
+
+\begin{align*}
+    S[\phi + \delta \phi] &= \int \mathrm{d} x^4 \sqrt{-g} \left( - \frac{1}{2} (\partial (\phi + \delta \phi))^2 - V(\phi + \delta \phi)  \right) \\
+    &= \int \mathrm{d}x^4 \sqrt{-g} \left( - \frac{1}{2} g^{\mu \nu} (\partial_\mu \delta \phi \partial_\nu \phi + \partial_\nu \delta \phi \partial_\mu \phi) - V'(\phi) \delta \phi \right) \\
+    &= - \frac{1}{2} \left( \int \mathrm{d}x^4 \sqrt{-g} g^{\mu \nu} \partial_\mu \delta \phi \partial_\nu \phi + \int \mathrm{d}x^4 \sqrt{-g} g^{\mu \nu} \partial_\nu \delta \phi \partial_\mu \phi \right) - \int \mathrm{d} x^4 \sqrt{-g} V'(\phi) \delta \phi \\
+    &= - \frac{1}{2} \left( - \int \mathrm{d}x^4 \delta \phi \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi +
+                            - \int \mathrm{d}x^4 \delta \phi \partial_\nu \sqrt{-g} g^{\mu \nu} \partial_\mu \phi \right) - \int \mathrm{d} x^4 \sqrt{-g} V'(\phi) \delta \phi \\
+    &= \int \mathrm{d} x^4 \delta \phi \left( \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi - \sqrt{-g} V'(\phi) \right)
+\end{align*}
+using
+
+\begin{align*}
+    V(\phi + \delta \phi) \approx V(\phi) + \frac{\partial V(\phi)}{\partial \phi} \delta \phi + O(\delta \phi^2)
+\end{align*}
+and
+\begin{align*}
+      (\partial (\phi + \delta \phi))^2 &= (\partial^\mu (\phi + \delta \phi)) (\partial_\mu (\phi + \delta \phi)) \\
+                                        &= g^{\mu \nu} (\partial_\nu (\phi + \delta \phi)) (\partial_\mu (\phi + \delta \phi)) \\
+                                        &= g^{\mu \nu} (\partial_\nu \phi \partial_\mu \phi + \partial_\nu \phi \partial_\mu \delta \phi +
+                                                        \partial_\nu \delta \phi \partial_\mu \phi + \partial_\nu \delta \phi \partial_\mu \delta \phi) \\
+                                        &= \mathrm{const} + g^{\mu \nu} (\partial_\nu \phi \partial_\mu \delta \phi + \partial_\nu \delta \phi \partial_\mu \phi) + O(\delta \phi ^2)
+\end{align*}
+as well was integration by parts in the forth equal sign and the symmetry of $g^{\mu \nu}$ and renaming indicies in the last
+equal sign.
+The term linear in $\delta \phi$ has to vanish so
+\begin{align}
+    \label{eq:klein_gordon}
+    \Box \phi = \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
+\end{align}
+the Klein Gordon Equation holds for the axion field. ?????????
+
+
+\subsection{Equation for the background field}
+We are interessted in the evolution of the background field $\bar{\phi}$ with $\phi = \bar{\phi} + \delta \phi$ where
+$|\bar{\phi}| \gg |\delta \phi|$ and $\nabla \bar{\phi} = 0$. We therefore only have to consider the time dependence in equation \ref{eq:klein_gordon}. From now on $\phi$ will label the background field.
+For the background field all derivatives $\partial_i$ vanish, therefore we can drop them in equation \ref{eq:klein_gordon} from the summation and only keep the time derivative.
+\begin{align*}
+    \frac{\partial V}{\partial \phi} &= \Box \phi \\
+                                     &= \frac{1}{\sqrt{-g}} \partial_t \sqrt{-g} g^{00} \partial_t \phi \\
+                                     &= \frac{1}{\sqrt{-g}} \left( (\partial_t \sqrt{-g} g^{00}) (\partial_t \phi) + \sqrt{-g} g^{00} \partial^2_t \phi \right)
+\end{align*}
+We are interested in the evolutation of the axion field in a homogenious universe which has the FLRW metric ??????
+\begin{align}
+    \label{eq:flrw}
+    \mathrm{d}s^2 = -\mathrm{d}t^2 + a(t)^2 \left(\frac{\mathrm{d}r^2}{1 - kr^2} + r^2(\mathrm{d}\theta^2 + \sin^2 \theta \mathrm{d} \varphi^2)\right)
+\end{align}
+with
+\begin{align*}
+    g^{00} = -1
+\end{align*}
+\begin{align*}
+    g = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta
+      = - a(t)^6 f(\vec{x})
+\end{align*}
+where $f$ is some function of the spatial coordinates.
+So:
+\begin{align*}
+    \frac{\partial V}{\partial \phi} &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
+                                     = - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
+                                     &= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi}
+                                     = - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
+                                     = - 3H \dot{\phi} - \ddot{\phi}
+\end{align*}
+This yields the equation of motion for the axion field
+\begin{align}
+    \label{eq:eom}
+    \ddot{\phi} + 3 H \dot{\phi} + V'(\phi) = 0
+\end{align}
+
+\subsection{Initial Conditions}
+Since equation \ref{eq:eom} is a second order ODE, we need the initial values
+for $\phi$ and $\dot{\phi}$.
+Because $m_a \ll H(t_i)$ the friction term in equation dominates over the
+driving force from the potential term at early times.
+So we can assume $\dot{\phi_i} = 0$.
+The initial condition for $\phi_i$ is left as an open parameter that can be tuned to
+reach the correct density of DM for today. ???????
+TODO: fluctuations ????????????
+
+\subsection{The Potential}
+The potential $V(\phi)$ is unknown at this point, but it has a minimum
+at $\phi = 0$. We therefore can taylor expand V around $\phi = 0$
+and get the potential
+\begin{align}
+    \label{eq:potential}
+    V(\phi) = \frac{1}{2} m_a^2 \phi^2
+\end{align}
+where $m_a$ is the axion mass as the coupling constant.
+There are two remarks to be made.
+First there might be higher oder anharmonic effects.
+There are studied in section \ref{sec:anharmonic_effects}.
+Second the axion mass can depend on the temperature of
+the universe like in the case of the QCD Axion.
+This effect is covered in section \ref{sec:temerature_dependent_mass}.
+The Axion mass is also left open as a parameter to tune like
+the initial value of the field.
+
+\section{Solutions for the Klein Gordon Equation}
+In the following sections there are different
+situations for the potential as well as the
+evolution of the scale parameter $a(t)$ for the
+Klein Gordon equation discussed.
+
+\subsection{Constant Mass and $a \propto t^p$}
+In the case for a constant axion mass and
+a power law for the scale parameter $a(t) \sim t^p$ like for radiation $p = \frac{1}{2}$
+or matter domination $p = \frac{3}{4}$
+the equation \ref{eq:eom} is analytically solvable.
+We plug in the ansatz
+\begin{align*}
+    \phi(t) &= \kappa \cdot t^m \cdot f(t) \\
+    \dot{\phi}(t) &= \\
+    \ddot{\phi}(t) &=
+\end{align*}
+into equation \ref{eq:eom} and get
+\begin{align*}
+1 = 1
+\end{align*}
+resulting in
+\begin{align*}
+\end{align*}
+for the unknown function $f$.
+This equation get be regognized as the Bessel Equation whitch solution is by definition
+the Bessel functions.
+So the final solution is
+\begin{align}
+    \label{eq:power_law_solution}
+    \phi(t) = a^{-3/2} \left(\frac{t}{t_i}\right)^{1/2}\left(C_1 J_n(m_a t) + C_2 Y_n(m_a t)\right)
+\end{align}
+Where $J_n$ and $Y_n$ are the Bessel function of first and second kind with
+\begin{align}
+    n = (3p - 1) / 2.
+\end{align}
+The constants $C_1$ and $C_2$ are fixed by the initial conditions from section ?????.
+Plugging the solution in yields
+\begin{align*}
+\end{align*}
+The solution was plotted for realistic values in figure ????? for the radiation dominated case.
+\begin{figure}
+    \centering
+    \includegraphics{}
+    \caption{Evolution of the axion field in a radiation dominated universe. This plot is a replication of figure ???? in ??????.}
+    \label{fig:rad_dom_ax_field}
+\end{figure}
+
+Furthermore we can use the WKB approximation to gain a better understanding of the formation of the relic density.
+We use the Ansatz
+\begin{align*}
+    \phi &= 1 \\
+    \dot{\phi} &= 1 \\
+    \ddot{\phi} &= 1
+\end{align*}
+where $A(t)$ is a slowly varieing function with $H / m_a \sim \dot{A} / m_a \sim \epsilon \ll 1$ and $\ddot{A} \ll 1$
+and plug it into equation \ref{eq:eom}
+resulting in
+\begin{align*}
+    1 = 1
+\end{align*}
+This gives
+\begin{align*}
+\end{align*}
+in leading order.
+Using the Ansatz $A = a^n$ we get
+\begin{align*}
+\end{align*}
+So we can see that the axion field scales at later times like $\sim a^{-3/2}$
+and oscillats with a frequency of $\omega = 2m_a$. So
+the expectation value of the equation of state $\approx 0$ and the axion denity goes by
+\begin{align*}
+    \rho_a = \frac{1}{2}m_a^2\phi^2 \sim \left(a^{-3/2}\right)^2 = a^{-3}
+\end{align*}
+in this periode. Therefore the axion fields behaves like ordinary matter at this point and
+is just diluted by the expantion of the universe, resulting in ???????
+\begin{align}
+    \later{eq:wkb_axion_denity}
+    \rho_a = \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a} \right)
+\end{align}
+We can use this to compute analytic formulas for the axion density parameter for some cases using the formulas
+\begin{align*}
+    H^2 = H_0^2 \left( \Omega_\mathrm{rad} \    \right)
+\end{align*}
+\begin{itemize}
+    \item $a_\mathrm{osc} < a_\mathrm{eq}$ \\
+    \item $a_\mathrm{osc} > a_\mathrm{eq} > 1$ \\
+    \item $a_\mathrm{osc} \approx \mathrm{eq}$ \\
+\end{itemize}
+
+
+
+
+\subsection{QCD Axion and Temperature Depengdent Mass}
+\label{sec:temerature_dependent_mass}
+In the case of the QCD axion the mass is actually temerature dependent.
+The
+
+\subsection{Anharmonic Effects}
+\label{sec:anharmonic_effects}
+\bibliography{Shared.bib}{}
+\bibliographystyle{plain}
+
+\end{document}
