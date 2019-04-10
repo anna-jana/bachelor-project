@@ -60,7 +60,7 @@ of the axion field and show that the axion model can contribute/produce the dens
 In this section the classical equation of motion for the axion field is derived from the action of a scalar field. Then it is simplified for the background field in a homogeneous universe. Also the initial conditions are discussed.
 
 \subsection{The Action}
-The action for a scalar field on a curved background is given after ????
+The action for a scalar field on a curved background is given after \cite[Chap. 4.1, Page 25]{MarshAxionCosmo}
 using the signature $(-, +, +, +)$ for the metric as
 \begin{align}
     \label{eq:action}
@@ -101,7 +101,7 @@ The term linear in $\delta \phi$ has to vanish so
     \label{eq:klein_gordon}
     \Box \phi = \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
 \end{align}
-the Klein Gordon Equation holds for the axion field. ?????????
+the Klein Gordon Equation holds for the axion field. \cite[Chap. 4.1, Page 26]{MarshAxionCosmo}
 
 
 \subsection{Equation for the background field}
@@ -113,7 +113,7 @@ For the background field all derivatives $\partial_i$ vanish, therefore we can d
                                      &= \frac{1}{\sqrt{-g}} \partial_t \sqrt{-g} g^{00} \partial_t \phi \\
                                      &= \frac{1}{\sqrt{-g}} \left( (\partial_t \sqrt{-g} g^{00}) (\partial_t \phi) + \sqrt{-g} g^{00} \partial^2_t \phi \right)
 \end{align*}
-We are interested in the evolutation of the axion field in a homogenious universe which has the FLRW metric ??????
+We are interested in the evolutation of the axion field in a homogenious universe which has the FLRW metric \cite[Chap. 1.3.2., Page 20]{CosmologyBookMukhanov}
 \begin{align}
     \label{eq:flrw}
     \mathrm{d}s^2 = -\mathrm{d}t^2 + a(t)^2 \left(\frac{\mathrm{d}r^2}{1 - kr^2} + r^2(\mathrm{d}\theta^2 + \sin^2 \theta \mathrm{d} \varphi^2)\right)
@@ -135,7 +135,7 @@ So:
                                      = - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
                                      = - 3H \dot{\phi} - \ddot{\phi}
 \end{align*}
-This yields the equation of motion for the axion field
+This yields the equation of motion for the axion field \cite[Chap 4.2, Page 25]{MarshAxionCosmo}
 \begin{align}
     \label{eq:eom}
     \ddot{\phi} + 3 H \dot{\phi} + V'(\phi) = 0
@@ -148,7 +148,7 @@ Because $m_a \ll H(t_i)$ the friction term in equation dominates over the
 driving force from the potential term at early times.
 So we can assume $\dot{\phi_i} = 0$.
 The initial condition for $\phi_i$ is left as an open parameter that can be tuned to
-reach the correct density of DM for today. ???????
+reach the correct density of DM for today \cite[Chap. 4.2, Page 26]{MarshAxionCosmo}
 TODO: fluctuations ????????????
 
 \subsection{The Potential}
@@ -179,22 +179,37 @@ Klein Gordon equation discussed.
 In the case for a constant axion mass and
 a power law for the scale parameter $a(t) \sim t^p$ like for radiation $p = \frac{1}{2}$
 or matter domination $p = \frac{3}{4}$
-the equation \ref{eq:eom} is analytically solvable.
-We plug in the ansatz
+the equation \ref{eq:eom} is analytically solvable \cite[Chap. 4.2, Page 25]{MarshAxionCosmo}.
+We plug in the Ansatz
 \begin{align*}
     \phi(t) &= \kappa \cdot t^m \cdot f(t) \\
-    \dot{\phi}(t) &= \\
-    \ddot{\phi}(t) &=
+    \dot{\phi}(t) &= \kappa \left( m t^{m - 1} f + t^m \dot{f} \right) \\
+    \ddot{\phi}(t) &= \kappa \left( m (m - 1) t^{m - 2} f + 2 m t^{m - 1} \dot{f} + t^m \ddot{f} \right)
 \end{align*}
-into equation \ref{eq:eom} and get
+into equation \ref{eq:eom}, dividing out $\kappa$ and get
 \begin{align*}
-1 = 1
+    &\Rightarrow m (m - 1) t^{m - 2} f + 2 m t^{m - 1} \dot{f} + t^m \ddot{f} + 3H \left( m t^{m - 1} f + t^m \dot{f} \right) + m_a^2 t^m f = 0 \\
+    &\Rightarrow m (m - 1) t^{- 2} f + 2 m t^{- 1} \dot{f} + \ddot{f} + 3H \left( m t^{- 1} f + t^m \dot{f} \right) + m_a^2 f = 0 \\
+    &\Rightarrow f \left( m (m - 1) t^{-2} + 3H m t^{-1} + m_a^2 \right) + \dot{f} \left( 2mt^{-1} + 3 H \right) + \ddot{f} = 0 \\
+    &\Rightarrow f \left( m (m - 1) + 3H m t + t^2 m_a^2 \right) + \dot{f} \left( 2mt + 3 H t^2 \right) + t^2 \ddot{f} = 0 \\
+    % &\Rightarrow f \left( m (m - 1) + 3pm + t^2 m_a^2 \right) + \dot{f} \left( 2mt + 3 t p \right) + t^2 \ddot{f} = 0 \\
+    &\Rightarrow f \left( m (m - 1) + 3pm + t^2 m_a^2 \right) + t \dot{f} \left( 2m + 3 p \right) + t^2 \ddot{f} = 0
+\end{align*}
+if
+\begin{align*}
+    2m + 3p = 1 \Rightarrow m = - 3 / 2 p + 1 / 2
+\end{align*}
+then
+\begin{align*}
+    m (m - 1) + 3pm &= (-3/2p + 1/2) (-3/2p - 1/2) + 3p(-3/2p + 1/2) \\
+                    &= - (3p)^2 / 4 + p/2 - (1/2)^2 = - (\frac{3p + 1}{2})^2 =: -n^2
 \end{align*}
 resulting in
 \begin{align*}
+    (t^2 m_a^2 - n^2) f + t \dot{f} + t^2 \ddot{f} = 0
 \end{align*}
 for the unknown function $f$.
-This equation get be regognized as the Bessel Equation whitch solution is by definition
+This equation get be recognized as the Bessel Equation which solution is by definition
 the Bessel functions.
 So the final solution is
 \begin{align}
@@ -206,36 +221,47 @@ Where $J_n$ and $Y_n$ are the Bessel function of first and second kind with
     n = (3p - 1) / 2.
 \end{align}
 The constants $C_1$ and $C_2$ are fixed by the initial conditions from section ?????.
-Plugging the solution in yields
+Plugging in the solution yields
 \begin{align*}
+    C_1 &= \frac{B \phi_i}{BC - AD} \\
+    C_2 &= \frac{A \phi_i}{BC - AD} \\
+    A &= \alpha J_n(m_a t_i) + m_a J_n'(m_a t_i) \\
+    B &= \alpha Y_n(m_a t_i) + m_a Y_n'(m_a t_i) \\
+    C &= a_i^{-3/2} J_n(m_a t_i) \\
+    D &= a_i^{-3/2} Y_n(m_a t_i) \\
+    \alpha &= (-\frac{3}{2} p + \frac{1}{2}) t_i^{-1}
 \end{align*}
-The solution was plotted for realistic values in figure ????? for the radiation dominated case.
+The solution was plotted for realistic values in figure \ref{fig:rad_dom_ax_field} for the radiation dominated case.
 \begin{figure}
     \centering
-    \includegraphics{}
-    \caption{Evolution of the axion field in a radiation dominated universe. This plot is a replication of figure ???? in ??????.}
+    \includegraphics{analytic_power_law_plot.pdf}
+    \caption{Evolution of the axion field in a radiation dominated universe. This plot is a replication of figure 4 in \cite{MarshAxionCosmo}}
     \label{fig:rad_dom_ax_field}
 \end{figure}
 
-Furthermore we can use the WKB approximation to gain a better understanding of the formation of the relic density.
+Furthermore we can use the WKB approximation to gain a better understanding of the formation of the relic density \cite[Chap 4.3.1, Page 28]{MarshAxionCosmo}.
 We use the Ansatz
 \begin{align*}
-    \phi &= 1 \\
-    \dot{\phi} &= 1 \\
-    \ddot{\phi} &= 1
+    \phi &= A c \\
+    \dot{\phi} &= \dot{A} c - s m_a A \\
+    \ddot{\phi} &= \ddot{A} c - 2 m_a \dot{A} s - m_a^2 c A
 \end{align*}
-where $A(t)$ is a slowly varieing function with $H / m_a \sim \dot{A} / m_a \sim \epsilon \ll 1$ and $\ddot{A} \ll 1$
+where $A = A(t)$ is a slowly varieing function of $t$ with $H / m_a \sim \dot{A} / m_a \sim \epsilon \ll 1$ and $\ddot{A} \ll 1$
+and $c = \cos(m_a t + \theta)$, $s = \sin(m_a t + \theta) $
 and plug it into equation \ref{eq:eom}
 resulting in
 \begin{align*}
-    1 = 1
+    &\ddot{A} c - 2 m_a \dot{A} s - m_a^2 c A + 3 H ( \dot{A} c - m_a s A) + m_a^2 c A = 0 \\
+    &\Rightarrow \underbrace{\frac{c}{m_a^2} \ddot{A}}_{\approx 0} - 2 s \underbrace{\frac{\dot{A}}{m_a}}_{= \epsilon} + 3c \underbrace{\frac{H \dot{A}}{m_a^2}}_{= \epsilon^2} - 3 s A \underbrace{\frac{H}{m_a}}_{= \epsilon} = 0 \\
 \end{align*}
 This gives
 \begin{align*}
+    \frac{\dot{A}}{A} = - \frac{3}{2} H = - \frac{3}{2} \frac{\dot{a}}{a}
 \end{align*}
 in leading order.
 Using the Ansatz $A = a^n$ we get
 \begin{align*}
+    \frac{n \dot{a} a^{n - 1}}{a^n} = - \frac{3}{2} \frac{\dot{a}}{a} \Rightarrow n = - \frac{3}{2}
 \end{align*}
 So we can see that the axion field scales at later times like $\sim a^{-3/2}$
 and oscillats with a frequency of $\omega = 2m_a$. So
@@ -244,31 +270,63 @@ the expectation value of the equation of state $\approx 0$ and the axion denity 
     \rho_a = \frac{1}{2}m_a^2\phi^2 \sim \left(a^{-3/2}\right)^2 = a^{-3}
 \end{align*}
 in this periode. Therefore the axion fields behaves like ordinary matter at this point and
-is just diluted by the expantion of the universe, resulting in ???????
+is just diluted by the expantion of the universe, resulting in \cite[Chap. 4.3.1, Page 28]{MarshAxionCosmo}
 \begin{align}
-    \later{eq:wkb_axion_denity}
-    \rho_a = \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a} \right)
+    \label{eq:wkb_axion_denity}
+    \rho_a(a) = \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a} \right)^3
 \end{align}
-We can use this to compute analytic formulas for the axion density parameter for some cases using the formulas
-\begin{align*}
-    H^2 = H_0^2 \left( \Omega_\mathrm{rad} \    \right)
-\end{align*}
+We can use this to compute analytic formulas for the axion density parameter for some cases \cite[Chap 4.3.1, Page 28]{MarshAxionCosmo} using the formula
+\begin{align}
+    \label{eq:hubble_parameter_evo}
+    H(t)^2 = H_0^2 \left(
+        \Omega_\mathrm{rad} \left( \frac{a_i}{a} \right)^4 +
+        \Omega_\mathrm{mat} \left( \frac{a_i}{a} \right)^3
+    \right)
+\end{align}
+We also need a condition for $a_\mathrm{osc}$. The transition to the oscillating phase happens when the
+hubble friction term becomes negligible compared to the driving potential term
+\begin{align}
+    \label{eq:a_osc_cond}
+    3 H(a_\mathrm{osc}) = m_a.
+\end{align}
 \begin{itemize}
     \item $a_\mathrm{osc} < a_\mathrm{eq}$ \\
+    Here the universe is radiation dominated after $a_\mathrm{osc}$.
+    Using condition \ref{eq:a_osc_cond} and equation \ref{eq:hubble_parameter_evo} we get
+    \begin{align*}
+        \left(\frac{m_a}{3}\right)^2 = H^2 = H_0^2 \left(
+        \Omega_\mathrm{rad} \left( \frac{a_i}{a} \right)^4
+    \right) \Rightarrow \frac{a_\mathrm{osc}}{a_0} = \left( \frac{9 \Omega_r H_0^2}{m_a^2} \right)^{1/4}
+    \end{align*}
+    And therefore
+    \begin{align*}
+        \Omega_a &= \frac{\rho_a}{\rho_c} = \frac{1}{\rho_c} \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a_0} \right)^3 \\
+                 &= \frac{1}{3 H_0^2 M_\mathrm{pl}^2} \frac{1}{2} m_a^2 \phi_i^2 \left( \frac{9 H_0^2 \Omega_r}{m_a^2} \right)^{3/4} \\
+                 &= \frac{1}{6} \left( 9 \Omega_r \right)^{3/4} \left( \frac{m_a}{H_0} \right)^{1/2} \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2.
+    \end{align*}
     \item $a_\mathrm{osc} > a_\mathrm{eq} > 1$ \\
-    \item $a_\mathrm{osc} \approx \mathrm{eq}$ \\
+    Here the universe is matter dominated after $a_\mathrm{osc}$.
+    Similar to the previous case we get
+    \begin{align*}
+        \Omega_a = \frac{9}{6} \Omega_\mathrm{mat} \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2
+    \end{align*}
+    \item $a_\mathrm{osc} \approx a_\mathrm{eq}$ \\
+    Here we just get the density parameter at $a_\mathrm{osc}$
+    \begin{align*}
+        \Omega_a = \frac{1}{6} \left( \frac{m_a}{H_0} \right)^2 \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2
+    \end{align*}
 \end{itemize}
 
-
-
-
-\subsection{QCD Axion and Temperature Depengdent Mass}
+\subsection{QCD Axion and Temperature Dependent Mass}
 \label{sec:temerature_dependent_mass}
 In the case of the QCD axion the mass is actually temerature dependent.
 The
 
 \subsection{Anharmonic Effects}
 \label{sec:anharmonic_effects}
+
+\section{Further Steps}
+
 \bibliography{Shared.bib}{}
 \bibliographystyle{plain}
 
