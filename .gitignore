@@ -1,6 +1,13 @@
 *.pdf
+*.out
+*.o
+*.so
+*.aux
+*.log
 *.dat
 *.pyc
 __pycache__
 .ipynb_checkpoints
+PyUltraLight
+nbody
 *.swp
