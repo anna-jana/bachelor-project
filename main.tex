@@ -24,16 +24,19 @@
 \usepackage{fancyvrb}
 % \usepackage{subcaption}
 
+\DeclareMathOperator*{\diff}{d}
+
 \title{Spezialisierungspraktikum: \\ Computation of the Axion Relic Density}
-
-
 
 \author{Janik Riess }
 \date{April 2019}
 
 \begin{document}
 
+
 \maketitle
+\tableofcontents
+\newpage
 
 \section{Introduction}
 In this term paper I will discuss the
@@ -43,7 +46,7 @@ Furthermore the concepts for the numerical computation for more complicated mode
 
 The axion is a hypothetical particle that was introduced as a standard model
 extention to solve the strong CP problem using the Peccei-Quinn mechanism and axion like particles (ALPs) are also
-introduced in string theory. There are extremly light pseudo scalar bosons. ???????
+introduced in string theory. There are extremely light pseudo scalar bosons. ???????
 
 The misalignment mechanism is a non-thermal production mechanism for axion dark matter.
 Here the axion field is due to symmetry breaking during inflation driven by a potential
@@ -64,9 +67,9 @@ The action for a scalar field on a curved background is given after \cite[Chap. 
 using the signature $(-, +, +, +)$ for the metric as
 \begin{align}
     \label{eq:action}
-    S[\phi] = \int \mathrm{d}^4 \sqrt{-g} \left(- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right)
+    S[\phi] = \int \diff ^4 \sqrt{-g} \left(- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right)
 \end{align}
-The measure $\mathrm{d}x^4 \sqrt{-g}$ accounds for the effect of a curved background while
+The measure $\diff x^4 \sqrt{-g}$ accounds for the effect of a curved background while
 the lagrange density depscribs a massiv scala field without self interaction
 and a driving potential $V(\phi)$.
 
@@ -74,12 +77,12 @@ and a driving potential $V(\phi)$.
 Varying the action from equation \ref{eq:action} by $\phi \rightarrow \phi + \delta \phi$ gives
 
 \begin{align*}
-    S[\phi + \delta \phi] &= \int \mathrm{d} x^4 \sqrt{-g} \left( - \frac{1}{2} (\partial (\phi + \delta \phi))^2 - V(\phi + \delta \phi)  \right) \\
-    &= \int \mathrm{d}x^4 \sqrt{-g} \left( - \frac{1}{2} g^{\mu \nu} (\partial_\mu \delta \phi \partial_\nu \phi + \partial_\nu \delta \phi \partial_\mu \phi) - V'(\phi) \delta \phi \right) \\
-    &= - \frac{1}{2} \left( \int \mathrm{d}x^4 \sqrt{-g} g^{\mu \nu} \partial_\mu \delta \phi \partial_\nu \phi + \int \mathrm{d}x^4 \sqrt{-g} g^{\mu \nu} \partial_\nu \delta \phi \partial_\mu \phi \right) - \int \mathrm{d} x^4 \sqrt{-g} V'(\phi) \delta \phi \\
-    &= - \frac{1}{2} \left( - \int \mathrm{d}x^4 \delta \phi \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi +
-                            - \int \mathrm{d}x^4 \delta \phi \partial_\nu \sqrt{-g} g^{\mu \nu} \partial_\mu \phi \right) - \int \mathrm{d} x^4 \sqrt{-g} V'(\phi) \delta \phi \\
-    &= \int \mathrm{d} x^4 \delta \phi \left( \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi - \sqrt{-g} V'(\phi) \right)
+    S[\phi + \delta \phi] &= \int \diff  x^4 \sqrt{-g} \left( - \frac{1}{2} (\partial (\phi + \delta \phi))^2 - V(\phi + \delta \phi)  \right) \\
+    &= \int \diff x^4 \sqrt{-g} \left( - \frac{1}{2} g^{\mu \nu} (\partial_\mu \delta \phi \partial_\nu \phi + \partial_\nu \delta \phi \partial_\mu \phi) - V'(\phi) \delta \phi \right) \\
+    &= - \frac{1}{2} \left( \int \diff x^4 \sqrt{-g} g^{\mu \nu} \partial_\mu \delta \phi \partial_\nu \phi + \int \diff x^4 \sqrt{-g} g^{\mu \nu} \partial_\nu \delta \phi \partial_\mu \phi \right) - \int \diff  x^4 \sqrt{-g} V'(\phi) \delta \phi \\
+    &= - \frac{1}{2} \left( - \int \diff x^4 \delta \phi \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi +
+                            - \int \diff x^4 \delta \phi \partial_\nu \sqrt{-g} g^{\mu \nu} \partial_\mu \phi \right) - \int \diff  x^4 \sqrt{-g} V'(\phi) \delta \phi \\
+    &= \int \diff  x^4 \delta \phi \left( \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi - \sqrt{-g} V'(\phi) \right)
 \end{align*}
 using
 
@@ -116,7 +119,7 @@ For the background field all derivatives $\partial_i$ vanish, therefore we can d
 We are interested in the evolutation of the axion field in a homogenious universe which has the FLRW metric \cite[Chap. 1.3.2., Page 20]{CosmologyBookMukhanov}
 \begin{align}
     \label{eq:flrw}
-    \mathrm{d}s^2 = -\mathrm{d}t^2 + a(t)^2 \left(\frac{\mathrm{d}r^2}{1 - kr^2} + r^2(\mathrm{d}\theta^2 + \sin^2 \theta \mathrm{d} \varphi^2)\right)
+    \diff s^2 = -\diff t^2 + a(t)^2 \left(\frac{\diff r^2}{1 - kr^2} + r^2(\diff \theta^2 + \sin^2 \theta \diff  \varphi^2)\right)
 \end{align}
 with
 \begin{align*}
@@ -148,11 +151,16 @@ Because $m_a \ll H(t_i)$ the friction term in equation dominates over the
 driving force from the potential term at early times.
 So we can assume $\dot{\phi_i} = 0$.
 The initial condition for $\phi_i$ is left as an open parameter that can be tuned to
-reach the correct density of DM for today \cite[Chap. 4.2, Page 26]{MarshAxionCosmo}
+reach the correct density of DM for today \cite[Chap. 4.2, Page 26]{MarshAxionCosmo}.
+The later results depend on the square of the initial field value, therefore the fluctuations can conbribute to the
+inital value
+\begin{align}
+    < \phi_i^2 > = < \phi_i > ^ 2 + \sigma_\phi ^ 2
+\end{align}
 TODO: fluctuations ????????????
 
 \subsection{The Potential}
-The potential $V(\phi)$ is unknown at this point, but it has a minimum
+The potential $V(\phi)$ is unknown at this point for a general axion model, but it has a minimum
 at $\phi = 0$. We therefore can taylor expand V around $\phi = 0$
 and get the potential
 \begin{align}
@@ -176,6 +184,7 @@ evolution of the scale parameter $a(t)$ for the
 Klein Gordon equation discussed.
 
 \subsection{Constant Mass and $a \propto t^p$}
+\subsubsection{Analytic Solution}
 In the case for a constant axion mass and
 a power law for the scale parameter $a(t) \sim t^p$ like for radiation $p = \frac{1}{2}$
 or matter domination $p = \frac{3}{4}$
@@ -235,10 +244,11 @@ The solution was plotted for realistic values in figure \ref{fig:rad_dom_ax_fiel
 \begin{figure}
     \centering
     \includegraphics{analytic_power_law_plot.pdf}
-    \caption{Evolution of the axion field in a radiation dominated universe. This plot is a replication of figure 4 in \cite{MarshAxionCosmo}}
-    \label{fig:rad_dom_ax_field}
+    \caption{Evolution of the axion field in a radiation dominated universe. This plot is a replication of figure 4 in \cite{MarshAxionCosmo}. The dashed line marks the point of $a_\mathrm{osc}$.}
+    \label{fig:rad_dom_ax_field}. 
 \end{figure}
 
+\subsubsection{WKB approximation}
 Furthermore we can use the WKB approximation to gain a better understanding of the formation of the relic density \cite[Chap 4.3.1, Page 28]{MarshAxionCosmo}.
 We use the Ansatz
 \begin{align*}
@@ -246,7 +256,7 @@ We use the Ansatz
     \dot{\phi} &= \dot{A} c - s m_a A \\
     \ddot{\phi} &= \ddot{A} c - 2 m_a \dot{A} s - m_a^2 c A
 \end{align*}
-where $A = A(t)$ is a slowly varieing function of $t$ with $H / m_a \sim \dot{A} / m_a \sim \epsilon \ll 1$ and $\ddot{A} \ll 1$
+where $A = A(t)$ is a slowly varying function of $t$ with $H / m_a \sim \dot{A} / m_a \sim \epsilon \ll 1$ and $\ddot{A} \ll 1$
 and $c = \cos(m_a t + \theta)$, $s = \sin(m_a t + \theta) $
 and plug it into equation \ref{eq:eom}
 resulting in
@@ -316,14 +326,187 @@ hubble friction term becomes negligible compared to the driving potential term
         \Omega_a = \frac{1}{6} \left( \frac{m_a}{H_0} \right)^2 \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2
     \end{align*}
 \end{itemize}
+Plots for the values in these tree cases can be found in figure \ref{fig:wkb_ard}
+\begin{figure}
+    \centering
+    \includegraphics{pow_law_wkb_plot.pdf}
+    \caption{Axion Relic Density using a WKB approximation for $m_a = \mathrm{const}$}
+    \label{fig:wkb_ard}
+\end{figure}
 
 \subsection{QCD Axion and Temperature Dependent Mass}
 \label{sec:temerature_dependent_mass}
-In the case of the QCD axion the mass is actually temerature dependent.
-The
+In the previous section we ignored the temperature dependence of the axion mass.
+In the case of the QCD axion the temperature dependence can not be ignored ???????.
+Then the axion mass at $T = 0$ is given as ?????????
+\begin{align}
+    \label{eq:axion_mass_T0}
+    m_a = m_a(T = 0) = 6 \cdot 10^{-10} \cdot \mathrm{eV} \frac{10^{16} \cdot \mathrm{GeV}}{f_a / N}.
+\end{align}
+The mass as a function of temperature can be parametrized as \cite[Sec. 2.1]{Fox:2004kb} 
+\begin{align}
+    \label{eq:axion_mass1}
+    m_a(T) = m_a C \left( \frac{\Lambda_\mathrm{QCD}}{T} \right)^{4}
+\end{align}
+for $T > \Lambda_\mathrm{QCD}$.
+
+\subsubsection{Conservation of number density and entropy}
+Since the mass of the axion now depends on the temperature the scaling like in section ???? is not valid.
+But the axion field still behaves after $T_\mathrm{osc}$ like pressureless matter.
+Therefore the number of axions $N = n \cdot a^3$ is conserved.
+The time scale for the expansion of the universe is $\tau_\mathm{exp} = H^{-1}$ while the time scale
+for the change of the axion field is its period of oscillation. Assuming that 
+the friction term in equation \ref{eq:eom} is negligible after $T_\mathrm{osc}$
+the period of the axion field oscillation is 
+$\tau_\mathrm{osc} = \frac{2 \pi}{m_a(T)}$.
+If $\tau_\mathrm{exp} \ll \tau_\mathm{osc}$ the expansion of the axion field is adiabatic.
+
+TODO ?????????????????????
+
+\subsubsection{WKB approximation}
+Using formula \ref{eq:a_osc_cond} and the Friedmann Equation in the radiation dominated era ????????
+\begin{align}
+    \label{eq:friedmann_rad_thermo}
+    3 H^2 M_\mathrm{pl}^2 = \rho_\mathrm{rad} = \frac{\pi^2}{30} g_* T^4,
+\end{align}
+where $g_*$ is the number of relativistic degrees of freedom as a function of temperature,
+we obtain 
+\begin{align*}
+    T_\mathrm{osc} = \left( \frac{10 m_a(T_\mathrm{osc})^2 M_\mathrm{pl}^2}{\pi^2 g_*} \right)^{1/4}
+\end{align*}
+Substituting the axion mass with equation \ref{eq:axion_mass1} yields
+\begin{align}
+    \label{eq:T_osc1}
+    T_\mathrm{osc} = \left( \frac{10 M_\mathrm{pl}^2}{\pi^2 g_*} \right)^{1/4} \left( m_a C \left( \frac{\Lambda_\mathrm{QCD}}{T_\mathrm{osc}} \right)^{4} \right)^{2 \cdot \frac{1}{4}}
+    \Rightarrow T_\mathrm{osc} = \underbrace{\left( \frac{10 M_\mathrm{pl}^2}{\pi^2 g_*} \right)^{1/4} C^{1/2} \Lambda_\mathrm{QCD}^2 (10^{-4} \cdot 6 \cdot 10^{-6} \, \mathrm{eV}) }_{=: \kappa \approx 150 \, \mathrm{MeV} } \left( \frac{10^{16} \, \mathrm{GeV}}{f_a / N} \right)^{1/6}
+\end{align}
+
+This can be used by to compute the relic density by using that the number density of the axions can be computed as
+\begin{align*}
+    n_a(T_\mathrm{osc}) = \frac{f_c}{2} m_a(T_\mathrm{osc}) < \theta_i^2 > \left( \frac{f_a}{N} \right)^2
+\end{align*}
+where $f_c$ is a correction factor for the temperature dependent mass for the parameterization \ref{eq:axion_mass1} following ??????.
+Then the number density can be scaled to $T_0$, the temperature of the universe today, like the entropy density ??????
+\begin{align}
+    \label{eq:entropy_density}
+    s(T) \frac{2 \pi^2}{45} g_{*, s}(T) T^3
+\end{align}
+as
+\begin{align*}
+    \rho_a = \gamma \frac{s(T_0)}{s(T_\mathrm{osc})} n_a,
+\end{align*}
+where $\gamma$ is a correction factor for entropy release during the expansion of the universe.
+Therefore the axion relic density parameter is given as
+\begin{align}
+    \label{eq:relic_density_high_temp}
+    \Omega_a h^2 = \underbrace{
+   \left(10^{25}\right)^{7/6} \frac{h^2 18 \cdot 10^{5/6} \, \mathrm{eV}^4 C \Lambda_\mathrm{QCD}^4 T_0^3 f_c g_0 }{g_\mathrm{osc} \kappa^7 \rho_c}  
+    }_{=: \iota \approx 2 \cdot 10^4} \cdot \left( \frac{f_a / N}{10^{16} \, \mathrm{GeV}}\right) ^ {7 / 6} < \theta_i^2 > \gamma
+\end{align}
+A plot for the relic density can be found in figure \ref{fig:qcd_wkb_plot}.
+\begin{figure}
+    \centering
+    \includegraphics{qcd_relic_denstiy_wkb_plot.pdf}
+    \caption{Axion relic density parameter for the QCD axion with $T_\mathrm{osc} > \Lambda_\mathrm{QCD}$}
+    \label{fig:qcd_wkb_plot}
+\end{figure}
+The same computation can done for $T_\mathrm{osc} < \Lambda_\mathrm{QCD}$ with
+\begin{align}
+    \label{eq:axion_mass2}
+    1 = 1
+\end{align}
+
+\subsubsection{The temperature evolution in the radiation dominated universe}
+For a numerical treatment of the relic density, the time dependence of
+the tempreature has to be known \cite[Sec. S11]{LatticQCD4Cosmo}.
+One uses the Gibbs Duhem relation 
+\begin{align*}
+    E - TS + PV - \mu N = 0 \Rightarrow E / V - T S / V + P V / V - \mu N / V = 0
+    \Rightarrow \rho - T s + P - \mu n = 0
+\end{align*}
+\begin{align}
+    \label{eq:gibbs_duhem}
+    \Rightarrow \rho + P = T s + \mu n
+\end{align}
+as well as the acceleration equation from \cite[Chap. 1.3.3, Page 23]{CosmologyBookMukhanov}
+\begin{align}
+    \label{eq:accel_eq}
+    \dot{\rho} = -3H(\rho + p) = -3H T s
+\end{align}
+in combination with the temperature dependence of the entropy density
+\ref{eq:entropy_density}
+and the friedmann equation \ref{eq:friedmann_rad_thermo}
+to compute
+% \begin{align*}
+%     \frac{\diff ^2 \phi}{\diff  t^2} + 3 H \frac{\diff  \phi}{\diff  t} + V'(\phi) = 0
+% \end{align*}
+\begin{align*}
+    \frac{\diff  t}{\diff  T} 
+    &= \frac{\diff  \rho}{\diff  T} \frac{\diff  t}{\diff  \rho} 
+    = \frac{\frac{\diff  \rho}{\diff  T}} {\frac{\diff  \rho}{\diff  t}} 
+    = \frac{\frac{\diff }{\diff T} \frac{\pi^2}{30}g_*(T) T^4}{-3HTs} 
+    = \frac{\pi^2}{30} \frac{g_*'(T)T^4 + 4 g_*(T) T^3 }{-3HTs} \\
+    &= \frac{\pi^2}{30} \frac{g_*'(T)T^4 + 4 g_*(T) T^3 }{-3T \frac{2 \pi^2}{45} g_{s, *}(T) T^3 \sqrt{\frac{8 \pi \rho}{3 M_\mathrm{pl}^2}}} \\
+    &= \frac{\pi^2}{30} \frac{g_*'(T)T^4 + 4 g_*(T) T^3 }{-3T \frac{2 \pi^2}{45} g_{s, *}(T) T^3 \sqrt{\frac{8 \pi}{3 M_\mathrm{pl}^2} \frac{\pi^2}{30} g_{\rho, *} T^4}} 
+\end{align*}
+\begin{align}
+    \label{eq:dtdT}
+    \Rightarrow \frac{\diff t}{\diff T} = - M_\mathrm{pl} \sqrt{\frac{45}{64 \pi^3}} \frac{1}{T^3 g_s(T) \sqrt{g_\rho(T)}} (T g_\rho'(T) + 4 g_\rho(T)).
+\end{align}
+
+\subsubsection{The equation of motion as a function of temperature}
+In order to solve the equation of motion for the temperature dependent
+case, we can solve the equation as a function of $T$ itself using equation \ref{eq:dtdT}. For this we need to change the derivatives
+in equation \ref{eq:eom} to derivatives in $T$.
+The first derivative is
+\begin{align*}
+    \frac{\diff  \phi}{\diff  t} = \frac{\diff  \phi}{\diff  T} \frac{\diff  T}{\diff  t}
+\end{align*}
+and the second 
+\begin{align*}
+    \frac{\diff ^2 \phi}{\diff  t^2} &= \frac{\diff }{\diff  t} \frac{\diff  \phi}{\diff  t}
+    = \frac{\diff }{\diff  t} \frac{\diff  T}{\diff  t} \frac{\diff  \phi}{\diff  T}
+    = \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \phi}{\diff  T} +
+      \frac{\diff  T}{\diff  t} \frac{\diff }{\diff  t} \frac{\diff  \phi}{\diff  T}
+    = \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \phi}{\diff  T} +
+      \frac{\diff  T}{\diff  t} \frac{\diff }{\diff  T} \frac{\diff  \phi}{\diff  t} \\
+    &= \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \phi}{\diff  T} +
+      \frac{\diff  T}{\diff  t} \frac{\diff }{\diff  T} \frac{\diff  T}{\diff  t} \frac{\diff  \phi}{\diff  T}
+    = \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \phi}{\diff  T} +
+      \left( \frac{\diff  T}{\diff  t} \right)^2 \frac{\diff^2  \phi}{\diff  T^2} \\
+    &= \left( \frac{\diff}{\diff t} \frac{\diff T}{\diff t} \right) \frac{\diff  \phi}{\diff  T} +
+      \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \phi}{\diff  T^2}
+    = \left( \frac{\diff}{\diff t} \left( \frac{\diff t}{\diff T} \right)^{-1} \right) \frac{\diff  \phi}{\diff  T} +
+      \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \phi}{\diff  T^2} \\
+    &= - \left(\left( \frac{\mathrm{d}}{\mathrm{d} t} \frac{\diff t}{\diff T} \right)  \left( \frac{\diff t}{\diff T} \right)^{-2} \right) \frac{\diff  \phi}{\diff  T} +
+      \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \phi}{\diff  T^2} \\
+    &= - \left(\frac{\diff T}{\diff t} \frac{\diff^2 t}{\diff T^2} \left( \frac{\diff t}{\diff T} \right)^{-2} \right) \frac{\diff  \phi}{\diff  T} +
+      \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \phi}{\diff  T^2}.
+\end{align*}
+Substituting the derivatives then yields
+\begin{align*}
+    & \frac{\diff ^2 \phi}{\diff  t^2} + 3 H \frac{\diff  \phi}{\diff  t} + V'(\phi) = 0 \\
+    &\Rightarrow \left(\frac{\diff T}{\diff t} \frac{\diff^2 t}{\diff T^2} \left( \frac{\diff t}{\diff T} \right)^{-2} \right) \frac{\diff \phi}{\diff T} + \left( \frac{\diff t}{\diff T} \right)^{-2} \frac{\diff^2 \phi}{\diff T^2} + 3H\frac{\diff T}{\diff t}\frac{\diff \phi}{\diff T} + V'(\phi) = 0
+\end{align*}
+\begin{align}
+    \label{eq:eom_T}
+    &\Rightarrow \frac{\diff^2 \phi}{\diff T^2} + 
+                 \left(
+                 3H \frac{\diff t}{\diff T}
+                 - \frac{\diff^2 t}{\diff T^2} / \frac{\diff t}{\diff T}
+                 \right) \frac{\diff \phi}{\diff T} + 
+                 V'(\phi) \left( \frac{\diff t}{\diff T} \right)^2 = 0.
+\end{align}
+This equation can be used to solve the axion field at $T_\mathrm{osc}$
+\cite[Section S11]{LatticQCD4Cosmo}
 
 \subsection{Anharmonic Effects}
 \label{sec:anharmonic_effects}
+For the QCD axion the potential is given as ?????
+\begin{align}
+    \label{eq:qcd_axion_potential}
+    V(\phi) = \frac{m_a(T)^2}{f_a^2} (1 - \cos(\phi)).
+\end{align}
 
 \section{Further Steps}
 
