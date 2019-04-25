@@ -5,10 +5,14 @@
 *.aux
 *.log
 *.dat
+*.csv
+*.png
 *.pyc
 __pycache__
 .ipynb_checkpoints
 PyUltraLight
+Papers
+papers
 nbody
 *.swp
 AxionCourse
