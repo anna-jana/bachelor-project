@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.constants as c
+from scipy.interpolate import PchipInterpolator
 
 data = np.array([
     [100, -1.66 ],
@@ -24,10 +25,11 @@ data = np.array([
     [3000, -12.05 ],
 ])
 
-T_K = data[:, 0] # [MeV]
+T_MeV = data[:, 0] # [MeV]
+T = 1e6 * T_MeV
 minus_log10_chi = data[:, 1]
+T_K = 1e6 * c.Boltzmann / c.elementary_charge * T_MeV
+chi = (1 / c.elementary_charge * c.hbar * c.c / 1e-15)**4 * 10 ** (minus_log10_chi)
 
-T = c.Boltzmann / c.elementary_charge * T_K
-chi = (1 / c.elementary_charge * c.hbar * c.c / 1e-15)**4 * 10 ** (- minus_log10_chi)
-
+chi_interp = PchipInterpolator(top_sus.T, top_sus.chi)
 
