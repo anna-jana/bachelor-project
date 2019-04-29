@@ -31,5 +31,4 @@ minus_log10_chi = data[:, 1]
 T_K = 1e6 * c.Boltzmann / c.elementary_charge * T_MeV
 chi = (1 / c.elementary_charge * c.hbar * c.c / 1e-15)**4 * 10 ** (minus_log10_chi)
 
-chi_interp = PchipInterpolator(top_sus.T, top_sus.chi)
 
