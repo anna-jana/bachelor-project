@@ -12,7 +12,8 @@ import numpy as np
 import scipy.constants as c
 from scipy.interpolate import PchipInterpolator
 
-import constants as my_c
+import config
+model = config.Model()
 
 ################################## m_a at T = 0 ####################################
 ###### marsh review ######
@@ -43,7 +44,7 @@ def m_a_at_low_T_from_shellard(T, f_a):
 ############################ m_a at high T > Lambda_QCD #########################
 ######## fox et al. ########
 def m_a_at_high_T_from_fox(T, f_a, with_correction):
-    # Lambda = my_c.Lambda_QCD
+    # Lambda = model.Lambda_QCD
     Lambda = Lambda_shellard
     C = 0.018
     n_fox = 4
@@ -64,7 +65,7 @@ def m_a_at_high_T_from_shellard(T, f_a):
 
 ######## marsh #########
 def m_a_at_high_T_from_marsh(T, f_a):
-    m_a = np.sqrt(alpha_a * m_u * my_c.Lambda_QCD**3 * (T / my_c.Lambda_QCD)**(-n_shellard) / f_a**2)
+    m_a = np.sqrt(alpha_a * m_u * model.Lambda_QCD**3 * (T / model.Lambda_QCD)**(-n_shellard) / f_a**2)
     return m_a
 
 ######################## numerical function from Borsamyi et al. ########################
