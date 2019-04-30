@@ -8,14 +8,9 @@
 *.csv
 *.png
 *.pyc
+*.swp
+*.txt
 __pycache__
 .ipynb_checkpoints
-PyUltraLight
 Papers
 Plots
-papers
-nbody
-*.swp
-AxionCourse
-Gadget
-*.txt
