@@ -21,13 +21,11 @@ def m_a_at_abs_zero_from_marsh(f_a):
     return 6e-10 * 1e16 * 1e9 / f_a
 
 ###### shellard ######
-m_u = 2.2e6
-m_d = 4.6e6
-f_pi = 130e6 # correct? different values for pi0 pi+/-??? <- pi = pi0
-m_pi = 135e6
-
 def m_a_at_abs_zero_from_shellard(f_a):
-    return m_pi * f_pi / f_a * np.sqrt(m_u * m_d) / (m_u + m_d)
+    prefactor = model.m_pi0 * model.f_pi0 * np.sqrt(model.m_u * model.m_d) / (model.m_u + model.m_d)
+    print(prefactor)
+    return prefactor / f_a
+    # return model.m_pi0 * model.f_pi0 / f_a * np.sqrt(model.m_s * model.m_u * model.m_d) / np.sqrt(model.m_s * model.m_u + model.m_u * model.m_d + model.m_s * model.m_d) / np.sqrt(model.m_u + model.m_d)
 
 ############################## m_a at low T < Lambda_QCD ##########################
 ###### shellard #######
@@ -65,7 +63,7 @@ def m_a_at_high_T_from_shellard(T, f_a):
 
 ######## marsh #########
 def m_a_at_high_T_from_marsh(T, f_a):
-    m_a = np.sqrt(alpha_a * m_u * model.Lambda_QCD**3 * (T / model.Lambda_QCD)**(-n_shellard) / f_a**2)
+    m_a = np.sqrt(alpha_a * model.m_u * model.Lambda_QCD**3 * (T / model.Lambda_QCD)**(-n_shellard) / f_a**2)
     return m_a
 
 ######################## numerical function from Borsamyi et al. ########################

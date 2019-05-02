@@ -34,7 +34,9 @@ class Model:
         self.m_d = parser.getfloat("particles", "m_d")
         self.m_s = parser.getfloat("particles", "m_s")
         self.m_pi0 = parser.getfloat("particles", "m_pi0")
-        self.f_pi0 = parser.getfloat("particles", "f_pi0")
+
+        # PDG uses different convention
+        self.f_pi0 = parser.getfloat("particles", "f_pi0") / 2**0.5
 
         # g_star model
 
