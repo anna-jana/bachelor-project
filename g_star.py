@@ -28,13 +28,31 @@ data = np.array([
     [5.45, 104.98, 1.00023],
 ])
 
-log10_T_per_MeV = data[:, 0]
+# g_s_data = np.loadtxt("g_s_data.dat")
+# g_s_over_g_rho_data = np.loadtxt("g_rho_over_g_s.dat")
+#
+# T_g_s = g_s_data[:, 0] * 1e6 # [eV]
+# g_s = g_s_data[:, 1]
+#
+# T_g_rho_over_g_s = g_s_over_g_rho_data[:, 0] * 1e6
+# T_g_rho = T_g_rho_over_g_s
+# g_rho_over_g_s = g_s_over_g_rho_data[:, 1]
+# g_rho = g_rho_over_g_s * g_s_interp(T_g_rho_over_g_s)
+# log10_T_per_MeV = data[:, 0]
+#
+# g_rho_from_plot = g_rho
+# g_s_from_plot = g_s
+
 g_rho = data[:, 1]
 g_rho_per_s = data[:, 2]
 
 MeV = 1e6 # [eV]
 T = MeV * 10 ** log10_T_per_MeV # [eV]
 g_s = g_rho / g_rho_per_s # [1]
+
+# T = np.concatenate([T, T_g_rho])
+# sort_perm = np.argsort(T)
+# T =
 
 g_rho_interp = PchipInterpolator(T, g_rho)
 g_s_interp = PchipInterpolator(T, g_s)

@@ -49,9 +49,9 @@ def m_a_at_high_T_from_fox(T, f_a, with_correction):
     C = 0.018
     n_fox = 4
     d = 1.2
-    m_a = C * m_a_at_abs_zero_from_marsh(f_a) * (Lambda_shellard / T)**n_fox
+    m_a = np.sqrt(2) * C * m_a_at_abs_zero_from_marsh(f_a) * (Lambda / T)**n_fox
     if with_correction:
-        correction_factor = (1 - np.log(Lambda_shellard / T))**d
+        correction_factor = (1 - np.log(Lambda / T))**d
         m_a *= correction_factor
     return m_a
 
@@ -93,17 +93,23 @@ data = np.array([
     [2500, -11.38],
     [3000, -12.05 ],
 ])
+# load data extracted from plot
+file_data = np.loadtxt("chi_data.dat")
 
-T_MeV = data[:, 0] # [MeV]
-T = 1e6 * T_MeV
-T_K = 1e6 * c.Boltzmann / c.elementary_charge * T_MeV
+def convert_chi_data(T_MeV, chi_fm):
+    sort_perm = np.argsort(T_MeV)
+    T = 1e6 * T_MeV[sort_perm]
+    chi = (1 / c.elementary_charge * c.hbar * c.c / 1e-15)**4 * chi_fm[sort_perm]
+    return T, chi
 
-minus_log10_chi = data[:, 1]
-chi = (1 / c.elementary_charge * c.hbar * c.c / 1e-15)**4 * 10 ** (minus_log10_chi)
+T_paper, chi_paper = convert_chi_data(data[:, 0], 10**data[:, 1])
+T_plot, chi_plot = convert_chi_data(file_data[:, 0], file_data[:, 1])
+T, chi = convert_chi_data(np.concatenate([data[:, 0], file_data[:, 0]]), np.concatenate([10**data[:, 1], file_data[:, 1]]))
 
 chi_interp = PchipInterpolator(T, chi)
+chi_interp_paper = PchipInterpolator(T_paper, chi_paper)
+chi_interp_plot = PchipInterpolator(T_plot, chi_plot)
 
 def m_a_from_chi(T, f_a):
     return np.sqrt(chi_interp(T)) / f_a
-
 
