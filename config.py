@@ -55,10 +55,4 @@ class Model:
     def __str__(self):
         return "Model " + str(self.__dict__)
 
-if __name__ == "__main__":
-    if len(sys.argv) == 1:
-        model = Model()
-    else:
-        model_filename = sys.argv[1]
-        model = Model(model_filename)
-
+model = Model()
