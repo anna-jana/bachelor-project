@@ -11,7 +11,7 @@ from scipy.interpolate import PchipInterpolator
 
 MeV = 1e6 # [eV]
 
-GStarModel = namedtuple("GStarModel", ["g_rho", "g_s", "g_rho_diff", "g_s_diff"])
+GStarModel = namedtuple("GStarModel", ["g_rho", "g_s", "g_rho_diff", "g_s_diff", "g_rho_diff2"])
 
 ############################# g data from the table in the paper Borsamyi #######################
 # data from lattice paper (S4.3) from Borsamyi et al.
@@ -44,9 +44,10 @@ g_s = g_rho / g_rho_per_s # [1]
 # interpolate
 g_rho_interp = PchipInterpolator(T, g_rho)
 g_s_interp = PchipInterpolator(T, g_s)
-g_rho_interp_diff = g_rho_interp.derivative()
-g_s_interp_diff = g_s_interp.derivative()
-borsamyi_paper_table = GStarModel(g_rho=g_rho_interp, g_s=g_s_interp, g_rho_diff=g_rho_interp_diff, g_s_diff=g_s_interp_diff)
+
+borsamyi_paper_table = GStarModel(g_rho=g_rho_interp, g_s=g_s_interp,
+        g_rho_diff=g_rho_interp.derivative(), g_s_diff=g_s_interp.derivative(), g_rho_diff2=g_rho_interp.derivative(2))
+
 g_s_paper = g_s
 g_rho_paper = g_rho
 
@@ -69,7 +70,6 @@ T_g_s = np.delete(T_g_s, g_s_bad_indicies)
 
 # interpolate g_s
 g_s_interp = PchipInterpolator(T_g_s, g_s)
-g_s_interp_diff = g_s_interp.derivative()
 
 # convert ratio data
 T_g_rho_over_g_s = g_s_over_g_rho_data[:, 0] * MeV
@@ -89,7 +89,7 @@ T_g_rho = np.delete(T_g_rho, g_rho_bad_indicies)
 
 # interpolate g_rho
 g_rho_interp = PchipInterpolator(T_g_rho, g_rho)
-g_rho_interp_diff = g_rho_interp.derivative()
 
 # make model
-borsamyi_table = GStarModel(g_rho=g_rho_interp, g_s=g_s_interp, g_rho_diff=g_rho_interp_diff, g_s_diff=g_s_interp_diff)
+borsamyi_table = GStarModel(g_rho=g_rho_interp, g_s=g_s_interp,
+        g_rho_diff=g_rho_interp.derivative(), g_s_diff=g_s_interp.derivative(), g_rho_diff2=g_rho_interp.derivative(2))

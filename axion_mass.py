@@ -68,6 +68,16 @@ def m_a_from_chi(T, f_a, chi_interp_to_use=None):
        chi = chi_interp_paper
     return np.sqrt(chi(T)) / f_a
 
+def m_a_from_chi_general(T, f_a, chi_interp_to_use=None):
+    """
+    Compute m_a fro chi data from Borsamyi's lattice qcd simulations but use m_a(T = 0) below its domain and
+    m_a = m_a_shellard for T above its domain.
+    """
+    if chi_interp_to_use is None:
+       chi = chi_interp_paper
+    return np.where(T < T_paper[0], m_a_at_abs_zero_from_shellard(f_a),
+            np.where(T > T_paper[-1], m_a_at_high_T_from_fox(T, f_a, True), m_a_from_chi(T, f_a)))
+
 ################################## m_a at T = 0 ####################################
 def m_a_at_abs_zero_from_marsh(f_a):
     """
@@ -140,6 +150,11 @@ def m_a_full_IILA_shellard(T, f_a):
                         np.NAN))))
     return np.sqrt(Lambda_shellard**4 * np.exp(exponent)) / f_a
 
+def m_a_shellard(T, f_a):
+    """
+    Compute the axion mass using the results of m_a_full_IILA_shellard inside its domain and outside using m_a_at_low_T_from_shellard
+    """
+    return np.where((T > T3) & (T < T6), m_a_full_IILA_shellard(T, f_a), m_a_at_low_T_from_shellard(T, f_a))
 
 ############################  fox et al  #########################
 ######## m_a at high T > Lambda_QCD ########
@@ -168,4 +183,11 @@ def m_a_at_high_T_from_fox(T, f_a, with_correction):
         correction_factor = (1 - np.log(model.Lambda_QCD / T))**d
         m_a *= correction_factor
     return m_a
+
+def m_a_fox(T, f_a):
+    """
+    Compute m_a using the results from fox. It uses the correction factor if T > Lambda_QCD and m_a = m_a(T = 0) below T = 100MeV
+    """
+    return np.where(T > model.Lambda_QCD, m_a_at_high_T_from_fox(T, f_a, True),
+            np.where(T < 100e6, m_a_at_abs_zero_from_shellard(f_a), m_a_at_high_T_from_fox(T, f_a, False)))
 
