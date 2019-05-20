@@ -33,9 +33,9 @@ def d2tdT2(T, g_model=g_star.borsamyi_paper_table):
     g_rho_diff2 = g_model.g_rho_diff2(T)
     return (
         - model.M_pl * np.sqrt(45 / (64 * np.pi**3)) * (
-            - (3 * T**2 * g_s * g_rho**0.5 + T**3 * g_s_diff * g_s**0.5 + g_rho * T**3 * g_s / (2 * g_s**0.5)) /
-              (T**3 * g_s * g_s**0.5)**2 *
-              (T * g_s_diff + 4 * g_s)
+            - (3 * T**2 * g_s * g_rho**0.5 + T**3 * g_s_diff * g_rho**0.5 + T**3 * g_s * g_rho_diff / (2 * g_rho**0.5)) /
+              (T**3 * g_s * g_rho**0.5)**2 *
+              (T * g_rho_diff + 4 * g_rho)
             + (g_rho_diff + T * g_rho_diff2 + 4 * g_rho_diff) /
               (T**3 * g_s * g_rho**0.5)
         )
