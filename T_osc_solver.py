@@ -23,4 +23,4 @@ def find_T_osc(f_a, m_a_fn, g_model, N=3):
     sol = opt.root(lambda T_guess: N * time_temp.hubble_parameter_in_rad_epoch(T_guess, g_model) - m_a_fn(T_guess, f_a), T_init_guess)
     # assert sol.success, "%f MeV" % (sol.x / 1e6)
     T_osc = sol.x
-    return T_osc
+    return T_osc[0]
