@@ -40,3 +40,16 @@ def d2tdT2(T, g_model=g_star.borsamyi_paper_table):
               (T**3 * g_s * g_rho**0.5)
         )
     )
+
+
+def hubble_parameter_in_rad_epoch(T, g_model):
+    """
+    Compute Hubble parameter in the radiation dominated epoch using the
+    Friedmann equation 3 H^2 M_pl^2 = rho = pi^2 / 30 * g_* T^4
+    from the temperature T in eV
+    """
+    rho = np.pi**2 / 30 * g_model.g_rho(T) * T**4
+    H = np.sqrt(rho / (3 * model.M_pl**2))
+    return H
+
+
