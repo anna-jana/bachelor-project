@@ -1,5 +1,5 @@
 """
-This module implements the solver for the axion eom
+This module implements the solver for the axion eom and the computation of the relic density
 """
 
 import numpy as np
@@ -11,10 +11,24 @@ from config import model
 import time_temp
 import T_osc_solver
 
-# import axion_mass
-# import g_star
+import axion_mass
+import g_star
 
 temperature_unit = 1e12 # eV
+
+def sim_axion_field_evo_T(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, to_T_osc=0.2, num_pts_to_return=400):
+    """
+    Solve the EOM for the axion field. Takes the initial field value theta_i, the axion decay constant f_a,
+    the axion mass as a function of temperature m_a_fn : f_a x T -> m_a and the model
+    the the eff. rel. dof. : GStarModel as well as the range to compute relative to T_osc (from_T_osc and to_T_osc) as
+    and the num_pts_to_return as optional keyword arguments
+    Returns the temperature T in eV and the field values theta
+    """
+    T_osc = T_osc_solver.find_T_osc(f_a, m_a_fn, g_model)
+    T_range = (from_T_osc * T_osc / temperature_unit, to_T_osc * T_osc / temperature_unit)
+    T = np.linspace(*T_range, num_pts_to_return)
+    sol = inte.solve_ivp(lambda T, y: axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model), T_range, (theta_i, 0), t_eval=T)
+    return T * temperature_unit, sol.y[0, :]
 
 def axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model):
     """
@@ -31,22 +45,7 @@ def axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model):
     d2thetadT2 = - (3 * H * dtdT - d2tdT2 / dtdT) * dthetadT - m_a**2 * dtdT**2 * np.sin(theta)
     return [dthetadT, d2thetadT2]
 
-
-def sim_axion_field_evo_T(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, to_T_osc=0.2, num_pts_to_return=400):
-    """
-    Solve the EOM for the axion field. Takes the initial field value theta_i, the axion decay constant f_a,
-    the axion mass as a function of temperature m_a_fn : f_a x T -> m_a and the model
-    the the eff. rel. dof. : GStarModel as well as the range to compute relative to T_osc (from_T_osc and to_T_osc) as
-    and the num_pts_to_return as optional keyword arguments
-    Returns the temperature T in eV and the field values theta
-    """
-    T_osc = T_osc_solver.find_T_osc(f_a, m_a_fn, g_model)
-    T_range = (from_T_osc * T_osc / temperature_unit, to_T_osc * T_osc / temperature_unit)
-    T = np.linspace(*T_range, num_pts_to_return)
-    sol = inte.solve_ivp(lambda T, y: axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model), T_range, (theta_i, 0), t_eval=T)
-    return T * temperature_unit, sol.y[0, :]
-
-def find_axion_field_osc(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, num_osc_to_follow=1, num_osc_to_avg=1):
+def find_axion_field_osc_vals(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, avg_start=0.8, avg_stop=0.6, N=300):
     """
     Solve the EOM for the axion field the oscillation and follow then num_zero_crossing_to_do zero crossings
     Then average the energy density over num_osc_to_avg
@@ -55,53 +54,43 @@ def find_axion_field_osc(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, num_osc_to
     the the eff. rel. dof. : GStarModel.
     """
     # set up the solver
-    T_osc = T_osc_solver.find_T_osc(f_a, m_a_fn, g_model)
-    T_start = from_T_osc * T_osc / temperature_unit
-    N = 300
-    dT = (T_osc / temperature_unit - T_start) / N
-    solver = inte.ode(lambda T, y: axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model))
-    solver.set_integrator("dopri5")
-    solver.set_initial_value((theta_i, 0), T_start)
+    T_osc = T_osc_solver.find_T_osc(f_a, m_a_fn, g_model) / temperature_unit
+    T_start = from_T_osc * T_osc
+    dT = (T_osc - T_start) / N
+    solver = inte.ode(axion_eom_T_rhs).set_integrator("dopri5").set_f_params(f_a, m_a_fn, g_model).set_initial_value((theta_i, 0), T_start)
 
-    # integrate to oscillation regime
+    # integrate to oscillation regime (first zero crossing)
     while solver.y[0] > 0:
-        # print(solver.t)
         solver.integrate(solver.t + dT)
+    T_s = solver.t
+    solver.integrate(avg_start * T_s)
 
-    T_fst_zc = solver.t
-
-
-    dT /= 100
-
-    # follow num_osc_to_follow oscillations
-    num_zero_crossings = 0
-    while num_zero_crossings < 2 * num_osc_to_follow:
-        prev_sign = np.sign(solver.y[0])
+    # collect values
+    dT = (avg_stop - avg_start) * T_s / N
+    T_values, theta_values, dthetadT_values = [], [], []
+    for i in range(N):
         solver.integrate(solver.t + dT)
-        if prev_sign != np.sign(solver.y[0]):
-            num_zero_crossings += 1
+        T_values.append(solver.t); theta_values.append(solver.y[0]); dthetadT_values.append(solver.y[1])
 
-    dT = (solver.t - T_fst_zc) / num_osc_to_follow / N
+    return np.array(T_values) * temperature_unit, np.array(theta_values), np.array(dthetadT_values) / temperature_unit
 
-    # collect values for the average
-    T_values = []
-    theta_values = []
-    dthetadT_values = []
-    num_zero_crossings = 0
-    while num_zero_crossings < 2 * num_osc_to_avg:
-        prev_sign = np.sign(solver.y[0])
-        solver.integrate(solver.t + dT)
-        if prev_sign != np.sign(solver.y[0]):
-            num_zero_crossings += 1
-        T_values.append(solver.t)
-        theta_values.append(solver.y[0])
-        dthetadT_values.append(solver.y[1])
-
-    # compute average
-    T_values = np.array(T_values) * temperature_unit
-    theta_values = np.array(theta_values)
-    dthetadT_values = np.array(dthetadT_values) / temperature_unit
-    # T_interval_length = T_values[0] - T_values[-1]
-    # n_over_s =
-    return T_values, theta_values, dthetadT_values
-
+def compute_density_parameter(T, theta, dthetadT, f_a, m_a_fn, g_model):
+    """
+    Compute the density parameter of the axions from the simulated field.
+    Takes T in eV, theta, dthetadT per 1/eV, f_a in eV, m_a_fn : T x f_a -> m_a, g_model : GStarModel
+    returns the density parameter for the axions Omega_a_h_sq_today * h**2
+    """
+    # compute averaged n/s
+    delta_T = T[-1] - T[0]
+    m_a = m_a_fn(T)
+    dtdT = time_temp.dtdT(T, g_model)
+    g_s = g_model.g_s(T)
+    n_over_s_at_each_T = 45 / (2 * np.pi**2) * f_a**2 / (m_a * g_s * T**3) * (0.5 * (dthetadT / dtdT)**2 + m_a * (1 - np.cos(theta)))
+    n_over_s = inte.simps(n_over_s_at_each_T, T) / delta_T
+    # scale to today
+    s_today = 2 * np.pi**2 / 45 * 43 / 11 * model.T_0**3
+    n_a_today = n_over_s * s_today
+    rho_a_today = m_a_fn(model.T_0, f_a) * n_today
+    # compute density parameter
+    Omega_a_h_sq_today = model.h**2 * rho_a_today / model.rho_c
+    return Omega_a_h_sq_today
