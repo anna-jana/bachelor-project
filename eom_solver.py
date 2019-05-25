@@ -5,25 +5,14 @@ This module implements the solver for the axion eom and the computation of the r
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as inte
-import scipy.constants as c
 
 from config import model
 import time_temp
 import T_osc_solver
 
-import axion_mass
-import g_star
-
 temperature_unit = 1e12 # eV
 
-def sim_axion_field_evo_T(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, to_T_osc=0.2, num_pts_to_return=400):
-    """
-    Solve the EOM for the axion field. Takes the initial field value theta_i, the axion decay constant f_a,
-    the axion mass as a function of temperature m_a_fn : f_a x T -> m_a and the model
-    the the eff. rel. dof. : GStarModel as well as the range to compute relative to T_osc (from_T_osc and to_T_osc) as
-    and the num_pts_to_return as optional keyword arguments
-    Returns the temperature T in eV and the field values theta
-    """
+def sim_axion_field_evo_T(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, to_T_osc=0.2, num_pts_to_return=400): # for testing
     T_osc = T_osc_solver.find_T_osc(f_a, m_a_fn, g_model)
     T_range = (from_T_osc * T_osc / temperature_unit, to_T_osc * T_osc / temperature_unit)
     T = np.linspace(*T_range, num_pts_to_return)
@@ -74,7 +63,7 @@ def find_axion_field_osc_vals(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, avg_s
 
     return np.array(T_values) * temperature_unit, np.array(theta_values), np.array(dthetadT_values) / temperature_unit
 
-def compute_density_parameter(T, theta, dthetadT, f_a, m_a_fn, g_model):
+def compute_density_parameter_from_field(T, theta, dthetadT, f_a, m_a_fn, g_model):
     """
     Compute the density parameter of the axions from the simulated field.
     Takes T in eV, theta, dthetadT per 1/eV, f_a in eV, m_a_fn : T x f_a -> m_a, g_model : GStarModel
@@ -82,15 +71,20 @@ def compute_density_parameter(T, theta, dthetadT, f_a, m_a_fn, g_model):
     """
     # compute averaged n/s
     delta_T = T[-1] - T[0]
-    m_a = m_a_fn(T)
+    m_a = m_a_fn(T, f_a)
     dtdT = time_temp.dtdT(T, g_model)
     g_s = g_model.g_s(T)
     n_over_s_at_each_T = 45 / (2 * np.pi**2) * f_a**2 / (m_a * g_s * T**3) * (0.5 * (dthetadT / dtdT)**2 + m_a * (1 - np.cos(theta)))
     n_over_s = inte.simps(n_over_s_at_each_T, T) / delta_T
     # scale to today
-    s_today = 2 * np.pi**2 / 45 * 43 / 11 * model.T_0**3
+    s_today = 2 * np.pi**2 / 45 * 43 / 11 * model.T0**3
     n_a_today = n_over_s * s_today
-    rho_a_today = m_a_fn(model.T_0, f_a) * n_today
+    rho_a_today = m_a_fn(model.T0, f_a) * n_a_today
     # compute density parameter
     Omega_a_h_sq_today = model.h**2 * rho_a_today / model.rho_c
     return Omega_a_h_sq_today
+
+def compute_density_parameter(theta_i, f_a, m_a_fn, g_model):
+    T, theta, dthetadT = find_axion_field_osc_vals(theta_i, f_a, m_a_fn, g_model)
+    return compute_density_parameter_from_field(T, theta, dthetadT, f_a, m_a_fn, g_model)
+
