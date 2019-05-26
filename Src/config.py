@@ -56,3 +56,5 @@ class Model:
         return "Model " + str(self.__dict__)
 
 model = Model()
+
+plot_path = "../Plots"
