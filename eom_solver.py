@@ -74,7 +74,7 @@ def compute_density_parameter_from_field(T, theta, dthetadT, f_a, m_a_fn, g_mode
     m_a = m_a_fn(T, f_a)
     dtdT = time_temp.dtdT(T, g_model)
     g_s = g_model.g_s(T)
-    n_over_s_at_each_T = 45 / (2 * np.pi**2) * f_a**2 / (m_a * g_s * T**3) * (0.5 * (dthetadT / dtdT)**2 + m_a * (1 - np.cos(theta)))
+    n_over_s_at_each_T = 45 / (2 * np.pi**2) * f_a**2 / (m_a * g_s * T**3) * (0.5 * (dthetadT / dtdT)**2 + m_a**2 * (1 - np.cos(theta)))
     n_over_s = inte.simps(n_over_s_at_each_T, T) / delta_T
     # scale to today
     s_today = 2 * np.pi**2 / 45 * 43 / 11 * model.T0**3
