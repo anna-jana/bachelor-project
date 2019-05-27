@@ -2,6 +2,9 @@
 This module implements the solver for the axion eom and the computation of the relic density
 """
 
+import multiprocessing as mp
+import sys
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.integrate as inte
@@ -11,13 +14,6 @@ import time_temp
 import T_osc_solver
 
 temperature_unit = 1e12 # eV
-
-def sim_axion_field_evo_T(theta_i, f_a, m_a_fn, g_model, from_T_osc=5, to_T_osc=0.2, num_pts_to_return=400): # for testing
-    T_osc = T_osc_solver.find_T_osc(f_a, m_a_fn, g_model)
-    T_range = (from_T_osc * T_osc / temperature_unit, to_T_osc * T_osc / temperature_unit)
-    T = np.linspace(*T_range, num_pts_to_return)
-    sol = inte.solve_ivp(lambda T, y: axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model), T_range, (theta_i, 0), t_eval=T)
-    return T * temperature_unit, sol.y[0, :]
 
 def axion_eom_T_rhs(T, y, f_a, m_a_fn, g_model):
     """
@@ -84,7 +80,28 @@ def compute_density_parameter_from_field(T, theta, dthetadT, f_a, m_a_fn, g_mode
     Omega_a_h_sq_today = model.h**2 * rho_a_today / model.rho_c
     return Omega_a_h_sq_today
 
-def compute_density_parameter(theta_i, f_a, m_a_fn, g_model):
+# I am sorry
+__global_m_a_fn = None
+__global_g_model = None
+
+def worker_fn(p):
+    # I am sorry
+    global __global_m_a_fn, __global_g_model
+    print("s", end=""); sys.stdout.flush()
+    m_a_fn = __global_m_a_fn
+    g_model = __global_g_model
+    theta_i, f_a = p
     T, theta, dthetadT = find_axion_field_osc_vals(theta_i, f_a, m_a_fn, g_model)
     return compute_density_parameter_from_field(T, theta, dthetadT, f_a, m_a_fn, g_model)
 
+def compute_density_parameter(theta_i_range, f_a_range, m_a_fn, g_model, N=10, num_workers=6):
+    theta_i_s = np.logspace(np.log10(theta_i_range[0]), np.log10(theta_i_range[1]), N)
+    f_a_s = np.logspace(np.log10(f_a_range[0]), np.log10(f_a_range[1]), N) * 1e9
+    points = [(theta_i, f_a) for i, theta_i in enumerate(theta_i_s) for j, f_a in enumerate(f_a_s)]
+    global __global_g_model, __global_m_a_fn
+    __global_m_a_fn = m_a_fn
+    __global_g_model = g_model
+    with mp.Pool(num_workers) as poolparty:
+        ans = poolparty.map(worker_fn, points)
+    Omega_a_h_sq = np.array(ans).reshape(theta_i_s.size, f_a_s.size)
+    return theta_i_s, f_a_s, Omega_a_h_sq
