@@ -2,6 +2,7 @@
 *.out
 *.o
 *.so
+*.npz
 *.aux
 *.log
 *.png
