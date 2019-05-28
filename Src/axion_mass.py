@@ -44,9 +44,6 @@ data = np.array([
 file_data = np.loadtxt("chi_data.dat")
 
 def convert_chi_data(T_MeV, chi_fm):
-    """
-    Convert the data given in the paper by Borsamyi et al to eV units
-    """
     sort_perm = np.argsort(T_MeV)
     T = 1e6 * T_MeV[sort_perm]
     chi = (1 / c.elementary_charge * c.hbar * c.c / 1e-15)**4 * chi_fm[sort_perm]
@@ -90,8 +87,7 @@ def m_a_at_abs_zero_from_shellard(f_a):
     """
     Classic T = 0 axion mass form shellard (original from weinberg)
     """
-    prefactor = model.m_pi0 * model.f_pi0 * np.sqrt(model.m_u * model.m_d) / (model.m_u + model.m_d)
-    return prefactor / f_a
+    return model.m_pi0 * model.f_pi0 * np.sqrt(model.m_u * model.m_d) / (model.m_u + model.m_d) / f_a
 
 ######################################## shellard ##########################################
 Lambda_shellard = 400e6
@@ -101,12 +97,7 @@ def m_a_at_low_T_from_shellard(T, f_a):
     """
     Low temperature fit from IILA by shellard to compute axion mass
     """
-    m_a = np.sqrt(
-            1.46e-3 * Lambda_shellard**4 *
-            (1 + 0.5*T/Lambda_shellard) /
-            (1 + (3.53*T/Lambda_shellard)**7.48)
-        ) / f_a
-    return m_a
+    return np.sqrt(1.46e-3 * Lambda_shellard**4 * (1 + 0.5*T/Lambda_shellard) / (1 + (3.53*T/Lambda_shellard)**7.48)) / f_a
 
 ###### DGA result fitted to IILA
 n_shellard = 6.68
@@ -116,8 +107,7 @@ def m_a_at_high_T_from_shellard(T, f_a):
     """
     Compute axion mass at high temperatures using the result from shellard.
     """
-    m_a = np.sqrt(alpha_a) * Lambda_shellard**2 / (f_a * (T / Lambda_shellard)**(n_shellard/2))
-    return m_a
+    return np.sqrt(alpha_a) * Lambda_shellard**2 / (f_a * (T / Lambda_shellard)**(n_shellard/2))
 
 ####### full IILA result
 T3 = 0.45e9
@@ -168,8 +158,7 @@ def __m_a_at_high_T_from_fox(T, f_a, my_callibration_factor):
     Internal function to compute the axion mass using the n = 4 result (fox) but with a given callibration_factor
     to normalize to T = 0 mass
     """
-    m_a = my_callibration_factor * m_a_at_abs_zero_from_shellard(f_a) * C * (model.Lambda_QCD / 200e6)**alpha * (model.Lambda_QCD / T)**n_fox
-    return m_a
+    return my_callibration_factor * m_a_at_abs_zero_from_shellard(f_a) * C * (model.Lambda_QCD / 200e6)**alpha * (model.Lambda_QCD / T)**n_fox
 
 Lambda_callibration = 100e6
 callibration_factor = m_a_from_chi(Lambda_callibration, 1.0) / __m_a_at_high_T_from_fox(Lambda_callibration, 1.0, 1.0)
