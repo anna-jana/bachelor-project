@@ -94,9 +94,9 @@ def worker_fn(p):
     T, theta, dthetadT = find_axion_field_osc_vals(theta_i, f_a, m_a_fn, g_model)
     return compute_density_parameter_from_field(T, theta, dthetadT, f_a, m_a_fn, g_model)
 
-def compute_density_parameter(theta_i_range, f_a_range, m_a_fn, g_model, N=10, num_workers=6):
-    theta_i_s = np.logspace(np.log10(theta_i_range[0]), np.log10(theta_i_range[1]), N)
-    f_a_s = np.logspace(np.log10(f_a_range[0]), np.log10(f_a_range[1]), N) * 1e9
+def compute_density_parameter(theta_i_range, f_a_range, m_a_fn, g_model, N=(10,10), num_workers=6):
+    theta_i_s = np.logspace(np.log10(theta_i_range[0]), np.log10(theta_i_range[1]), N[0])
+    f_a_s = np.logspace(np.log10(f_a_range[0]), np.log10(f_a_range[1]), N[1]) * 1e9
     points = [(theta_i, f_a) for i, theta_i in enumerate(theta_i_s) for j, f_a in enumerate(f_a_s)]
     global __global_g_model, __global_m_a_fn
     __global_m_a_fn = m_a_fn
