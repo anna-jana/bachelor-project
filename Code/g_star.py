@@ -93,3 +93,75 @@ g_rho_interp = PchipInterpolator(T_g_rho, g_rho)
 # make model
 borsamyi_table = GStarModel(g_rho=g_rho_interp, g_s=g_s_interp,
         g_rho_diff=g_rho_interp.derivative(), g_s_diff=g_s_interp.derivative(), g_rho_diff2=g_rho_interp.derivative(2))
+
+
+
+############################################### Shellard et al. fit #############################################
+a0 = np.array([1.21, 1.36])
+a = np.array([
+    [[0.572, 0.33, 0.579, 0.138, 0.108],
+     [-8.77, -2.95, -1.8, -0.162, 3.76],
+     [0.682, 1.01, 0.165, 0.934, 0.869]],
+    [[0.498, 0.327, 0.579, 0.14, 0.109],
+     [-8.74, -2.89, -1.79, -0.102, 3.82],
+     [0.693, 1.01, 0.155, 0.963, 0.907]],
+])
+
+
+def g(T, i):
+    t = np.log(T / 1e9)
+    return np.exp(a0[i] + np.sum(a[i, 0, :] * (1.0 + np.tanh((t - a[i, 1, :]) / a[i, 2, :]))))
+
+def sech(x): return 1 / np.cosh(x)
+
+def dgdT(T, i):
+    t = np.log(T / 1e9)
+    x = (t - a[i, 1, :]) / a[i, 2, :]
+    return np.sum(a[i, 0, :] / a[i, 2, :] * sech(x)**2 / T) * g(T, i)
+
+def d2gdT2(T, i):
+    t = np.log(T / 1e9)
+    x = (t - a[i, 1, :]) / a[i, 2, :]
+    return np.sum(a[i, 0, :] / a[i, 2, :] * sech(x)**2 / T**2 * g(T, i) * (
+        -2 * np.tanh(x) / a[i, 2, :] + a[i, 0, :] / a[i, 2, :] * sech(x)**2 - 1
+    ))
+
+shellard_fit = GStarModel(g_rho=lambda T: g(T, 0), g_s=lambda T: g(T, 1), g_rho_diff=lambda T: dgdT(T, 0),
+        g_s_diff=lambda T: dgdT(T, 1), g_rho_diff2=lambda T: d2gdT2(T, 0))
+
+
+##################################################### matched result ##################################################
+# match shellard and bosamyi
+T_min = 1e6
+
+def match_g_rho(T):
+    if T < T_min:
+        return borsamyi_table.g_rho(T_min) / shellard_fit.g_rho(T_min) * shellard_fit.g_rho(T)
+    else:
+        return borsamyi_table.g_rho(T)
+
+def match_g_s(T):
+    if T < T_min:
+        return borsamyi_table.g_s(T_min) / shellard_fit.g_s(T_min) * shellard_fit.g_s(T)
+    else:
+        return borsamyi_table.g_s(T)
+
+def match_dg_rhodT(T):
+    if T < T_min:
+        return borsamyi_table.g_rho_diff(T_min) / shellard_fit.g_rho_diff(T_min) * shellard_fit.g_rho_diff(T)
+    else:
+        return borsamyi_table.g_rho_diff(T)
+
+def match_dg_sdT(T):
+    if T < T_min:
+        return borsamyi_table.g_s_diff(T_min) / shellard_fit.g_s_diff(T_min) * shellard_fit.g_s_diff(T)
+    else:
+        return borsamyi_table.g_s_diff(T)
+
+def match_d2g_rhoT2(T):
+    if T < T_min:
+        return borsamyi_table.g_rho_diff2(T_min) / shellard_fit.g_rho_diff2(T_min) * shellard_fit.g_rho_diff2(T)
+    else:
+        return borsamyi_table.g_rho_diff2(T)
+
+matched = GStarModel(g_rho=match_g_rho, g_s=match_g_s, g_rho_diff=match_dg_rhodT, g_s_diff=match_dg_sdT, g_rho_diff2=match_d2g_rhoT2)
