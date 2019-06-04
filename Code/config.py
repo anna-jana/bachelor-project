@@ -24,6 +24,10 @@ class Parameter:
         self.rho_c = rho_c = 3 * self.H0**2 * self.M_pl**2
         self.Omega_DM_h_sq = self.Omega_DM * self.h**2
 
+        self.g_star_R_today = 3.36
+        self.z_eq = 3365
+        self.T_eq = (30 / np.pi**2 * self.rho_c * self.Omega_rad / self.g_star_R_today)**(1/4) * (1 + self.z_eq)
+
         # particles
         self.m_u = 2.3e6
         self.m_d = 4.8e6

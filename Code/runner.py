@@ -12,9 +12,8 @@ def worker_fn(p):
     # I am sorry
     global __global_solver
     __global_solver.theta_i, __global_solver.f_a = p
-    T, theta, dthetadT = __global_solver.find_axion_field_osc_vals()
     print("=", end=""); sys.stdout.flush()
-    return __global_solver.compute_density_parameter_from_field(T, theta, dthetadT)
+    return __global_solver.compute_density_parameter()
 
 def compute_density_parameter(theta_i_range, f_a_range, solver, N=(10,10), num_workers=6):
     for i in range(N[0] * N[1]):
