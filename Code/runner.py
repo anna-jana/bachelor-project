@@ -12,6 +12,7 @@ def worker_fn(p):
     # I am sorry
     global __global_solver
     __global_solver.theta_i, __global_solver.f_a = p
+    __global_solver.theta_i, __global_solver.f_a = p
     print("=", end=""); sys.stdout.flush()
     return __global_solver.compute_density_parameter()
 
@@ -32,6 +33,6 @@ def compute_density_parameter(theta_i_range, f_a_range, solver, N=(10,10), num_w
     global __global_solver
     __global_solver = solver
     with mp.Pool(num_workers) as poolparty:
-        ans = poolparty.map(worker_fn, points)
+        ans = poolparty.map(worker_fn, points, 1)
     Omega_a_h_sq = np.array(ans).reshape(theta_i_s.size, f_a_s.size)
     return theta_i_s, f_a_s, Omega_a_h_sq

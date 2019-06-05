@@ -46,7 +46,7 @@ class EOMSolver:
         while solver.y[0] > 0:
             solver.integrate(solver.t + dT)
         T_s = solver.t
-        solver.integrate(avg_start * T_s)
+        # solver.integrate(avg_start * T_s) # TODO: do I need this?
 
         delta_T = (avg_stop - avg_start) * T_s
         dT = delta_T / N
