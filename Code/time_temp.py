@@ -10,7 +10,7 @@ from config import model
 import g_star
 
 
-def dtdT(T, g_model=g_star.borsamyi_paper_table):
+def dtdT(T, g_model):
     """
     Computes the derivative dt/dT at T using a model the effective relativistic degrees of
     freedom a GStarModel
@@ -21,7 +21,7 @@ def dtdT(T, g_model=g_star.borsamyi_paper_table):
         (T*g_model.g_rho_diff(T) + 4*g_model.g_rho(T))
     )
 
-def d2tdT2(T, g_model=g_star.borsamyi_paper_table):
+def d2tdT2(T, g_model):
     """
     Computes the derivative d^2t/dT^2 at T using a model the effective relativistic degrees of
     freedom a GStarModel
