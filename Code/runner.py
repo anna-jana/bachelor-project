@@ -50,14 +50,16 @@ def load_data(filename):
     f_a_s = f["f_a_s"]
     return Omega_a_h_sq, theta_i_s, f_a_s
 
+def make_theta_i(N):
+    return np.concatenate([np.logspace(-5, 0, N // 2), np.linspace(1, np.pi, N // 2 + 1)[1:]])
+
 if __name__ == "__main__":
-    N = 5
+    N = 100
+    theta_i = make_theta_i(N)
+    f_a = (1e9, 1e19)
     solver = eom_solver.EOMSolver(axion_mass.m_a_from_chi_general, g_star.borsamyi_table, potential.cosine)
-    theta_i_s, f_a_s, Omega_a_h_sq = compute_density_parameter((1e-5, np.pi), (1e9, 1e19), solver , N=(N,N))
+    theta_i_s, f_a_s, Omega_a_h_sq = compute_density_parameter(theta_i, f_a, solver , N=(N,N))
     save_data("cosine.npz", Omega_a_h_sq, theta_i_s, f_a_s)
     solver = eom_solver.EOMSolver(axion_mass.m_a_from_chi_general, g_star.borsamyi_table, potential.harmonic)
-    theta_i_s, f_a_s, Omega_a_h_sq = compute_density_parameter((1e-5, np.pi), (1e9, 1e19), solver , N=(N,N))
+    theta_i_s, f_a_s, Omega_a_h_sq = compute_density_parameter(theta_i, f_a, solver , N=(N,N))
     save_data("harmomic.npz", Omega_a_h_sq, theta_i_s, f_a_s)
-
-
-
