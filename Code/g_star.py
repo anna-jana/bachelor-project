@@ -51,7 +51,7 @@ borsamyi_paper_table = GStarModel(g_rho=g_rho_interp, g_s=g_s_interp,
 g_s_paper = g_s
 g_rho_paper = g_rho
 
-####################### g data extracted from plots + table from paper ###############
+## g data extracted from plots + table from paper
 # load extracted data from files
 g_s_data = np.loadtxt("g_s_data.dat")
 g_s_over_g_rho_data = np.loadtxt("g_rho_over_g_s.dat")
@@ -107,7 +107,6 @@ a = np.array([
      [0.693, 1.01, 0.155, 0.963, 0.907]],
 ])
 
-
 def g(T, i):
     t = np.log(T / 1e9)
     return np.exp(a0[i] + np.sum(a[i, 0, :] * (1.0 + np.tanh((t - a[i, 1, :]) / a[i, 2, :]))))
@@ -126,8 +125,12 @@ def d2gdT2(T, i):
         -2 * np.tanh(x) / a[i, 2, :] + a[i, 0, :] / a[i, 2, :] * sech(x)**2 - 1
     ))
 
-shellard_fit = GStarModel(g_rho=lambda T: g(T, 0), g_s=lambda T: g(T, 1), g_rho_diff=lambda T: dgdT(T, 0),
-        g_s_diff=lambda T: dgdT(T, 1), g_rho_diff2=lambda T: d2gdT2(T, 0))
+def vec(f):
+    ufunc = np.frompyfunc(f, 1, 1)
+    return lambda T: ufunc(T).astype("float")
+
+shellard_fit = GStarModel(g_rho=vec(lambda T: g(T, 0)), g_s=vec(lambda T: g(T, 1)), g_rho_diff=vec(lambda T: dgdT(T, 0)),
+        g_s_diff=vec(lambda T: dgdT(T, 1)), g_rho_diff2=vec(lambda T: d2gdT2(T, 0)))
 
 
 ##################################################### matched result ##################################################
@@ -164,4 +167,5 @@ def match_d2g_rhoT2(T):
     else:
         return borsamyi_table.g_rho_diff2(T)
 
-matched = GStarModel(g_rho=match_g_rho, g_s=match_g_s, g_rho_diff=match_dg_rhodT, g_s_diff=match_dg_sdT, g_rho_diff2=match_d2g_rhoT2)
+matched = GStarModel(g_rho=vec(match_g_rho), g_s=vec(match_g_s),
+        g_rho_diff=vec(match_dg_rhodT), g_s_diff=vec(match_dg_sdT), g_rho_diff2=vec(match_d2g_rhoT2))
