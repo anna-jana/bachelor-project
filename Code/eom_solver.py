@@ -40,7 +40,7 @@ class EOMSolver:
         T_osc = T_osc_solver.find_T_osc(self.f_a, self.m_a_fn, self.g_model) / temperature_unit
         T_start = from_T_osc * T_osc
         dT = (T_osc - T_start) / N
-        solver = inte.ode(self.axion_eom_T_rhs).set_integrator("dopri5").set_initial_value((self.theta_i, 0), T_start)
+        solver = inte.ode(self.axion_eom_T_rhs).set_integrator("dopri5", nsteps=5000).set_initial_value((self.theta_i, 0), T_start)
 
         # integrate to oscillation regime (first zero crossing)
         while solver.y[0] > 0:
