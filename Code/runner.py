@@ -3,23 +3,23 @@ import sys
 
 import numpy as np
 
-import eom_solver
+import eom
 import axion_mass
 import potential
 import g_star
 
 # I am sorry. This is bc. one can only pass global functions to mp.Pool.map
-__global_solver = None
+__global_model = None
 
 def worker_fn(p):
     # I am sorry
-    global __global_solver
-    __global_solver.theta_i, __global_solver.f_a = p
-    ans = __global_solver.compute_density_parameter()
+    global __global_model
+    solver = __global_model.get_solver(p[0], p[1])
+    ans = solver.compute_density_parameter()
     print("=", end=""); sys.stdout.flush()
     return ans
 
-def compute_density_parameter(theta_i_range, f_a_range, solver, N=(10,10), num_workers=6):
+def compute_density_parameter(theta_i_range, f_a_range, model, N=(10,10), num_workers=6):
     for i in range(N[0] * N[1]):
         print("=", end="")
     print("\n" + "-" * 40)
@@ -33,8 +33,8 @@ def compute_density_parameter(theta_i_range, f_a_range, solver, N=(10,10), num_w
         f_a_s = f_a_range
     points = [(theta_i, f_a) for i, theta_i in enumerate(theta_i_s) for j, f_a in enumerate(f_a_s)]
     # I am sorry
-    global __global_solver
-    __global_solver = solver
+    global __global_model
+    __global_model = model
     with mp.Pool(num_workers) as poolparty:
         ans = poolparty.map(worker_fn, points, 1)
     Omega_a_h_sq = np.array(ans).reshape(theta_i_s.size, f_a_s.size)
@@ -56,9 +56,9 @@ if __name__ == "__main__":
     # theta_i = np.concatenate([np.logspace(-5, 0, N // 2), np.linspace(1, np.pi, N // 2 + 1)[1:]])
     theta_i = np.linspace(1e-1, np.pi, N)
     f_a = (1e15, 1e19)
-    solver = eom_solver.EOMSolver(axion_mass.m_a_shellard, g_star.shellard_fit, potential.cosine)
+    solver = eom.EOMSolver(axion_mass.m_a_shellard, g_star.shellard_fit, potential.cosine)
     theta_i_s, f_a_s, Omega_a_h_sq = compute_density_parameter(theta_i, f_a, solver , N=(N,N), num_workers=workers)
     save_data("cosine.npz", Omega_a_h_sq, theta_i_s, f_a_s)
-    solver = eom_solver.EOMSolver(axion_mass.m_a_shellard, g_star.shellard_fit, potential.harmonic)
+    solver = eom.EOMSolver(axion_mass.m_a_shellard, g_star.shellard_fit, potential.harmonic)
     theta_i_s, f_a_s, Omega_a_h_sq = compute_density_parameter(theta_i, f_a, solver , N=(N,N), num_workers=workers)
     save_data("harmomic.npz", Omega_a_h_sq, theta_i_s, f_a_s)
