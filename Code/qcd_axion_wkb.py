@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from config import plot_path, model
 from util import show
 import density_plot
+import axion_mass
 
 n = 4
 C = 0.018
@@ -23,7 +24,11 @@ iota = (
 
 def compute_analytic_relic_density(theta_i, f_a):
     F_A, THETA_I = np.meshgrid(f_a, theta_i)
-    Omega_a_h_sq = iota * (F_A / (1e16 * 1e9))**(7/6) * THETA_I**2
+    T_osc = 150e6 * (1e16 * 1e9 / F_A)**(1/6)
+    Omega_a_h_sq_1 = iota * (F_A / (1e16 * 1e9))**(7/6) * THETA_I**2
+    Omega_a_h_sq_2 = 5e3 * (F_A / (1e16 * 1e9))**(3/2) * THETA_I**2 / \
+        axion_mass.m_a_shellard(T_osc, F_A) * axion_mass.m_a_at_abs_zero_from_shellard(F_A)
+    Omega_a_h_sq = np.where(T_osc > model.Lambda_QCD, Omega_a_h_sq_1, Omega_a_h_sq_2)
     return Omega_a_h_sq
 
 if __name__ == "__main__":
