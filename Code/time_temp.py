@@ -9,6 +9,8 @@ import numpy as np
 from config import model
 import g_star
 
+prefactor =  - np.sqrt(8*np.pi) * model.M_pl * np.sqrt(45 / (64 * np.pi**3))
+# prefactor =  - model.M_pl * np.sqrt(45 / (64 * np.pi**3))
 
 def dtdT(T, g_model):
     """
@@ -16,7 +18,7 @@ def dtdT(T, g_model):
     freedom a GStarModel
     """
     return (
-        - np.sqrt(8*np.pi) * model.M_pl * np.sqrt(45 / (64 * np.pi**3)) *
+        prefactor *
         1 / (T**3 * g_model.g_s(T) * np.sqrt(g_model.g_rho(T))) *
         (T*g_model.g_rho_diff(T) + 4*g_model.g_rho(T))
     )
@@ -32,7 +34,7 @@ def d2tdT2(T, g_model):
     g_rho_diff = g_model.g_rho_diff(T)
     g_rho_diff2 = g_model.g_rho_diff2(T)
     return (
-        - np.sqrt(8*np.pi) * model.M_pl * np.sqrt(45 / (64 * np.pi**3)) * (
+        prefactor * (
             - (3 * T**2 * g_s * g_rho**0.5 + T**3 * g_s_diff * g_rho**0.5 + T**3 * g_s * g_rho_diff / (2 * g_rho**0.5)) /
               (T**3 * g_s * g_rho**0.5)**2 *
               (T * g_rho_diff + 4 * g_rho)
