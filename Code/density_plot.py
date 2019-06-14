@@ -16,8 +16,8 @@ def plot_density(theta_i, f_a, Omega_a_h_sq, levels=10, plot_type="pcolormesh"):
         plt.contourf(f_a / 1e9, theta_i, np.log10(Omega_a_h_sq), levels)
     else:
         raise ValueError("invalid plot_type")
-    plt.xlabel(r"$f_a / \mathrm{GeV}$")
-    plt.ylabel(r"$\theta_i$")
-    plt.text(0.55, 0.8, r"$\Omega_a h^2 > \Omega_\mathrm{DM} h^2 = 0.12$", transform=ax.transAxes)
+    plt.xlabel(r"$f_a / \mathrm{GeV}$", fontsize=15)
+    plt.ylabel(r"$\theta_i$", fontsize=15)
+    plt.text(0.55, 0.8, r"$\Omega_a h^2 > \Omega_\mathrm{DM} h^2 = 0.12$", transform=ax.transAxes, fontsize=15)
     cbar = plt.colorbar()
-    cbar.ax.set_ylabel(r"$\log_{10}(\Omega_a h^2)$")
+    cbar.ax.set_ylabel(r"$\log_{10}(\Omega_a h^2)$", fontsize=15)
