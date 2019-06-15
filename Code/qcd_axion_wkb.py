@@ -3,12 +3,12 @@ import sympy as sp
 import matplotlib.pyplot as plt
 
 from config import plot_path, model
-from util import show
 import density_plot
 import axion_mass
 
 n = 4
 C = 0.018
+C *= axion_mass.callibration_factor
 g_star = 61.75
 kappa = ((10 * model.M_pl**2 / (np.pi**2 * g_star))**(1/4) * C**(1/2) * model.Lambda_QCD**(n/2) * (6e-10)**(1/2))**(1/(1 + n/2))
 g_star_s0 = 3.91
@@ -32,8 +32,7 @@ def compute_analytic_relic_density(theta_i, f_a):
     return Omega_a_h_sq
 
 if __name__ == "__main__":
-    show("kappa =", kappa)
-    show("iota =", iota)
+    print("kappa = %f, iota = %f" % (kappa, iota))
 
     # ## Compute $\kappa$ and $\iota$
     E1, E2, n, C, f_c, f_a, Lambda_QCD, kappa, N, rho_c, g_0, g_osc, T_0, gamma, theta_i, eV =  sp.symbols("E1, E2, n, C, f_c, f_a, Lambda_QCD, kappa, N, rho_c, g_0, g_osc, T_0, gamma, theta_i, eV")
