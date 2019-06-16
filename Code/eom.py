@@ -44,8 +44,8 @@ class Solver:
         theta, dthetadT = y
         assert np.isfinite(theta)
         H = time_temp.hubble_parameter_in_rad_epoch(T * self.temperature_unit, self.model.g_model)
-        dtdT = time_temp.dtdT(T * self.temperature_unit, self.model.g_model) * self.temperature_unit
-        d2tdT2 = time_temp.d2tdT2(T * self.temperature_unit, self.model.g_model) * self.temperature_unit**2
+        dtdT = time_temp.dtdT(T * self.temperature_unit, self.model.g_model, self.model.parameter) * self.temperature_unit
+        d2tdT2 = time_temp.d2tdT2(T * self.temperature_unit, self.model.g_model, self.model.parameter) * self.temperature_unit**2
         m_a = self.model.m_a_fn(T * self.temperature_unit, self.f_a)
         d2thetadT2 = - (3 * H * dtdT - d2tdT2 / dtdT) * dthetadT - m_a**2 * dtdT**2 * self.model.potential_model.dVdtheta(theta)
         return [dthetadT, d2thetadT2] # list bc. the solver needs a list for some reason
@@ -104,7 +104,7 @@ class Solver:
     def compute_n_over_s(self, T, theta, dthetadT):
         delta_T = T[-1] - T[0]
         m_a = self.model.m_a_fn(T, self.f_a)
-        dtdT = time_temp.dtdT(T, self.model.g_model)
+        dtdT = time_temp.dtdT(T, self.model.g_model, self.model.parameter)
         g_s = self.model.g_model.g_s(T)
         n_over_s_at_each_T = 45 / (2 * np.pi**2) * self.f_a**2 / (m_a * g_s * T**3) * \
                 (0.5 * (dthetadT / dtdT)**2 + m_a**2 * self.model.potential_model.V(theta))
