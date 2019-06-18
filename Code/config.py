@@ -10,7 +10,7 @@ class Parameter:
         # general constants
         m_pl = 1.22093e19
         self.M_pl = m_pl * 1e9 / np.sqrt(8*np.pi)
-        self.G = 6.70861e-39
+        self.G = 6.70861e-39 # not used
         self.Lambda_QCD = 200e6
 
         # cosmological parameters
