@@ -42,3 +42,4 @@ model = Parameter()
 parameter = model
 
 plot_path = "../Plots"
+data_path = "../Data"

@@ -9,6 +9,8 @@ from collections import namedtuple
 import numpy as np
 from scipy.interpolate import PchipInterpolator
 
+import config
+
 MeV = 1e6 # [eV]
 
 GStarModel = namedtuple("GStarModel", ["g_rho", "g_s", "g_rho_diff", "g_s_diff", "g_rho_diff2"])
@@ -53,8 +55,8 @@ g_rho_paper = g_rho
 
 ## g data extracted from plots + table from paper
 # load extracted data from files
-g_s_data = np.loadtxt("g_s_data.dat")
-g_s_over_g_rho_data = np.loadtxt("g_rho_over_g_s.dat")
+g_s_data = np.loadtxt(config.data_path + "/g_s_data.dat")
+g_s_over_g_rho_data = np.loadtxt(config.data_path + "/g_rho_over_g_s.dat")
 
 # convert g_s data and combine with table
 T_g_s = np.concatenate([g_s_data[:, 0] * MeV, T])

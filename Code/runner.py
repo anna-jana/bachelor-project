@@ -7,6 +7,7 @@ import eom
 import axion_mass
 import potential
 import g_star
+import config
 
 # I am sorry. This is bc. one can only pass global functions to mp.Pool.map
 __global_model = None
@@ -52,8 +53,8 @@ if __name__ == "__main__":
 
     model = eom.Model(axion_mass.m_a_shellard, g_star.shellard_fit, potential.cosine)
     Omega_a_h_sq = compute_density_parameter(theta_i, f_a, model, num_workers=workers)
-    save_data("cosine.npz", Omega_a_h_sq, theta_i, f_a)
+    save_data(config.data_path + "/cosine.npz", Omega_a_h_sq, theta_i, f_a)
 
     model = eom.Model(axion_mass.m_a_shellard, g_star.shellard_fit, potential.harmonic)
     Omega_a_h_sq = compute_density_parameter(theta_i, f_a, model, num_workers=workers)
-    save_data("harmonic.npz", Omega_a_h_sq, theta_i, f_a)
+    save_data(data_path + "/harmonic.npz", Omega_a_h_sq, theta_i, f_a)

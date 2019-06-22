@@ -13,6 +13,7 @@ import scipy.constants as c
 from scipy.interpolate import PchipInterpolator
 
 from config import model
+import config
 
 ######################## numerical function from Borsamyi et al. ########################
 # data points for $chi_\mathrm{top}$ from Borsamyi et al. S10.3
@@ -41,7 +42,7 @@ data = np.array([
 ])
 
 # load data extracted from plot
-file_data = np.loadtxt("chi_data.dat")
+file_data = np.loadtxt(config.data_path + "/chi_data.dat")
 
 def convert_chi_data(T_MeV, chi_fm):
     sort_perm = np.argsort(T_MeV)
