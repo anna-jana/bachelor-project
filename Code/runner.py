@@ -45,11 +45,17 @@ def load_data(filename):
     return Omega_a_h_sq, theta_i_s, f_a_s
 
 if __name__ == "__main__":
-    N = 2
+    N = 100
     workers = 4
-    # theta_i = np.concatenate([np.logspace(-5, 0, N // 2), np.linspace(1, np.pi, N // 2 + 1)[1:]])
-    theta_i = np.linspace(1e-4, 2.5, N)
-    f_a = np.logspace(9, 19, N) * 1e9
+    theta_i = np.concatenate([
+        np.logspace(-5, 0, N // 3),
+        np.linspace(1, 3, N // 3 + 2)[1:-1],
+        np.linspace(3, np.pi, N // 3),
+    ])
+    f_a = np.concatenate([
+        np.logspace(9, 16, N // 2),
+        np.logspace(16, 19, N // 2 + 1)[1:],
+    ]) * 1e9
 
     model = eom.Model(axion_mass.m_a_shellard, g_star.shellard_fit, potential.cosine)
     Omega_a_h_sq = compute_density_parameter(theta_i, f_a, model, num_workers=workers)
