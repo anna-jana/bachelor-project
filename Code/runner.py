@@ -57,10 +57,13 @@ if __name__ == "__main__":
         np.logspace(16, 19, N // 2 + 1)[1:],
     ]) * 1e9
 
-    model = eom.Model(axion_mass.m_a_shellard, g_star.shellard_fit, potential.cosine)
+    m_a_fn = axion_mass.m_a_from_chi_general
+    g_star_model = g_star.matched
+
+    model = eom.Model(m_a_fn, g_star_model, potential.cosine)
     Omega_a_h_sq = compute_density_parameter(theta_i, f_a, model, num_workers=workers)
     save_data(config.data_path + "/cosine.npz", Omega_a_h_sq, theta_i, f_a)
 
-    model = eom.Model(axion_mass.m_a_shellard, g_star.shellard_fit, potential.harmonic)
+    model = eom.Model(m_a_fn, g_star_model, potential.harmonic)
     Omega_a_h_sq = compute_density_parameter(theta_i, f_a, model, num_workers=workers)
-    save_data(data_path + "/harmonic.npz", Omega_a_h_sq, theta_i, f_a)
+    save_data(config.data_path + "/harmonic.npz", Omega_a_h_sq, theta_i, f_a)
