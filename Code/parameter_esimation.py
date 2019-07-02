@@ -52,15 +52,15 @@ def ln_prob(THETA):
         return -np.inf
     return lp + neg_ln_likelihood(THETA)
 
-num_walkers = len(inital_guess) * 2
-steps = 10
-eq_steps = 5
+num_walkers = len(inital_guess) * 2 * 10
+steps = 500
+eq_steps = 50
 num_threads = 4
 ndim = len(inital_guess) # 2 + 2 + 3 + 3
 # pos = [res["x"] + 1e-4 * np.random.randn(ndim) for i in range(num_walkers)]
 pos = [inital_guess + 1e-4 * np.random.randn(ndim) * inital_guess for i in range(num_walkers)]
-sampler = emcee.EnsembleSampler(num_walkers, ndim, ln_prob)
-sampler.run_mcmc(pos, steps, threads=num_threads)
+sampler = emcee.EnsembleSampler(num_walkers, ndim, ln_prob, threads=num_threads)
+sampler.run_mcmc(pos, steps)
 samples = sampler.chain[:, eq_steps:, :].reshape((-1, ndim))
 
 # chain: (num_walker, steps, n_dim = #parameters)
