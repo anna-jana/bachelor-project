@@ -23,6 +23,8 @@ def ln_likelihood(THETA):
     return - (density_parameter_computed - parameter.Omega_DM_h_sq)**2 / (2 * parameter.Omega_DM_h_sq_err**2)
 
 parameter_names = ["theta_i", "f_a", "M_pl", "Lambda_QCD", "m_u", "m_d", "m_pi", "f_pi", "T0", "rho_c"]
+errors = [0.0, 0.0, parameter.M_pl_err, parameter.Lambda_QCD_err, parameter.m_u_err, parameter.m_d_err,
+          parameter.m_pi0_err, parameter.f_pi0_err, parameter.T0_err, parameter.rho_c_err]
 
 inital_guess = np.array((
     1, 1e12 * 1e9, parameter.M_pl, parameter.Lambda_QCD,
