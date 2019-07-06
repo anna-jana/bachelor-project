@@ -37,6 +37,13 @@ inital_guess = np.array((
     parameter.f_pi0, parameter.T0, parameter.rho_c
 ))
 
+def make_initial_guess():
+    ans = inital_guess.copy()
+    ans[0] = np.random.uniform(0, np.pi) # theta_i
+    ans[1] = np.random.uniform(9, 18) + 9 # log f_a
+    ans[2:] += np.random.randn(len(ans[2:])) * ans[2:]
+    return ans
+
 # TODO: we dont care about normalization, right?
 
 def ln_prior(THETA):
@@ -62,23 +69,17 @@ def ln_prob(THETA):
     return lp + ln_likelihood(THETA)
 
 num_walkers = len(inital_guess) * 2 * 10
-steps = 300
+steps = 500
 eq_steps = 50
 num_threads = 4
 ndim = len(inital_guess) # 2 + 2 + 3 + 3
 
 if __name__ == "__main__":
-    pos = [inital_guess + 1e-4 * np.random.randn(ndim) * inital_guess for i in range(num_walkers)]
+    pos = [make_initial_guess() for i in range(num_walkers)]
     sampler = emcee.EnsembleSampler(num_walkers, ndim, ln_prob, threads=num_threads)
     sampler.run_mcmc(pos, steps)
-    print("generated samples")
     # chain: (num_walker, steps, n_dim = #parameters)
     samples = sampler.chain[:, eq_steps:, :].reshape((-1, ndim))
-
-    #                          mean value, lower error, upper error
-    params = map(lambda v: (v[1], v[2]-v[1], v[1]-v[0]), zip(*np.percentile(samples, [16, 50, 84], axis=0)))
-
     # save the data
     filename = config.data_path + "/parameter.npz"
-    np.savez(filename, parameter=list(params), samples=samples)
-    print("done")
+    np.savez(filename, samples=samples)
