@@ -93,11 +93,13 @@ class Solver:
                 return T, theta, dthetadT, np.NAN
 
             n_over_s = self.compute_n_over_s(T, theta, dthetadT)
-            d_n_over_s_dT = abs(last_n_over_s - n_over_s) / delta_T
+            d_n_over_s_dT = (last_n_over_s - n_over_s) / (self.temperature_unit * delta_T)
 
+            print(d_n_over_s_dT, zero_crossings)
             # n/s has to be conserved and we need to integrate several oscillations
-            if d_n_over_s_dT < self.eps and zero_crossings > self.num_crossings:
+            if abs(d_n_over_s_dT) < self.eps and zero_crossings > self.num_crossings:
                 return T, theta, dthetadT, n_over_s
+
 
             last_n_over_s = n_over_s
 
