@@ -12,19 +12,21 @@ import potential
 import g_star
 import eom
 import config
+import solver
 
 parameter = config.Parameter()
 p = copy.deepcopy(parameter)
 
 def log_gaussian(x, x_mean, x_stdev):
-    return - (x - x_mean)**2 / (2 * x_stdev**2)
+    return - (x - x_mean)**2 / (2 * x_stdev**2) - 0.5 * np.log(2 * np.pi * x_stdev**2)
 
 def ln_likelihood(THETA):
     print("*", end=""); sys.stdout.flush()
     theta_i, log_f_a, p.M_pl, p.Lambda_QCD, p.m_u, p.m_d, p.m_pi0, p.f_pi0, p.T0, p.rho_c = THETA
-    model = eom.Model(axion_mass.m_a_from_chi_general, g_star.matched, potential.cosine, p)
-    solver = model.get_solver(theta_i, 10**log_f_a)
-    density_parameter_computed = solver.compute_density_parameter()
+    # model = eom.Model(axion_mass.m_a_from_chi_general, g_star.matched, potential.cosine, p)
+    # solver = model.get_solver(theta_i, 10**log_f_a)
+    # density_parameter_computed = solver.compute_density_parameter()
+    density_parameter_computed = solver.solver(p, theta_i, f_a)
     return log_gaussian(density_parameter_computed, parameter.Omega_DM_h_sq, parameter.Omega_DM_h_sq_err)
 
 parameter_names = ["theta_i", "log_f_a", "M_pl", "Lambda_QCD", "m_u", "m_d", "m_pi", "f_pi", "T0", "rho_c"]

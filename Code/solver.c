@@ -7,7 +7,26 @@
 #include <gsl/gsl_spline.h>
 #include <gsl/gsl_odeiv2.h>
 
+/**************************** constants ************************/
+#define M_PI 3.14159265358979323846
+
+#define T_eq 0.691848671251
+#define h 0.673
+
+struct Parameter {
+    double M_pl;
+    double Lambda_QCD;
+    double T0;
+    double rho_c;
+    double m_u;
+    double m_d;
+    double m_pi0;
+    double f_pi0;
+};
+
+/************************** data *****************************/
 struct Data {
+    struct Parameter parameter;
     gsl_interp *g_s_interp;
     gsl_interp *g_rho_interp;
     gsl_interp *m_a_interp;
@@ -16,20 +35,6 @@ struct Data {
     gsl_interp_accel *m_a_accel;
     double f_a;
 };
-
-/**************************** constants ************************/
-#define M_PI 3.14159265358979323846
-#define M_pl 2.43540299205e+27
-#define Lambda_QCD 200000000.0
-#define T0 0.00023486533834085512
-#define H0 1.4355895312127627e-33
-#define rho_c 3.66710622676e-11
-#define T_eq 0.691848671251
-#define m_u 2300000.0
-#define m_d 4800000.0
-#define m_pi0 134977000.0
-#define f_pi0 91923881.55425118
-#define h 0.673
 
 /**************************** g_star **************************/
 double g_s_T_data[] = {
@@ -545,11 +550,11 @@ double m_a_data[] = {
 
 double m_a(struct Data* data, double T) {
     const int N_m_a_data = sizeof(m_a_T_data) / sizeof(double);
-    const double m_a0 = m_pi0 * f_pi0 * sqrt(m_u * m_d) / (m_u + m_d) / data->f_a;
+    const double m_a0 = data->parameter.m_pi0 * data->parameter.f_pi0 * sqrt(data->parameter.m_u * data->parameter.m_d) / (data->parameter.m_u + data->parameter.m_d) / data->f_a;
     if(T < m_a_T_data[0]) {
         return m_a0;
     } else if(T > m_a_T_data[N_m_a_data - 1]) {
-        return callibration_factor * C * m_a0 * pow(Lambda_QCD / T, n_fox) * pow(1 - log(Lambda_QCD / T), d);
+        return callibration_factor * C * m_a0 * pow(data->parameter.Lambda_QCD / T, n_fox) * pow(1 - log(data->parameter.Lambda_QCD / T), d);
     } else {
         return sqrt(gsl_interp_eval(data->m_a_interp, m_a_T_data, m_a_data, T, data->m_a_accel)) / data->f_a;
     }
@@ -583,12 +588,12 @@ int rhs(double _T, double y[], double dydT[], void* _params) {
         ddg_rho_bosamyi(data, T);
 
     double rho = M_PI*M_PI / 30.0 * g_rho * pow(T, 4);
-    double H = sqrt(rho / (3 * M_pl * M_pl));
+    double H = sqrt(rho / (3 * data->parameter.M_pl * data->parameter.M_pl));
 
-    double dtdT = - sqrt(8 * M_PI) * M_pl * sqrt(45 / (64 * pow(M_PI, 3))) *
+    double dtdT = - sqrt(8 * M_PI) * data->parameter.M_pl * sqrt(45 / (64 * pow(M_PI, 3))) *
         1 / (pow(T, 3) * g_s * sqrt(g_rho)) *
         (T * dg_rho + 4 * g_rho);
-    double d2tdT2 = - sqrt(8 * M_PI) * M_pl * sqrt(45 / (64 * pow(M_PI, 3))) * (
+    double d2tdT2 = - sqrt(8 * M_PI) * data->parameter.M_pl * sqrt(45 / (64 * pow(M_PI, 3))) * (
             - (3 * T * T * g_s * sqrt(g_rho) + pow(T, 3) * dg_s * sqrt(g_rho) + pow(T, 3) * g_s * dg_rho / (2 * sqrt(g_rho)))
               / pow(pow(T, 3) * g_s * sqrt(g_rho), 2)
               * (T * dg_rho + 4 * g_rho)
@@ -611,32 +616,6 @@ int rhs(double _T, double y[], double dydT[], void* _params) {
 
 /**************************** solver algorithm **********************/
 
-
-void init(double f_a, struct Data *data) {
-    const gsl_interp_type* my_interp_method = gsl_interp_steffen;
-
-    const size_t N_g_s = sizeof(g_s_T_data) / sizeof(double);
-    data->g_s_interp = gsl_interp_alloc(my_interp_method, N_g_s);
-    gsl_interp_init(data->g_s_interp, g_s_T_data, g_s_data, N_g_s);
-    data->g_s_accel = gsl_interp_accel_alloc();
-
-    const size_t N_g_rho = sizeof(g_rho_T_data) / sizeof(double);
-    data->g_rho_interp = gsl_interp_alloc(my_interp_method, N_g_rho);
-    gsl_interp_init(data->g_rho_interp, g_rho_T_data, g_rho_data, N_g_rho);
-    data->g_rho_accel = gsl_interp_accel_alloc();
-
-    const size_t N_m_a = sizeof(m_a_T_data) / sizeof(double);
-    data->m_a_interp = gsl_interp_alloc(my_interp_method, N_m_a);
-    gsl_interp_init(data->m_a_interp, m_a_T_data, m_a_data, N_m_a);
-    data->m_a_accel = gsl_interp_accel_alloc();
-
-    data->f_a = f_a;
-}
-
-// double f(double T, struct Data* data) {
-//     return 3 * compute_H(T) - m_a(data, T);
-// }
-
 int sign(double x) {
     if(x < 0.0) return -1;
     if(x > 0.0) return 1;
@@ -655,9 +634,28 @@ double simpson(double y[], double delta_x, int n) {
     return ans;
 }
 
-double solver(double T_osc, double theta_i, double f_a) {
+double solver(struct Parameter parameter, double T_osc, double theta_i, double f_a) {
     struct Data data;
-    init(f_a, &data);
+    data.parameter = parameter;
+
+    const gsl_interp_type* my_interp_method = gsl_interp_steffen;
+
+    const size_t N_g_s = sizeof(g_s_T_data) / sizeof(double);
+    data.g_s_interp = gsl_interp_alloc(my_interp_method, N_g_s);
+    gsl_interp_init(data.g_s_interp, g_s_T_data, g_s_data, N_g_s);
+    data.g_s_accel = gsl_interp_accel_alloc();
+
+    const size_t N_g_rho = sizeof(g_rho_T_data) / sizeof(double);
+    data.g_rho_interp = gsl_interp_alloc(my_interp_method, N_g_rho);
+    gsl_interp_init(data.g_rho_interp, g_rho_T_data, g_rho_data, N_g_rho);
+    data.g_rho_accel = gsl_interp_accel_alloc();
+
+    const size_t N_m_a = sizeof(m_a_T_data) / sizeof(double);
+    data.m_a_interp = gsl_interp_alloc(my_interp_method, N_m_a);
+    gsl_interp_init(data.m_a_interp, m_a_T_data, m_a_data, N_m_a);
+    data.m_a_accel = gsl_interp_accel_alloc();
+
+    data.f_a = f_a;
 
     gsl_odeiv2_system sys;
     sys.function = rhs;
@@ -735,7 +733,7 @@ double solver(double T_osc, double theta_i, double f_a) {
                 dg_rho_bosamyi(&data, T);
             double m = m_a(&data, T);
             double V = 1 - cos(theta_vals[i]);
-            double dtdT = - sqrt(8 * M_PI) * M_pl * sqrt(45 / (64 * pow(M_PI, 3))) *
+            double dtdT = - sqrt(8 * M_PI) * data.parameter.M_pl * sqrt(45 / (64 * pow(M_PI, 3))) *
                 1 / (pow(T, 3) * g_s * sqrt(g_rho)) *
                 (T * dg_rho + 4 * g_rho);
             n_over_s[i] = 45 / (2 * M_PI * M_PI) * data.f_a * data.f_a / (m * g_s * pow(T, 3)) *
@@ -750,10 +748,10 @@ double solver(double T_osc, double theta_i, double f_a) {
         double d_n_over_s_dT = (last_n_over_s - n_over_s_avg) / (temperature_unit * T_inteval);
 
         if(fabs(d_n_over_s_dT) < eps && zero_crossings > num_crossings) {
-            double s_today = 2.0 * M_PI * M_PI / 45.0 * 43.0 / 11.0 * pow(T0, 3);
+            double s_today = 2.0 * M_PI * M_PI / 45.0 * 43.0 / 11.0 * pow(data.parameter.T0, 3);
             double n_a_today = n_over_s_avg * s_today;
-            double rho_a_today = m_a(&data, T0) * n_a_today;
-            double Omega_a_h_sq_today = h*h * rho_a_today / rho_c;
+            double rho_a_today = m_a(&data, data.parameter.T0) * n_a_today;
+            double Omega_a_h_sq_today = h*h * rho_a_today / data.parameter.rho_c;
             return Omega_a_h_sq_today;
         }
 
