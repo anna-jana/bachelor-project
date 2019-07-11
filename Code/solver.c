@@ -549,6 +549,7 @@ double m_a_data[] = {
 #define d 1.2
 
 double m_a(struct Data* data, double T) {
+    double real_m_a = sqrt(m_a_data[0]) / data->f_a;
     const int N_m_a_data = sizeof(m_a_T_data) / sizeof(double);
     const double m_a0 = data->parameter.m_pi0 * data->parameter.f_pi0 * sqrt(data->parameter.m_u * data->parameter.m_d) / (data->parameter.m_u + data->parameter.m_d) / data->f_a;
     if(T < m_a_T_data[0]) {
@@ -556,7 +557,7 @@ double m_a(struct Data* data, double T) {
     } else if(T > m_a_T_data[N_m_a_data - 1]) {
         return callibration_factor * C * m_a0 * pow(data->parameter.Lambda_QCD / T, n_fox) * pow(1 - log(data->parameter.Lambda_QCD / T), d);
     } else {
-        return sqrt(gsl_interp_eval(data->m_a_interp, m_a_T_data, m_a_data, T, data->m_a_accel)) / data->f_a;
+        return m_a0 / real_m_a * sqrt(gsl_interp_eval(data->m_a_interp, m_a_T_data, m_a_data, T, data->m_a_accel)) / data->f_a;
     }
 }
 
@@ -676,31 +677,48 @@ double solver(struct Parameter parameter, double T_osc, double theta_i, double f
     T_osc /= temperature_unit;
     double T_start = 5 * T_osc;
     const int N = 300;
-    const double avg_start = 0.8;
-    const double avg_stop = 0.6;
-    const double eps = 1e-5;
+    const double interval_size = -0.01;
+    const double eps = 0.1;
     const int num_crossings = 3;
     double y[] = {theta_i, 0.0};
     double next_T = T_start;
     double T = T_start;
     double delta_T = (T_osc - T_start) / N; // delta_T is negative
 
+    int steps = 0;
+    double prev = 6.0;
     while(y[0] > 0.0) {
+        // if(steps > 400) printf("%i ", steps);
+        prev = y[0];
+        // printf("%e %e\n", T * temperature_unit, y[0]);
         next_T += delta_T;
         int status = gsl_odeiv2_driver_apply(driver, &T, next_T, y);
         if(status != GSL_SUCCESS) {
             fprintf(stderr, "invalid integration");
             exit(-1);
         }
+        if(prev < y[0]) {
+            putchar('~');
+            break;
+        }
+        steps++;
     }
+    // printf(" steps = %i ", steps);
 
     double T_s = T;
-    double T_inteval = (avg_stop - avg_start) * T_s;
+    double T_inteval = interval_size * T_s;
     delta_T = T_inteval / N;
     double last_n_over_s = 0.0 / 0.0; // NAN
     double T_vals[N], theta_vals[N], dthetadT_vals[N];
 
+    // int k = 0;
+
     while(1) {
+        // if(k > 100) {
+        //     putchar('!'); fflush(stdout);
+        //     return 1.0 / 0.0;
+        // }
+
         int zero_crossings = 0;
         int prev_sign = sign(y[0]);
 
@@ -710,6 +728,7 @@ double solver(struct Parameter parameter, double T_osc, double theta_i, double f
             if(status != GSL_SUCCESS) {
                 exit(-1);
             }
+            // printf("%e %e\n", T * temperature_unit, y[0]);
             int s = sign(y[0]);
             if(prev_sign != s) zero_crossings++;
             prev_sign = s;
@@ -721,6 +740,9 @@ double solver(struct Parameter parameter, double T_osc, double theta_i, double f
 
         double n_over_s[N];
         for(int i = 0; i < N; i++) {
+            // if(zero_crossings == 0 && k > 3) {
+            //     // printf("%e\n", theta_vals[i]);
+            // }
             double T = T_vals[i];
             double g_s = T < T_min ?
                 g_s_bosamyi(&data, T_min) / g_i_shellard(1, T_min) * g_i_shellard(1, T) :
@@ -746,16 +768,27 @@ double solver(struct Parameter parameter, double T_osc, double theta_i, double f
         double n_over_s_avg = simpson(n_over_s, T_vals[1] - T_vals[0], N) / (temperature_unit * T_inteval);
 
         double d_n_over_s_dT = (last_n_over_s - n_over_s_avg) / (temperature_unit * T_inteval);
-
-        if(fabs(d_n_over_s_dT) < eps && zero_crossings > num_crossings) {
+        // printf("d n/s / dT / n/s = %e, zero crossings = %i\n", d_n_over_s_dT / n_over_s_avg, zero_crossings);
+        if(fabs(d_n_over_s_dT / n_over_s_avg) < eps && zero_crossings > num_crossings) {
             double s_today = 2.0 * M_PI * M_PI / 45.0 * 43.0 / 11.0 * pow(data.parameter.T0, 3);
             double n_a_today = n_over_s_avg * s_today;
             double rho_a_today = m_a(&data, data.parameter.T0) * n_a_today;
             double Omega_a_h_sq_today = h*h * rho_a_today / data.parameter.rho_c;
+            putchar('*'); fflush(stdout);
+
+            gsl_interp_free(data.g_rho_interp);
+            gsl_interp_free(data.g_s_interp);
+            gsl_interp_free(data.m_a_interp);
+            gsl_interp_accel_free(data.g_rho_accel);
+            gsl_interp_accel_free(data.g_s_accel);
+            gsl_interp_accel_free(data.m_a_accel);
+            gsl_odeiv2_driver_free(driver);
+
             return Omega_a_h_sq_today;
         }
 
         last_n_over_s = n_over_s_avg;
 
+        // k++;
     }
 }

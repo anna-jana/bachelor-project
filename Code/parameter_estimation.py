@@ -21,12 +21,13 @@ def log_gaussian(x, x_mean, x_stdev):
     return - (x - x_mean)**2 / (2 * x_stdev**2) - 0.5 * np.log(2 * np.pi * x_stdev**2)
 
 def ln_likelihood(THETA):
-    print("*", end=""); sys.stdout.flush()
+    # print("*", end=""); sys.stdout.flush()
+    # print(THETA)
     theta_i, log_f_a, p.M_pl, p.Lambda_QCD, p.m_u, p.m_d, p.m_pi0, p.f_pi0, p.T0, p.rho_c = THETA
     # model = eom.Model(axion_mass.m_a_from_chi_general, g_star.matched, potential.cosine, p)
     # solver = model.get_solver(theta_i, 10**log_f_a)
     # density_parameter_computed = solver.compute_density_parameter()
-    density_parameter_computed = solver.solver(p, theta_i, f_a)
+    density_parameter_computed = solver.compute_relic_density(p, theta_i, 10**log_f_a)
     return log_gaussian(density_parameter_computed, parameter.Omega_DM_h_sq, parameter.Omega_DM_h_sq_err)
 
 parameter_names = ["theta_i", "log_f_a", "M_pl", "Lambda_QCD", "m_u", "m_d", "m_pi", "f_pi", "T0", "rho_c"]
@@ -41,16 +42,16 @@ inital_guess = np.array((
 
 def make_initial_guess():
     ans = inital_guess.copy()
-    ans[0] = np.random.uniform(0, np.pi) # theta_i
-    ans[1] = np.random.uniform(9, 18) + 9 # log f_a
-    ans[2:] += np.random.randn(len(ans[2:])) * ans[2:]
+    # ans[0] = np.random.uniform(0, np.pi) # theta_i
+    # ans[1] = np.random.uniform(9, 18) + 9 # log f_a
+    # ans[2:] += np.random.randn(len(ans[2:])) * ans[2:]
+    ans += np.random.randn(len(ans))
     return ans
-
-# TODO: we dont care about normalization, right?
 
 def ln_prior(THETA):
     theta_i, log_f_a, M_pl, Lambda_QCD, m_u, m_d, m_pi0, f_pi0, T0, rho_c = THETA
     if np.all(np.array(THETA[2:]) > 0) and 0 < theta_i <= np.pi and 9 <= log_f_a - 9 <= 18:
+    # if np.all(np.array(THETA[2:]) > 0) and 0 < theta_i <= 3 and 9 <= log_f_a - 9 <= 16:
         return (
             log_gaussian(M_pl, parameter.M_pl, parameter.M_pl_err) +
             log_gaussian(Lambda_QCD, parameter.Lambda_QCD, parameter.Lambda_QCD_err) +
@@ -73,7 +74,7 @@ def ln_prob(THETA):
 num_walkers = len(inital_guess) * 2 * 10
 steps = 500
 eq_steps = 50
-num_threads = 4
+num_threads = 2
 ndim = len(inital_guess) # 2 + 2 + 3 + 3
 
 if __name__ == "__main__":
