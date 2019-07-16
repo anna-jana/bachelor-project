@@ -1,6 +1,5 @@
 import numpy as np
 import solver
-import T_osc_solver
 import axion_mass
 import g_star
 import potential

@@ -8,8 +8,6 @@ import scipy.integrate as inte
 
 import config
 import time_temp
-import T_osc_solver
-
 
 class Model:
     def __init__(self, m_a_fn, g_model, potential_model, parameter=config.parameter):
@@ -35,7 +33,7 @@ class Solver:
         self.eps = eps
         self.num_crossings = num_crossings
         self.T_s = None
-        self.T_osc = T_osc_solver.find_T_osc(self.f_a, self.model.m_a_fn, self.model.g_model) / temperature_unit
+        self.T_osc = time_temp.find_T_osc(self.f_a, self.model.m_a_fn, self.model.g_model) / temperature_unit
         self.T_start = from_T_osc * self.T_osc
         self.dT = (self.T_osc - self.T_start) / N
         self.solver = inte.ode(self.axion_eom_T_rhs).set_integrator("dopri5", nsteps=10000).set_initial_value((self.theta_i, 0), self.T_start)

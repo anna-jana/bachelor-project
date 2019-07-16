@@ -2,7 +2,7 @@ import ctypes
 
 import numpy as np
 import solver
-import T_osc_solver
+import time_temp
 import axion_mass
 import g_star
 import potential
@@ -26,7 +26,7 @@ libsolver.solver.argtypes = (Parameter, ctypes.c_double, ctypes.c_double, ctypes
 libsolver.solver.restype = ctypes.c_double
 
 def compute_relic_density(parameter, theta_i, f_a):
-    T_osc = T_osc_solver.find_T_osc(f_a, axion_mass.m_a_from_chi_general, g_star.matched)
+    T_osc = time_temp.find_T_osc(f_a, axion_mass.m_a_from_chi_general, g_star.matched)
     ps = Parameter(parameter.M_pl, parameter.Lambda_QCD, parameter.T0, parameter.rho_c, parameter.m_u, parameter.m_d, parameter.m_pi0, parameter.f_pi0)
     global libsolver
     ans = libsolver.solver(ps, ctypes.c_double(T_osc), ctypes.c_double(theta_i), ctypes.c_double(f_a))
