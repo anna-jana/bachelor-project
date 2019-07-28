@@ -697,7 +697,7 @@ double solver(struct Parameter parameter, double T_osc, double theta_i, double f
             fprintf(stderr, "invalid integration");
             exit(-1);
         }
-        if(prev < y[0]) {
+        if(prev <= y[0]) {
             putchar('~');
             break;
         }
