@@ -8,7 +8,10 @@ All functions follow the signature
 m_a_from_somthing(T_in_eV, f_a_in_eV, *args, **kwargs) -> mass in eV
 """
 
+import math
+
 import numpy as np
+from numpy import sqrt
 import scipy.constants as c
 from scipy.interpolate import PchipInterpolator
 
@@ -181,3 +184,20 @@ def m_a_fox(T, f_a):
     return np.where(T > model.Lambda_QCD, m_a_at_high_T_from_fox(T, f_a, True),
             np.where(T < 100e6, m_a_at_abs_zero_from_shellard(f_a), m_a_at_high_T_from_fox(T, f_a, False)))
 
+
+########################## micro qcd mass ##########################
+def micro_m_a(T, f_a, mu, zeta):
+    micro_quark_mass = mu / 2
+    N_f = 1
+    N_mu = 3
+    kappa = (11 * N_mu - 2 * N_f) / 6
+    c_N = 0.26 / (zeta**(N_mu - 2) * math.factorial(N_mu - 1) * math.factorial(N_mu - 2))
+    eta = kappa + N_f / 2 - 2
+    m_psi = mu / 2
+    if T < mu:
+        return (mu**3 * micro_quark_mass)**0.5 / f_a
+    else:
+        return ( pow(zeta, N_f / 2) * pow(kappa, N_mu) * sqrt(c_N / (2 * eta)) *
+                pow(m_psi / mu, N_f / 2) * pow(mu / (np.pi * T), eta) *
+                (mu * mu / f_a) * pow(np.log(np.pi * T / mu), N_mu)
+                )
