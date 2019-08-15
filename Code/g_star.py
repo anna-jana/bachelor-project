@@ -173,17 +173,17 @@ def match_d2g_rhoT2(T):
 matched = GStarModel(g_rho=vec(match_g_rho), g_s=vec(match_g_s),
         g_rho_diff=vec(match_dg_rhodT), g_s_diff=vec(match_dg_sdT), g_rho_diff2=vec(match_d2g_rhoT2))
 
+def T_neutrino(T):
+    if(T < 1e-2 * 1e6):
+        return pow(4.0 / 11, 1/3.) * T;
+    else:
+        f = pow(8*(matched.g_s(T) - 2) / (7.*6), 1./3);
+        if(f < 1.0):
+            return f * T;
+        else:
+            return T;
 
 def make_micro(Delta_N_eff):
-    def T_neutrino(T):
-        if(T < 1e-2 * 1e6):
-            return pow(4.0 / 11, 1/3.) * T;
-        else:
-            f = pow(8*(matched.g_s(T) - 2) / (7.*6), 1./3);
-            if(f < 1.0):
-                return f * T;
-            else:
-                return T;
     def d_T_nu_dT(T):
         if(T < 1e-2 * 1e6):
             return pow(4.0 / 11, 1/3.);
@@ -198,6 +198,30 @@ def make_micro(Delta_N_eff):
             g_s = lambda T: matched.g_s(T) + Delta_N_eff * 7 / 8. * pow(T_neutrino(T) / T, 3),
             g_rho_diff = lambda T: matched.g_rho_diff(T) + Delta_N_eff * 7 / 8. * 4 * pow(T_neutrino(T) / T, 4 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
             g_s_diff = lambda T: matched.g_s_diff(T) + Delta_N_eff * 7 / 8. * 3 * pow(T_neutrino(T) / T, 3 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
+            g_rho_diff2 = matched.g_rho_diff2,
+    )
+    return micro
+
+N_prime = 31
+
+def compute_Delta_N_eff(T_ratio, T):
+    return 8 / 7 * (T_ratio * T / T_neutrino(T))**3 * N_prime
+
+def make_micro_from_T_ratio(T_ratio):
+    def d_T_nu_dT(T):
+        if(T < 1e-2 * 1e6):
+            return pow(4.0 / 11, 1/3.);
+        else:
+            f = pow(8*(matched.g_s(T) - 2) / (7.*6), 1./3);
+            if(f < 1.0):
+                return 1 / 3.0 * pow(8 / 7. / 6. * matched.g_s_diff(T), 1. / 3 - 1) * T + f;
+            else:
+                return 1.0;
+    micro = GStarModel(
+            g_rho = lambda T: matched.g_rho(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * pow(T_neutrino(T) / T, 4),
+            g_s = lambda T: matched.g_s(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * pow(T_neutrino(T) / T, 3),
+            g_rho_diff = lambda T: matched.g_rho_diff(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * 4 * pow(T_neutrino(T) / T, 4 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
+            g_s_diff = lambda T: matched.g_s_diff(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * 3 * pow(T_neutrino(T) / T, 3 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
             g_rho_diff2 = matched.g_rho_diff2,
     )
     return micro

@@ -22,7 +22,7 @@ libsolver.solver.restype = ctypes.c_double
 
 
 def compute_relic_density(Delta_N_eff, mu, micro_quark_mass, zeta, N_f, N_mu, kappa, c_N, eta, m_psi, theta_i, f_a):
-    T_osc = time_temp.find_T_osc(f_a, axion_mass.micro_m_a, g_star.matched) # hopefully that works
+    T_osc = time_temp.find_T_osc(f_a, lambda T, f_a: axion_mass.micro_m_a(T, f_a, mu, zeta), g_star.matched) # hopefully that works
     global libsolver
     ans = libsolver.solver(
              ctypes.c_double(Delta_N_eff),
