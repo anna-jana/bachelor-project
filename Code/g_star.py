@@ -204,10 +204,12 @@ def make_micro(Delta_N_eff):
 
 N_prime = 31
 
-def compute_Delta_N_eff(T_ratio, T):
-    return 8 / 7 * (T_ratio * T / T_neutrino(T))**3 * N_prime
+def compute_Delta_N_eff(T_ratio, mu, T):
+    a = 5e-2
+    N_prime = (31 - 3.5) / 2 * np.tanh(a * T - a * mu) + (31 + 3.5) / 2
+    return 8 / 7 * (T_ratio * T / T_neutrino(T))**4 * N_prime
 
-def make_micro_from_T_ratio(T_ratio):
+def make_micro_from_T_ratio(T_ratio, mu):
     def d_T_nu_dT(T):
         if(T < 1e-2 * 1e6):
             return pow(4.0 / 11, 1/3.);
@@ -218,10 +220,10 @@ def make_micro_from_T_ratio(T_ratio):
             else:
                 return 1.0;
     micro = GStarModel(
-            g_rho = lambda T: matched.g_rho(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * pow(T_neutrino(T) / T, 4),
-            g_s = lambda T: matched.g_s(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * pow(T_neutrino(T) / T, 3),
-            g_rho_diff = lambda T: matched.g_rho_diff(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * 4 * pow(T_neutrino(T) / T, 4 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
-            g_s_diff = lambda T: matched.g_s_diff(T) + compute_Delta_N_eff(T_ratio, T) * 7 / 8. * 3 * pow(T_neutrino(T) / T, 3 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
+            g_rho = lambda T: matched.g_rho(T) + compute_Delta_N_eff(T_ratio, mu, T) * 7 / 8. * pow(T_neutrino(T) / T, 4),
+            g_s = lambda T: matched.g_s(T) + compute_Delta_N_eff(T_ratio, mu, T) * 7 / 8. * pow(T_neutrino(T) / T, 3),
+            g_rho_diff = lambda T: matched.g_rho_diff(T) + compute_Delta_N_eff(T_ratio, mu, T) * 7 / 8. * 4 * pow(T_neutrino(T) / T, 4 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
+            g_s_diff = lambda T: matched.g_s_diff(T) + compute_Delta_N_eff(T_ratio, mu, T) * 7 / 8. * 3 * pow(T_neutrino(T) / T, 3 - 1) * (d_T_nu_dT(T) / T - T_neutrino(T) / (T*T)),
             g_rho_diff2 = matched.g_rho_diff2,
     )
     return micro

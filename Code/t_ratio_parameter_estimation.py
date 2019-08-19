@@ -22,7 +22,7 @@ def compute_Omega(theta_i, f_a, T_ratio, mu, zeta, debug_print=True):
     if debug_print:
         print("*", end="")
         sys.stdout.flush()
-    g = g_star.make_micro_from_T_ratio(T_ratio)
+    g = g_star.make_micro_from_T_ratio(T_ratio, mu)
     T_i = time_temp.find_T_osc(f_a, lambda T, f: axion_mass.micro_m_a(T, f, mu, zeta), g)
     if T_i <= config.parameter.T_eq:
         print("WARNING: oscillation starts below T_eq")
@@ -37,11 +37,24 @@ def compute_Omega(theta_i, f_a, T_ratio, mu, zeta, debug_print=True):
     Omega = rho / config.parameter.rho_c * config.parameter.h**2
     return Omega
 
+Delta_N_eff_BBM_mean = 3.28 - 3
+Delta_N_eff_BBM_err = 0.28
+Delta_N_eff_CMB_mean = 3 - 2.99
+Delta_N_eff_CMB_err = 0.3
+T_BBM = 1e6
+T_CMB = config.parameter.T0
+
 def ln_likelihood(THETA):
     theta_i, log_f_a, T_ratio, mu, zeta = THETA
     f_a = 10**log_f_a
     density_parameter_computed = compute_Omega(theta_i, f_a, T_ratio, mu, zeta)
-    return log_gaussian(density_parameter_computed, config.parameter.Omega_DM_h_sq, config.parameter.Omega_DM_h_sq_err)
+    Delta_N_eff_at_BBM = g_star.compute_Delta_N_eff(T_ratio, mu, T_BBM)
+    Delta_N_eff_at_CMB = g_star.compute_Delta_N_eff(T_ratio, mu, T_CMB)
+    return (
+        log_gaussian(density_parameter_computed, config.parameter.Omega_DM_h_sq, config.parameter.Omega_DM_h_sq_err) +
+        log_gaussian(Delta_N_eff_at_BBM, Delta_N_eff_BBM_mean, Delta_N_eff_BBM_err) +
+        log_gaussian(Delta_N_eff_at_CMB, Delta_N_eff_CMB_mean, Delta_N_eff_CMB_err)
+    )
 
 parameter_names = ["theta_i", "log f_a", "T_ratio", "mu", "zeta"]
 
