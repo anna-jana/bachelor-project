@@ -85,7 +85,7 @@ def ln_prob(THETA):
     return lp + like
 
 ndim = 2 + 3
-num_walkers = ndim * 2 * 5 * 2
+num_walkers = ndim * 2 * 5 * 2 * 2
 steps = 5000 * 4 * 4
 num_threads = 4
 
