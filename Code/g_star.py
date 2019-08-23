@@ -204,10 +204,23 @@ def make_micro(Delta_N_eff):
 
 N_prime = 31
 
-def compute_Delta_N_eff(T_ratio, mu, T):
+def compute_Delta_N_eff(T_ratio1, mu, T):
+    N_prime_1 = 31
+    N_prime_2 = 3.5
     a = 5e-2
-    N_prime = (31 - 3.5) / 2 * np.tanh(a * T - a * mu) + (31 + 3.5) / 2
-    return 8 / 7 * (T_ratio * T / T_neutrino(T))**4 * N_prime
+    T_ratio_2 = (N_prime_1 / N_prime_2)**(1 / 3) * T_ratio1
+    #T_ratio = (T_ratio1 - T_ratio_2) / 2 * np.tanh(a * T - a * mu) + (T_ratio1 + T_ratio_2) / 2
+    if T < mu:
+        T_ratio = T_ratio_2
+        N_prime = N_prime_2
+    else:
+        T_ratio = T_ratio1
+        N_prime = N_prime_1
+    T_prime = T_ratio * T
+    # N_prime = (N_prime_1 - N_prime_2) / 2 * np.tanh(a * T - a * mu) + (N_prime_1 + N_prime_2) / 2
+    T_nu = (4 / 11)**(1/3) * T
+    return 8 / 7 * (T_prime / T_nu)**4 * N_prime
+
 
 def make_micro_from_T_ratio(T_ratio, mu):
     def d_T_nu_dT(T):
