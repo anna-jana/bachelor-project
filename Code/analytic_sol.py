@@ -86,10 +86,12 @@ rho_a_approx = rho_a_osc * (a_osc / valid_a)**3
 
 # plot all the stuff
 # plt.figure(figsize=(10, 5))
+ax = plt.gca()
+ax.tick_params(labelsize=15)
 # field
 plt.subplot(2, 2, 1)
 plt.semilogx(a_prime, phi)
-plt.ylabel(r"Axion Field $\phi$")
+plt.ylabel(r"Axion Field $\phi$", fontsize=15)
 # TODO: plot the a_osc position using a vertical dashed line
 plt.axvline(a_osc, linestyle="--", color="black")
 plt.text(1, 0, "a)")
@@ -106,8 +108,8 @@ plt.text(1, 1e-2, "b)")
 # eos
 plt.subplot(2, 2, 3)
 plt.semilogx(a_prime, w_a)
-plt.ylabel("Equation of State $w$")
-plt.xlabel("Scale Factor $a / a_i$")
+plt.ylabel("Equation of State $w$", fontsize=15)
+plt.xlabel("Scale Factor $a / a_i$", fontsize=15)
 plt.axvline(a_osc, linestyle="--", color="black")
 plt.text(1, 0.44, "c)")
 
@@ -115,8 +117,8 @@ plt.text(1, 0.44, "c)")
 plt.subplot(2, 2, 4)
 plt.loglog(a_prime, rho_a, label="Exact Density")
 plt.loglog(valid_a / a0, rho_a_approx, label="Approx. Density")
-plt.xlabel("Scale Factor $a / a_i$")
-plt.ylabel(r"$\rho_a$")
+plt.xlabel("Scale Factor $a / a_i$", fontsize=15)
+plt.ylabel(r"$\rho_a$", fontsize=15)
 plt.legend()
 plt.axvline(a_osc, linestyle="--", color="black")
 plt.text(1, 2e-2, "d)")

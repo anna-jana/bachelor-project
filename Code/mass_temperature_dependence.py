@@ -1,7 +1,6 @@
 import numpy as np
 import scipy.constants as c
 import matplotlib.pyplot as plt
-import util
 import axion_mass as m_a
 import itertools
 from config import model, plot_path
@@ -11,22 +10,17 @@ import matplotlib.ticker
 print(m_a.m_a_at_abs_zero_from_marsh(1.0), m_a.m_a_at_abs_zero_from_shellard(1.0))
 
 
-plt.loglog(m_a.T_data / 1e6, m_a.chi_data, "+")
-T = np.linspace(m_a.T_data[0], m_a.T_data[-1], 300)
-plt.loglog(T / 1e6, m_a.chi_interp(T))
+# plt.loglog(m_a.T_data / 1e6, m_a.chi_data, "+")
+# T = np.linspace(m_a.T_data[0], m_a.T_data[-1], 300)
+# plt.loglog(T / 1e6, m_a.chi_interp(T))
+#
+# plt.xlabel("T [MeV]", fontsize=15)
+# plt.ylabel(r"$\chi_\mathrm{top} [\mathrm{eV}^4]$", fontsize=15)
+# plt.savefig(plot_path + "/chi_of_T.pdf")
 
-plt.xlabel("T [MeV]", fontsize=15)
-plt.ylabel(r"$\chi_\mathrm{top} [\mathrm{eV}^4]$", fontsize=15)
-plt.savefig(plot_path + "/chi_of_T.pdf")
 
-
-def set_ticks_fontsize(fontsize):
-    ax = plt.gca()
-    for tick in itertools.chain(ax.xaxis.get_major_ticks(), ax.yaxis.get_minor_ticks(), ax.yaxis.get_major_ticks(), ax.yaxis.get_minor_ticks()):
-        tick.label.set_fontsize(fontsize)
-
-fontsize = 17
-linewidth = 3
+fontsize = 15
+linewidth = 4
 
 def make_comparsion_plot(T_min=10**7.8, T_max=None):
     # general constants
@@ -36,9 +30,16 @@ def make_comparsion_plot(T_min=10**7.8, T_max=None):
         T_max = np.max(m_a.T_data)
     T = np.logspace(np.log10(T_min), np.log10(T_max), 400)
 
-    plt.figure(figsize=(18, 6))
+    # plt.figure(figsize=(18, 5))
+    plt.figure(figsize=(9, 10))
+
+
     ######################### plot the graph of m_a(T) ########################
-    plt.subplot(1, 2, 1)
+    # plt.subplot(1, 2, 1)
+    plt.subplot(2, 1, 1)
+
+    ax = plt.gca()
+    ax.tick_params(labelsize=fontsize)
 
     ## T = 0
     plt.loglog(T / 1e6, m_a.m_a_at_abs_zero_from_shellard(f_a) * np.ones(np.size(T)),
@@ -84,10 +85,13 @@ def make_comparsion_plot(T_min=10**7.8, T_max=None):
     plt.xlim(T_min / 1e6, T_max / 1e6)
     # plt.legend(loc="lower left", ncol=2, fontsize=12)
     plt.legend(ncol=2, fontsize=15)
-    set_ticks_fontsize(fontsize)
 
     ################# error from lattice result #################
-    plt.subplot(1, 2, 2)
+    # plt.subplot(1, 2, 2)
+    plt.subplot(2, 1, 2)
+
+    ax = plt.gca()
+    ax.tick_params(labelsize=fontsize)
 
     m_a_correct =  m_a.m_a_from_chi(T, f_a)
     def rel_err(m_a_approx_fn, *args, **kwargs):
@@ -125,11 +129,11 @@ def make_comparsion_plot(T_min=10**7.8, T_max=None):
     plt.xlim(T_min / 1e6, T_max / 1e6)
     ymin, ymax = plt.ylim()
     plt.ylim(ymin, 10)
-    set_ticks_fontsize(fontsize)
     plt.tight_layout()
 
 
 make_comparsion_plot()
+# plt.show()
 plt.savefig(plot_path + "/m_of_T_plot.pdf")
 
 

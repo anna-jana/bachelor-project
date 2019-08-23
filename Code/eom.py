@@ -54,6 +54,17 @@ class Solver:
             self.solver.integrate(self.solver.t + self.dT)
         # solver.integrate(avg_start * T_s) # TODO: do I need this?
 
+    def advance(self, amount, steps):
+        theta = np.empty(steps)
+        T = np.empty(steps)
+        dT = amount / steps
+        for i in range(steps):
+            self.solver.integrate(self.solver.t + dT)
+            theta[i] = self.solver.y[0]
+            T[i] = self.solver.t
+        return T * self.temperature_unit, theta
+
+
     def field_to_osc(self):
         theta = []; T = []
         while self.solver.y[0] > 0:
