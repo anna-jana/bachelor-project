@@ -64,7 +64,7 @@ zeta_err = 0.01
 def make_initial_guess():
     theta_i = np.random.uniform(0, np.pi)
     log_f_a = np.random.uniform(15, 18) + 9
-    mu = 10**np.random.uniform(2, 3)
+    mu = 10**np.random.uniform(1, 3)
     T_ratio = 1 / np.random.uniform(3, 5)
     zeta = np.random.uniform(zeta_mean - zeta_err, zeta_mean + zeta_err)
     return (theta_i, log_f_a, T_ratio, mu, zeta)
