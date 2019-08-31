@@ -28,8 +28,8 @@ def compute_Omega(theta_i, f_a, T_ratio, mu, zeta, debug_print=True):
         print("WARNING: oscillation starts below T_eq")
         return np.nan
     T_f = config.parameter.T0
-    m_i = axion_mass.micro_m_a(T_ratio * T_i, f_a, mu, zeta)
-    m_f = axion_mass.micro_m_a(T_ratio * T_f, f_a, mu, zeta)
+    m_i = axion_mass.micro_m_a(g_star.compute_T_ratio(T_i, T_ratio, mu) * T_i, f_a, mu, zeta)
+    m_f = axion_mass.micro_m_a(g_star.compute_T_ratio(T_f, T_ratio, mu) * T_f, f_a, mu, zeta)
     g_s_f = g.g_s(T_f)
     g_s_i = g.g_s(T_i)
     A_i = theta_i * f_a
@@ -61,18 +61,24 @@ parameter_names = ["theta_i", "log f_a", "T_ratio", "mu", "zeta"]
 zeta_mean = 1.34
 zeta_err = 0.01
 
+
+log_f_a_min, log_f_a_max = 15 + 9, 17 + 9
+log_mu_min, log_mu_max = 1, 3
+T_ratio_min, T_ratio_max = 1 / 5, 1 / 3
+
 def make_initial_guess():
     theta_i = np.random.uniform(0, np.pi)
-    log_f_a = np.random.uniform(15, 18) + 9
-    mu = 10**np.random.uniform(1, 3)
-    T_ratio = 1 / np.random.uniform(3, 5)
+    log_f_a = np.random.uniform(log_f_a_min, log_f_a_max)
+    mu = 10**np.random.uniform(log_mu_min, log_mu_max)
+    T_ratio = np.random.uniform(T_ratio_min, T_ratio_max)
     zeta = np.random.uniform(zeta_mean - zeta_err, zeta_mean + zeta_err)
     return (theta_i, log_f_a, T_ratio, mu, zeta)
 
 def ln_prior(THETA):
     theta_i, log_f_a, T_ratio, mu, zeta = THETA
-    if 0 < theta_i <= np.pi and 15 <= log_f_a - 9 <= 18 and \
-       2 <= np.log10(mu) <= 3 and abs(zeta - zeta_mean) <= zeta_err and 1 / 5 <= T_ratio <= 1 / 3:
+    if 0 < theta_i <= np.pi and log_f_a_min <= log_f_a <= log_f_a_max and \
+       log_mu_min <= np.log10(mu) <= log_mu_max and abs(zeta - zeta_mean) <= zeta_err \
+       and T_ratio_min <= T_ratio <= T_ratio_max:
         return 0
     else:
         return - np.inf # = log 0
@@ -85,8 +91,11 @@ def ln_prob(THETA):
     return lp + like
 
 ndim = 2 + 3
-num_walkers = ndim * 2 * 5 * 2 * 2
-steps = 5000 * 4 * 4
+# num_walkers = ndim * 2 * 5 * 2 * 2
+# steps = 5000 * 4 * 4
+
+num_walkers = ndim * 2 * 2 * 2 * 2 * 2 * 2 * 2 * 2
+steps = 5000 * 2 * 2
 num_threads = 4
 
 if __name__ == "__main__":
