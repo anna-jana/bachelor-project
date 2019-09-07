@@ -50,10 +50,14 @@ def ln_likelihood(THETA):
     density_parameter_computed = compute_Omega(theta_i, f_a, T_ratio, mu, zeta)
     Delta_N_eff_at_BBM = g_star.compute_Delta_N_eff(T_ratio, mu, T_BBM)
     Delta_N_eff_at_CMB = g_star.compute_Delta_N_eff(T_ratio, mu, T_CMB)
+    # if Delta_N_eff_at_CMB > Delta_N_eff_CMB_mean + Delta_N_eff_CMB_err:
+    #     return - np.inf
+    # if Delta_N_eff_at_BBM > Delta_N_eff_BBM_mean + Delta_N_eff_BBM_err:
+    #     return - np.inf
     return (
-        log_gaussian(density_parameter_computed, config.parameter.Omega_DM_h_sq, config.parameter.Omega_DM_h_sq_err) +
-        log_gaussian(Delta_N_eff_at_BBM, Delta_N_eff_BBM_mean, Delta_N_eff_BBM_err) +
-        log_gaussian(Delta_N_eff_at_CMB, Delta_N_eff_CMB_mean, Delta_N_eff_CMB_err)
+        log_gaussian(density_parameter_computed, config.parameter.Omega_DM_h_sq, config.parameter.Omega_DM_h_sq_err)
+        + log_gaussian(Delta_N_eff_at_BBM, Delta_N_eff_BBM_mean, Delta_N_eff_BBM_err)
+        + log_gaussian(Delta_N_eff_at_CMB, Delta_N_eff_CMB_mean, Delta_N_eff_CMB_err)
     )
 
 parameter_names = ["theta_i", "log f_a", "T_ratio", "mu", "zeta"]
