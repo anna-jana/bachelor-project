@@ -37,15 +37,31 @@ def compute_Omega(theta_i, f_a, T_ratio, mu, zeta, debug_print=True):
     Omega = rho / config.parameter.rho_c * config.parameter.h**2
     return Omega
 
-Delta_N_eff_BBM_mean = 3.28 - 3
-Delta_N_eff_BBM_err = 0.28
-Delta_N_eff_CMB_mean = 3 - 2.99
-Delta_N_eff_CMB_err = 0.3
+# N_neutrino = 3.045 # from http://pdg.lbl.gov/2019/reviews/rpp2018-rev-neutrinos-in-cosmology.pdf, page 2
+# Delta_N_eff_BBM_mean = 2.91 - N_neutrino # https://arxiv.org/pdf/1502.01589.pdf, page 49, (75)
+# Delta_N_eff_BBM_err = 0.37
+# Delta_N_eff_CMB_mean = 3.04 - N_neutrino # https://arxiv.org/pdf/1502.01589.pdf, page 43, (60d)
+# Delta_N_eff_CMB_err = 0.18
+# T_BBM = 1e6
+# T_CMB = config.parameter.T0
+
+
+N_neutrino = 3.045 # from http://pdg.lbl.gov/2019/reviews/rpp2018-rev-neutrinos-in-cosmology.pdf, page 2
+# He + TT + lowP + BAO
+# Delta_N_eff_BBM_mean = 3.14 - N_neutrino # https://arxiv.org/pdf/1502.01589.pdf, page 49, (75)
+# Delta_N_eff_BBM_err = 0.44
+Delta_N_eff_BBM_mean = 3.01 - N_neutrino # https://arxiv.org/pdf/1502.01589.pdf, page 49, (75)
+Delta_N_eff_BBM_err = 0.38
+# TT + lowP + BAO <- most robust result?
+Delta_N_eff_CMB_mean = 3.15 - N_neutrino # https://arxiv.org/pdf/1502.01589.pdf, page 43, (60d)
+Delta_N_eff_CMB_err = 0.23
 T_BBM = 1e6
 T_CMB = config.parameter.T0
 
 def ln_likelihood(THETA):
-    theta_i, log_f_a, T_ratio, mu, zeta = THETA
+    # theta_i, log_f_a, T_ratio, mu, zeta = THETA
+    theta_i, log_f_a, T_ratio, log_mu, zeta = THETA
+    mu = 10**log_mu
     f_a = 10**log_f_a
     density_parameter_computed = compute_Omega(theta_i, f_a, T_ratio, mu, zeta)
     Delta_N_eff_at_BBM = g_star.compute_Delta_N_eff(T_ratio, mu, T_BBM)
@@ -65,23 +81,26 @@ parameter_names = ["theta_i", "log f_a", "T_ratio", "mu", "zeta"]
 zeta_mean = 1.34
 zeta_err = 0.01
 
-
 log_f_a_min, log_f_a_max = 15 + 9, 17 + 9
 log_mu_min, log_mu_max = 1, 3
-T_ratio_min, T_ratio_max = 1 / 5, 1 / 3
+T_ratio_min, T_ratio_max = 1 / 6, 1 / 3
 
 def make_initial_guess():
     theta_i = np.random.uniform(0, np.pi)
     log_f_a = np.random.uniform(log_f_a_min, log_f_a_max)
-    mu = 10**np.random.uniform(log_mu_min, log_mu_max)
+    # mu = 10**np.random.uniform(log_mu_min, log_mu_max)
+    log_mu = np.random.uniform(log_mu_min, log_mu_max)
     T_ratio = np.random.uniform(T_ratio_min, T_ratio_max)
     zeta = np.random.uniform(zeta_mean - zeta_err, zeta_mean + zeta_err)
-    return (theta_i, log_f_a, T_ratio, mu, zeta)
+    return (theta_i, log_f_a, T_ratio, log_mu, zeta)
+    # return (theta_i, log_f_a, T_ratio, mu, zeta)
 
 def ln_prior(THETA):
-    theta_i, log_f_a, T_ratio, mu, zeta = THETA
+    # theta_i, log_f_a, T_ratio, mu, zeta = THETA
+    theta_i, log_f_a, T_ratio, log_mu, zeta = THETA
+    # log_mu_min <= np.log10(mu) <= log_mu_max and abs(zeta - zeta_mean) <= zeta_err \
     if 0 < theta_i <= np.pi and log_f_a_min <= log_f_a <= log_f_a_max and \
-       log_mu_min <= np.log10(mu) <= log_mu_max and abs(zeta - zeta_mean) <= zeta_err \
+       log_mu_min <= log_mu <= log_mu_max and abs(zeta - zeta_mean) <= zeta_err \
        and T_ratio_min <= T_ratio <= T_ratio_max:
         return 0
     else:

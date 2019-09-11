@@ -14,7 +14,7 @@ from scipy.special import jv, yv, jvp, yvp # first and second bessel functions
 from config import plot_path
 
 # parameter
-N = 800 # number of steps
+N = 1000 # number of steps
 m_a = 1 # axion mass [10^-20 eV] range from paper
 # the evolution of phi doent depent on the value of phi_init
 phi_init = 1 # [1]
@@ -86,24 +86,31 @@ rho_a_approx = rho_a_osc * (a_osc / valid_a)**3
 
 # plot all the stuff
 # plt.figure(figsize=(10, 5))
+plt.figure(figsize=(8, 5))
 ax = plt.gca()
 ax.tick_params(labelsize=15)
 # field
 plt.subplot(2, 2, 1)
 plt.semilogx(a_prime, phi)
-plt.ylabel(r"Axion Field $\phi$", fontsize=15)
+plt.ylabel(r"Axion Field $\phi$ / a.u.", fontsize=15, labelpad=35)
+plt.xticks([],[])
 # TODO: plot the a_osc position using a vertical dashed line
 plt.axvline(a_osc, linestyle="--", color="black")
-plt.text(1, 0, "a)")
+plt.text(1, 0, "a)", fontsize=15)
+plt.xticks([],[])
+plt.yticks([],[])
 
 # mass vs hubble
 plt.subplot(2, 2, 2)
 plt.loglog(a_prime, H, label="Hubble")
 # plt.loglog(a_prime, p / t, label="Hubble formula")
 plt.loglog(a_prime, np.ones(a_prime.size) * m_a / 2, label=r"$m_a / 2$")
-plt.legend()
+plt.legend(fontsize=12)
 plt.axvline(a_osc, linestyle="--", color="black")
-plt.text(1, 1e-2, "b)")
+plt.text(1, 1e-2, "b)", fontsize=15)
+plt.xticks([],[])
+plt.yticks([],[])
+plt.ylabel("Energy / a.u.", fontsize=15)
 
 # eos
 plt.subplot(2, 2, 3)
@@ -111,17 +118,18 @@ plt.semilogx(a_prime, w_a)
 plt.ylabel("Equation of State $w$", fontsize=15)
 plt.xlabel("Scale Factor $a / a_i$", fontsize=15)
 plt.axvline(a_osc, linestyle="--", color="black")
-plt.text(1, 0.44, "c)")
+plt.text(1, 0.44, "c)", fontsize=15)
 
 # density
 plt.subplot(2, 2, 4)
 plt.loglog(a_prime, rho_a, label="Exact Density")
 plt.loglog(valid_a / a0, rho_a_approx, label="Approx. Density")
 plt.xlabel("Scale Factor $a / a_i$", fontsize=15)
-plt.ylabel(r"$\rho_a$", fontsize=15)
-plt.legend()
+plt.ylabel(r"$\rho_a$ / a.u.", fontsize=15)
+plt.legend(fontsize=12)
 plt.axvline(a_osc, linestyle="--", color="black")
-plt.text(1, 2e-2, "d)")
+plt.text(1, 2e-2, "d)", fontsize=15)
+plt.yticks([],[])
 
 plt.tight_layout()
 plt.savefig(plot_path + "/analytic_power_law_plot.pdf")
