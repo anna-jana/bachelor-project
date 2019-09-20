@@ -19,9 +19,9 @@ import time_temp
 # \frac{\mathrm{d} t}{\mathrm{d} T} \sim \frac{ 14 \cdot 10^{9} \mathrm{yr} }{ 10^{12} \mathrm{K} }
 # $$
 
-ans = t, t_err = quad(time_temp.dtdT, 100e6, 100e3)
+# ans = t, t_err = quad(time_temp.dtdT, 100e6, 100e3)
 
-print(np.array(ans) / c.elementary_charge * c.hbar)
+# print(np.array(ans) / c.elementary_charge * c.hbar)
 
 def plot_temp_evo(g_model):
     T = np.logspace(5, np.log10(np.max(g_star.T)), 400)[::-1]
@@ -42,6 +42,7 @@ def plot_temp_evo(g_model):
     ax2.set_yscale("log")
     ax1.grid()
     # ax1.set_title("Temperature of the hot universe")
+    plt.tight_layout()
 
 # looks good
 plt.subplot(1,2,1)
