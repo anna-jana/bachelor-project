@@ -1,0 +1,2325 @@
+\documentclass[twoside,a4paper, 12pt]{article}
+% \documentclass[a4paper,  12pt]{article}
+% \usepackage[left=2.5cm, right=2.5cm,top=2.5cm,bottom=2.5cm]{geometry}
+\usepackage[left=2cm, right=2cm, top=2.5cm, bottom=2.5cm, bindingoffset=10mm]{geometry}
+% \usepackage[left=2cm, right=2cm, top=2.5cm, bottom=2.5cm]{geometry}
+
+\usepackage[komastyle]{scrpage2}
+\pagestyle{scrheadings}
+\setheadsepline{0.5pt}[\color{black}]
+% \usepackage[a4paper,margin=0.5in]{geometry}
+%\setkomafont{captionlabel}{\sffamily\bfseries}
+%\setcapindent{0em}
+%\usepackage[ngerman]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{latexsym,exscale,stmaryrd,amssymb,amsmath}
+\usepackage[nointegrals]{wasysym}
+\usepackage{eurosym}
+\usepackage{color}
+\usepackage{rotating}
+\usepackage{graphicx}
+\usepackage{wrapfig}
+% \usepackage{subfigure}
+\usepackage{sidecap}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{subfig}
+\usepackage{fancyvrb}
+\usepackage{slashed}
+\usepackage{setspace}
+% \usepackage{subcaption}
+%\usepackage{stackengine}
+\usepackage{mathtools}
+\usepackage{braket}
+\usepackage[backend=bibtex, sorting=none]{biblatex}
+\usepackage{csquotes}
+\usepackage{dirtytalk}
+
+\onehalfspace
+
+\bibliography{Shared.bib}
+% \DeclareMathOperator*{\diff}{d}
+\newcommand{\diff}{\mathrm{d}}
+\DeclareMathOperator{\trace}{Tr}
+
+%\newcommand\stackapprox[2]{%
+%  \mathrel{\stackunder[2pt]{\stackon[4pt]{\approx}{$\scriptscriptstyle#1$}}{%
+%  $\scriptscriptstyle#2$}}}
+
+\newcommand\myeq{\stackrel{\mathclap{\normalfont\mbox{def}}}{=}}
+
+\numberwithin{equation}{section}
+
+\begin{document}
+
+% \title{Bachelor Thesis: \\[0.5cm]
+% A Precision Computation and MCMC Study of the Axion Relic Density in QCD and Hidden Sectors \\[0.5cm]
+% Berechnung und MCMC Analyse der Axionen Dunkle Materie Dichte in QCD und Hidden Sectors
+% }
+% 
+% \author{Janik Rieß
+% \\[0.5cm]Georg-August University of Göttingen
+% \\[0.5cm]First Referee:  Prof. Dr. David J. E. Marsh
+% \\[0.5cm]Second Referee: Prof. Dr. Jens Niemeyer
+% }
+% \date{Submitted on the ????? September of 2019}
+% 
+% 
+% \maketitle
+% 
+% 
+% \thispagestyle{empty}
+% \newpage
+% \phantom{hi}
+% \thispagestyle{empty}
+% \newpage
+
+\raggedbottom
+
+\begin{titlepage}
+
+\includegraphics[width=8cm]{Logo_Uni_Goettingen.pdf}
+\vspace*{1cm}
+
+\centering
+\textsc{\Large \bfseries Bachelor's Thesis}
+
+\vspace*{0.5cm}
+
+\rule{\textwidth}{1pt}\\[0.5cm]
+{\Large \bfseries A Precision Computation and MCMC Study of the Axion Relic Density in QCD and Hidden Sectors \\[0.5cm]
+Berechnung und MCMC Analyse der Axionen Dunkle Materie Dichte in QCD und Hidden Sectors\\[0.5cm]}
+
+\rule{\textwidth}{1pt}
+
+\vspace*{1cm}
+{
+\centering\Large
+prepared by\\[0.2cm]
+{\bfseries Janik Rieß}\\[0.2cm]
+at the Institute for Astrophysics 
+}
+
+\vspace*{2cm}
+
+\begin{Large}
+\begin{tabular}{ll}
+\bfseries Date of Submission: &23.09.2019\\
+\bfseries First referee: &Prof. Dr. David J. E. Marsh\\
+\bfseries Second referee: &Prof. Dr. Jens Niemeyer\\
+\end{tabular}
+\end{Large}
+
+\vspace*{1.5cm}
+
+\end{titlepage}
+
+% \newpage
+
+% \cleardoublepage
+
+
+\thispagestyle{empty}
+\newpage
+\phantom{hi}
+\thispagestyle{empty}
+\newpage
+
+
+
+
+\begin{abstract}
+\noindent
+    In this thesis the density of axion dark matter, the axion relic density, is computed. 
+    I present the full computation including the theoretical background and used methods.
+    The relic density was computed numerically using interpolated lattice QCD values for the axion mass.
+    A fit for the numerical result was created, improving the parameters in analytic approximations
+    to have a relative error of at least $\sim 10 \%$ and for most values of $\sim 1\%$.
+    Furthermore the numerical model was used for a MCMC analysis, 
+    where for QCD the most likely axion mass was found to be $\log_{10} (m_a(T=0) / \mathrm{eV})  \approx -4.9 \pm 0.9$,
+    marginalized over uniform $\theta_i$ and all SM uncertainties.
+    The same technique was applied to the Hidden Sector $\mu$-QCD model for fuzzy dark matter, 
+    where the most likely axion mass was found to be $\log_{10} (m_a(T=0) / \mathrm{eV}) \approx -21.32 \pm 1.27$ marginalized over 
+    $f_a \sim 10^{16} \, \mathrm{GeV}$ and $\mu \sim 100 \, \mathrm{eV}$.
+    I found that one can avoid the constraints on the additional degrees of freedom $\Delta N_\mathrm{eff}$ from the $\mu$-QCD hidden sector, 
+    if the temperature of the hidden sector is $T' = (0.21 \pm 0.03) T$ for photon temperatures $T > \mu$ at $95\%$ C.L.
+\end{abstract}
+
+\thispagestyle{empty}
+\newpage
+% \phantom{blabla} 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{dark_matter_2x.png}
+    \caption*{Source: \url{https://xkcd.com/2186/} by Randall Munroe}
+    \label{fig:my_label}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{dark_matter_candidates_2x.png}
+    \caption*{Source: \url{https://xkcd.com/2035/} by Randall Munroe}
+    \label{fig:my_label2}
+\end{figure}
+
+\thispagestyle{empty}
+\newpage
+%\thispagestyle{empty}
+%\mbox{}
+%\thispagestyle{empty}
+%\newpage
+\thispagestyle{empty}
+\tableofcontents
+\thispagestyle{empty}
+\phantom{bla}
+\newpage
+\thispagestyle{empty}
+\newpage
+
+\section{Introduction}
+\setcounter{page}{1}
+
+
+One can measure the density of matter in the universe today using e.g.\
+gravitational lensing (see figure \ref{fig:bullet_cluster}) and finds that only about $15\%$ of the matter in the universe 
+are normal baryonic matter while the nature of the remaining $85\%$ are unknown to us \cite{BulletClusterDarkMatter}.
+The nature of this \emph{dark matter} is subject to ongoing research and
+one of the big open questions in modern cosmology.
+The \emph{axion} is a standard model extension that was invented to solve the strong CP
+problem in quantum chromodynamics (QCD) and adds a new particle to the table namely the (QCD) axion.
+As a side effect those new particles are well motivated dark matter candidates \cite{AxionCosmoRev}.
+Axion like particles also arise in other theories. % like in string theory.
+Some of those postulated particles, like a modified version of the QCD axion called the $\mu$-QCD axion, can form a version of dark matter called \emph{fuzzy dark matter}.
+Assuming the existence of axions their density in the universe today, the axion relic density, can be computed from a set of free parameters of the theory.
+One aim of this thesis is to perform such a computation precisely.
+This requires a theoretical model, presented in section \ref{sec:theory}, for the axion including 
+the equation of motion for the axion field, the potential for the axion and 
+the misalignment mechanism which produces axion dark matter. Also the $\mu$-QCD model is presented.
+After that, in section \ref{sec:methods}, the technical details for the exact numerical computation of the relic 
+density using the full axion model are discussed. 
+The results of the computation are presented in section \ref{sec:results}.
+Comparing those results with the observed amount of dark matter allows to exclude certain
+parameter ranges and therefore help rule out axions as a dark matter model and narrow the search for them. 
+Using a statistical technique, a Markov Chain - Monte Carlo (MCMC) analysis, 
+one can compute the most likely values of those parameters,  including the axion mass. 
+This method is introduced in section \ref{sec:mcmc} and applied to the QCD case as well as 
+the $\mu$-QCD case in section \ref{sec:mcmc_analysis}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.4\linewidth]{The_Bullet_Cluster_node_full_image_2.jpg}
+    \caption{The Bullet Cluster is the first piece of direct empirical evidence for
+    the existence of dark matter. This picture is the result of a combination of X-ray and visible
+    light data. In \cite{BulletClusterDarkMatter} the gravitational lensing of the cluster was studied and concluded that
+    no modification of the theory of gravity could explain the observations.
+    Thus, there has to be a not observed kind of gravitational interacting matter, i.e.\ dark
+    matter. Image Source: \url{https://commons.wikimedia.org/wiki/File:1e0657_scale.jpg}
+    }
+    \label{fig:bullet_cluster}
+\end{figure}
+
+
+\section{Theory}
+\label{sec:theory}
+In this section the theoretical background for the work of this thesis is presented.
+First an overview over the fundamentals of physical cosmology, including the Friedmann equations,
+thermodynamics and scalar fields, is given.
+Then the axion model is introduced and in particular the mass of the axion as well as
+the misalignment mechanism for the production of axion dark matter are presented.
+For the cosmology basics only basic physics knowledge is assumed, as taught in an undergraduate
+physics degree, but no derivations are given. The signature $(-, +, +, +)$ for the metric as well as Einstein sum
+convention and natural units are used.
+
+\subsection{Cosmology}
+
+\subsubsection{The Expansion of the Universe}
+\label{sec:cosmology}
+In the field of cosmology one tries to describe the universe as a whole
+or at least on very large scales. Because one deals there with large distances
+and masses, the framework of \emph{General Relativity} (GR) has to be used.
+In GR space and time together are described by a \emph{Manifold}, called spacetime, a curved space.
+Such a spacetime has, in general, a more complicated metric than normal Minkovski space.
+One common assumption made in cosmology is that the universe
+is homogeneous and isotropic, that is the universe is assumed to look the same
+in every direction at every point in space. In this case the metric of the universe
+is given as the \emph{Robinson-Walker metric} \cite[Eq. 2.1]{TheEarlyUniverseKolbAndTurner} in polar coordinates
+\begin{align}
+    \label{eq:flrw}
+    \diff^2 s = - \diff^2 t + a(t)^2 \left( \frac{\diff^2 r}{1 - k r^2} + r^2 (\diff^2 \theta + \sin^2 \theta \diff^2 \varphi) \right)
+\end{align}
+Note that this metric contains an unknown parameter $a$. Since homogeneity is assumed,
+it can not depend on the space coordinates but it can and does depend on time.
+This parameter is called the \emph{scale parameter} since it describes in a way the size
+of the universe. One defines $H := \frac{\dot{a}}{a}$
+as the Hubble parameter.
+There is also a parameter $k$, which fixes the topology of spacetime i.e.\ its curvature.
+For $k = +1$ the universe has positive curvature (a sphere), for $k = 0$ the universe is flat and for $k = -1$ the universe has negative curvature (a hyperbolic pseudo-sphere) \cite[Sec. 3.1]{TheEarlyUniverseKolbAndTurner}.
+Measurements have identified the value of $k$ for our universe to be compatible with $k = 0$ and this value is used throughout the rest of the thesis.
+
+\noindent
+The second ingredient to GR is the content of the universe, that is matter, radiation etc.\ in the form of the \emph{energy-momentum tensor} $T_{\mu \nu}$.
+It is defined as the tensor which gives in the $\mu, \nu$ component the flux of the $\mu$ component of the
+momentum four-vector through a surface normal to the $x_\nu$ coordinate.
+For a perfect fluid, that is a fluid which has no viscosity, shear stress or heat conduction,
+the energy-momentum tensor has the form
+\begin{align}
+    T = \begin{pmatrix}
+    \rho & j_x & j_y & j_z \\
+    j_x & P & 0 & 0 \\
+    j_y & 0 & P & 0 \\
+    j_z & 0 & 0 & P
+    \end{pmatrix}
+\end{align}
+where $P$ is the pressure, $\rho$ the energy density and $j_i$ the momentum density in each spatial 
+direction.
+If the fluid is isotropic, all net fluxes and therefore momentum densities $j_i$ vanish. The momentum tensor then has a diagonal form \cite[Eq. 3.4]{TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    \label{eq:energy_momentum_tensor_diag}
+    T = \mathrm{diag} \, (\rho, P, P, P).
+\end{align}
+
+\noindent
+The theory of GR now gives a connection between the geometry of spacetime,
+the metric, and the content of spacetime, the energy tensor as the
+Einstein field equations \cite[Eq. 3.1]{TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    \label{eq:einstein_field_eq}
+    R_{\mu \nu} - \frac{1}{2} R g_{\mu \nu} = 8 \pi G T_{\mu\nu}
+\end{align}
+where $G$ is Newtons constant, $R^{\mu \nu}$ the \emph{Ricci tensor} and $R$ the \emph{Ricci scalar}. They are used to describe the
+curvature of spacetime and are defined as \cite[Eq. 92.7]{Landau}
+\begin{align}
+    \label{eq:ricci}
+    R_{\alpha \beta} &= \partial_\rho \Gamma^\rho_{\beta \alpha} - \partial_\beta \Gamma^\rho_{\rho \alpha} + \Gamma^\rho_{\rho \lambda} \Gamma^\lambda_{\beta \alpha} - \Gamma^\rho_{\beta \lambda} \Gamma^\lambda_{\rho \alpha} \\
+    R &= R^\mu_\mu
+\end{align}
+using the \emph{Christoffel Symbols} \cite[Eq. 86.3]{Landau}
+\begin{align}
+    \Gamma^\alpha_{\beta \gamma} = \frac{1}{2} g^{\alpha \nu} \left( \partial_\gamma g_{\nu \beta} + \partial_\beta g_{\nu \gamma} - \partial_\nu g_{\beta \gamma} \right).
+\end{align}
+In general the left-hand-side of equation \eqref{eq:einstein_field_eq} can contain a term $\Lambda g_{\mu \nu}$
+where $\Lambda$ is cosmological constant, but it can be included as an additional
+contribution to the energy-momentum tensor.
+The physical content of equation \eqref{eq:einstein_field_eq} was summarized
+by John Archibald Wheeler as
+\say{Spacetime tells matter how to move; matter tells spacetime how to curve} \cite[P. 5, left ]{Gravitation}.
+Inserting the Robinson-Walker metric into the Einstein field equations yields
+the \emph{Friedmann equation} \cite[Eq. 3.10]{TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    \label{eq:friedmann_eq}
+    \frac{\dot{a}^2 + k}{a^2} = \frac{8 \pi G}{3} \rho
+\end{align}
+as well as
+the \emph{acceleration equation} \cite[Eq. 3.11]{TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    \label{eq:accelaration_eq}
+    \frac{\ddot{a}}{a} = - \frac{4 \pi G}{3} \left( \rho + 3 P \right).
+\end{align}
+The continuity equation for the energy-momentum tensor can be written as
+\begin{align}
+    \label{eq:cont}
+   \dot{\rho} = - 3 H \left( \rho + p \right).
+\end{align}
+The Friedmann eq.\ can also be written as \cite[Sec. 1.3.3, Eq. 1.67]{CosmologyBookMukhanov}
+\begin{align}
+    \label{eq:friedmann_equation}
+    3 H^2 M^2_\mathrm{pl} = \rho,
+\end{align}
+where $M_\mathrm{pl} = \sqrt{\frac{1}{8 \pi G}}$
+is the Planck mass.
+
+\noindent
+In order to solve those equations, one needs to find expressions
+for the energy density $\rho$ and for the pressure $P$.
+The simplest case for this is, where the equation of state $w = P / \rho$ is constant.
+Then one gets $\rho \propto a^{-3(w + 1)}$ \cite[Eq. 3.36]{TheEarlyUniverseKolbAndTurner} and $a \propto t^{2/3(w + 1)}$ if $k = 0$ \cite[Eq. 3.37]{TheEarlyUniverseKolbAndTurner}.
+In cosmology one divides the content of the universe in several classes.
+Particles that are non-relativistic are called \emph{matter} and have $w = 0$.
+Particles that are ultra-relativistic are called \emph{radiation} and have $w = 1/3$.
+The case of the energy density being constant comes from the cosmological constant $\Lambda$ and has $w = -1$ as
+the eq.\ of state \cite[Eq. 3.7]{TheEarlyUniverseKolbAndTurner}.
+For those components the Friedmann equation can be written as
+\cite[Eq. 9]{FriedmannPaper}
+\begin{align}
+    \label{eq:hubble_parameter_evo}
+    H(t)^2 = H_0^2 \left(
+        \Omega_\mathrm{rad} \left( \frac{a_i}{a} \right)^4 +
+        \Omega_\mathrm{mat} \left( \frac{a_i}{a} \right)^3
+    \right)
+\end{align}
+where $H_0$ is the Hubble parameter today, $a_i$ the scale factor today and the density parameter $\Omega = \frac{\rho}{\rho_c}$ (for each component) with $\rho_c = 3 H_0^2 / M_\mathrm{pl}^2$ being the critical density.
+
+
+\subsubsection{Cosmological Equilibrium Thermodynamics}
+If $w$ is not constant the situation is more complicated. This happens for example if
+particle species drops out of the particle bath  equilibrium.
+At this point the theory of thermodynamics comes into play. In general the system is described by a \emph{phasespace distribution function} $f$ for each particle species, which is given for Bosons by the
+Einstein-Bose or the Fermi-Dirac distributions for Fermions, if
+the particles are in thermal and chemical equilibrium \cite[Sec. 3.3]{TheEarlyUniverseKolbAndTurner}. Then one computes
+the required quantities i.e.\ the pressure $P$, energy density $\rho$, the number density $n$ and the entropy density $s$ as expectation values
+from $f(|\vec{p}|)$. To do so, one needs to approximate the resulting integrals or solve them numerically. For the ultra-relativistic case $v/c \approx 1$, one gets \cite[Eq. 3.51, 3.52, 3.59, 3.61, 3.62] {TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    \label{eq:energy_denstiy}
+    \rho \approx \frac{\pi^2}{30} g_{\rho, *}(T) \, T^4
+    % = T^4 \sum_i \left( \frac{T_i}{T} \right)^4 \frac{g_i}{2 \pi^2} \int_{x_i}^\infty
+   % \frac{(u^2 - x_i^2)^{1/2} u^2 \diff u}{\exp(u - y_i) \pm 1} 
+\end{align}
+where $g_{\rho, *}$ is the effective number of relativistic degrees for freedom and is given as
+\begin{align}
+    \label{eq:g_rho}
+    g_{\rho, *} = \sum_\mathrm{bosons} g_i \left( \frac{T_i}{T} \right)^4 + \frac{7}{8} \sum_\mathrm{fermions} g_i \left( \frac{T_i}{T} \right)^4.
+\end{align}
+The number of internal degrees of freedom of a particle species is denoted by $g_i$ and its temperature by $T_i$. 
+Since the rest of the thesis deals with dynamics within the epoch of radiation domination, this energy density defines the
+dynamics of the universe for the purpose of this work.
+For the entropy density $s$ one finds a similar result \cite[Eq. 3.72, 3.73]{TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    \label{eq:entropy_density}
+     s = \frac{2 \pi^2}{45} g_{s, *} \, T^3 \, \, \mathrm{with} \, \,
+     g_{s, *} = \sum_\mathrm{bosons} g_i \left( \frac{T_i}{T} \right)^3 + \frac{7}{8} \sum_\mathrm{fermions} g_i \left( \frac{T_i}{T} \right)^3.
+\end{align}
+Both $g_{\rho, *}$ and $g_{s, *}$ are shown as functions of the temperature $T$
+in figure \ref{fig:g_plot}.
+Note that one can see (from the right) the electroweak phase transition, the QCD phase transition and $e^+ e^-$ annihilation / neutrino decoupling
+as transitions in the graphs.
+In principle those graphs are based on eq. \eqref{eq:g_rho} and \eqref{eq:entropy_density}. How they in particular are produced is discussed in appendix \ref{sec:g}.
+As one can see, $g_{\rho, *}$ and $g_{s, *}$ seperate at temperatures below $1 \,\mathrm{MeV}$.
+This is below neutrino decoupling.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{g_plot.pdf}
+    \caption{The effective number
+    of relativistic degrees of freedom for
+    the energy density $g_{\rho, *}$ (in blue) and for the entropy density $g_{s, *}$ (in red) as a function of the temperature in MeV. Both axis have a logarithmic scale.
+    This plot was created using the interpolated values from Bosamyi et al. \cite{LatticQCD4Cosmo}
+    as well as the fitting formula from Shellard et al. \cite{AxionCosmoRev}. See appendix \ref{sec:g}
+    for details.
+    }
+    \label{fig:g_plot}
+\end{figure}
+
+\subsubsection{Scalar Fields in Cosmology}
+ % \subsubsection{Scalar Fields in Cosmology}
+% Because Axions have spin zero, their are described by a scalar field $\phi$.
+We consider a \emph{scalar field}, since the axion is described by a scalar field.
+One can think of a scalar field as the continuous limit of a lattice made out of springs.
+Each node in such a system has an associated kinetic energy of $\sim \dot{x}_i^2$ as well as
+potential energy from the neighboring springs $x_i - x_j$. In the continuum limit as well as using
+relativistic four-vector notation the field has $- (\partial_\mu \phi)^2$ energy, the so called
+kinetic energy term.
+The action $S$ for a scalar field on a curved background is given \cite[Chap. 4.1, Page 25]{MarshAxionCosmo}
+ as
+\begin{align}
+    \label{eq:action}
+    S[\phi] = \int \diff^4 x \sqrt{-g} \left(- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right).
+\end{align}
+The measure $\diff^4 x \sqrt{-g}$ accounts for the effect of a curved background where $g$ is the determinant of the metric tensor $g_{\mu \nu}$ while
+the Lagrange density $ \left(- \frac{1}{2} (\partial \phi)^2 - V(\phi) \right)$ describes a relativistic scalar field without any couplings to other fields
+and a potential $V(\phi)$, which is unspecified at this point.
+This potential contains both the mass term for the field
+as well as possible self interactions.
+The equation of motion for $\phi$ is now derived from the action as given in equation \eqref{eq:action} by varying the action by $\phi \rightarrow \phi + \delta \phi$.
+The variation is
+\begin{align*}
+    S[\phi + \delta \phi] % &= \int \diff  x^4 \sqrt{-g} \left( - \frac{1}{2} (\partial (\phi + \delta \phi))^2 - V(\phi + \delta \phi)  \right) \\
+    % &= \int \diff x^4 \sqrt{-g} \left( - \frac{1}{2} g^{\mu \nu} (\partial_\mu \delta \phi \partial_\nu \phi + \partial_\nu \delta \phi \partial_\mu \phi) - V'(\phi) \delta \phi \right) \\
+    % &= - \frac{1}{2} \left( \int \diff x^4 \sqrt{-g} g^{\mu \nu} \partial_\mu \delta \phi \partial_\nu \phi + \int \diff x^4 \sqrt{-g} g^{\mu \nu} \partial_\nu \delta \phi \partial_\mu \phi \right) - \int \diff  x^4 \sqrt{-g} V'(\phi) \delta \phi \\
+    % &= - \frac{1}{2} \left( - \int \diff x^4 \delta \phi \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi +
+    %                        - \int \diff x^4 \delta \phi \partial_\nu \sqrt{-g} g^{\mu \nu} \partial_\mu \phi \right) - \int \diff  x^4 \sqrt{-g} V'(\phi) \delta \phi \\
+    &= \int \diff  x^4 \delta \phi \left( \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi - \sqrt{-g} V'(\phi) \right)
+\end{align*}
+using
+$
+% \begin{align*}
+    V(\phi + \delta \phi) \approx V(\phi) + \frac{\partial V(\phi)}{\partial \phi} \delta \phi + \mathcal{O}(\delta \phi^2)
+% \end{align*}
+$
+and
+$(\partial (\phi + \delta \phi))^2  = g^{\mu \nu} (\partial_\nu \phi \partial_\mu \phi + \partial_\nu \phi \partial_\mu \delta \phi + \partial_\nu \delta \phi \partial_\mu \phi + \partial_\nu \delta \phi \partial_\mu \delta \phi) $
+% \begin{align*}
+      % (\partial (\phi + \delta \phi))^2
+                                        % &= (\partial^\mu (\phi + \delta \phi)) (\partial_\mu (\phi + \delta \phi)) \\
+                                        % &= g^{\mu \nu} (\partial_\nu (\phi + \delta \phi)) (\partial_\mu (\phi + \delta \phi)) \\
+       %                                 &= g^{\mu \nu} (\partial_\nu \phi \partial_\mu \phi + \partial_\nu \phi \partial_\mu \delta \phi +
+       %                                                 \partial_\nu \delta \phi \partial_\mu \phi + \partial_\nu \delta \phi \partial_\mu \delta \phi) % \\
+                                        % &= \mathrm{const} + g^{\mu \nu} (\partial_\nu \phi \partial_\mu \delta \phi + \partial_\nu \delta \phi \partial_\mu \phi) + \mathcal{O}(\delta \phi ^2)
+% \end{align*}
+as well was integration by parts % in the forth equal sign
+and the symmetry of $g^{\mu \nu}$. % and renaming indicies in the last
+% equal sign.
+The term linear in $\delta \phi$ has to vanish in order to fulfill Hamiltons principle so
+\begin{align}
+    \label{eq:klein_gordon_general}
+    \Box \phi = \frac{1}{\sqrt{-g}} \partial_\mu \sqrt{-g} g^{\mu \nu} \partial_\nu \phi = \frac{\partial V(\phi)}{\partial \phi}
+\end{align}
+holds.
+This is the Klein-Gordon Equation for a scalar field on a curved background \cite[Chap. 4.1, Page 26]{MarshAxionCosmo}.
+For the cosmological case, we are interested in the evolution of the field $\phi$ on a Robinson-Walker metric as discussed in section \ref{sec:cosmology}.
+Remember that we are using $k = 0$ for the computation.
+Substituting eq.
+\eqref{eq:flrw} in eq. \eqref{eq:klein_gordon_general} yields
+% % \subsubsection{Equation of Motion for a Friedmann Backgound}
+%
+% % TODO: include spatial denepedence in the eom
+% In order to compute the relic density one is interested in the evolution of the uniform background field $\bar{\phi}$ with $\phi = \bar{\phi} + \delta \phi$, where
+% $|\bar{\phi}| \gg |\delta \phi|$ and $\nabla \bar{\phi} = 0$ (uniformity). One therefore only has to consider the time dependence in equation \eqref{eq:klein_gordon}. From now on $\phi$ will label the background field.
+% For the background field all spacial derivatives $\partial_i$ vanish, therefore one can drop them in equation \eqref{eq:klein_gordon} from the summation and only the time derivative remains.
+\begin{align*}
+    \Box \phi
+                                     % &= \frac{1}{\sqrt{-g}} \partial_t \sqrt{-g} g^{00} \partial_t \phi \\
+                                     = \frac{1}{\sqrt{-g}} \left( (\partial_t \sqrt{-g} g^{00}) (\partial_t \phi) + \sqrt{-g} g^{00} \partial^2_t \phi +
+                            (\partial_i \sqrt{-g} g^{ii}) \partial_i \phi +
+                            \sqrt{-g} g^{ii} \partial^2_i \phi
+                            \right).
+\end{align*}
+Assuming a Friedmann background is certainly correct if we assume a homogeneous
+scalar field. But even if we don't ignore spatial dependencies it is pssible to assume a Friedmann background, if the energy density fluctuations
+of the scalar field are small compared to the total energy density.
+%For the background field only the FLRW metric \eqref{eq:flrw}
+%is important since spacial dependence is ignored and the universe is therefore %homogeneous and isotropic. Its determinant is
+% \begin{align*}
+%     g^{00} = -1
+% \end{align*}
+Using 
+\begin{align*}
+    % g = \det g_{\mu \nu} = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta = - a(t)^6 f(\vec{x}),
+    g = \det g_{\mu \nu} = -1 \cdot \frac{a(t)^2}{1 - kr^2} \cdot a(t)^2 r^2 \cdot a(t)^2 r^2 \sin^2 \theta = - a(t)^6.
+\end{align*}
+% where $f$ is some function of the spatial coordinates.
+one computes
+% \begin{align*}
+%     \frac{\partial V}{\partial \phi} &= - \frac{1}{\sqrt{a(t)^6 f(\vec{x})}} (\partial_t \sqrt{ a(t)^6 f(\vec{x}) }) \dot{\phi} - \ddot{\phi}
+%                                      %= - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
+%                                      %&= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi}
+%                                      %= - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
+%                                      = - 3H \dot{\phi} - \ddot{\phi}.
+% \end{align*}
+\begin{align*}
+    \Box \phi = - \frac{1}{\sqrt{a(t)^6}} (\partial_t \sqrt{ a(t)^6 } \dot{\phi} - \ddot{\phi} + a(t)^5 \partial_i^2 \phi)
+                                     %= - \frac{\partial_t a(t)^3}{a(t)^3} \dot{\phi} - \ddot{\phi} \\
+                                     %&= - \frac{\dot{a}(t) \cdot 3 a(t)^2}{a(t)^3} \dot{\phi} - \ddot{\phi}
+                                     %= - 3 \frac{\dot{a}}{a} \dot{\phi} - \ddot{\phi}
+                                     = - 3H \dot{\phi} - \ddot{\phi} + \frac{\nabla^2 \phi}{a(t)}.
+\end{align*}
+This yields the equation of motion for a scalar field \cite[Chap 4.2, Page 25]{MarshAxionCosmo}
+\begin{align}
+    \label{eq:klein_gordon}
+    \ddot{\phi} + 3 H \dot{\phi} - \frac{\nabla^2 \phi}{a(t)^2} + V'(\phi) = 0.
+\end{align}
+The energy density $\rho$ and the pressure $P$ of a scalar field
+can be computed from the stress energy tensor in eq. \eqref{eq:energy_momentum_tensor_diag} as
+$T_{\mu \nu} = -2 \frac{\partial \mathcal{L}}{\partial g_{\mu \nu}} + g_{\mu \nu} \mathcal{L}$
+\cite[Sec. 3.3, Page 161, Eq. 3.21]{ClassicalFieldTheory}.
+If we ignore spatial dependencies, this results in \cite[Sec. 4.2, Page. 25]{MarshAxionCosmo}
+\begin{align}
+    \label{eq:axion_energy_density_and_pressure}
+    \notag \rho &= T_{00} % = - 2 \frac{\partial}{\partial g^{00}} \left( -1 \frac{1}{2}(\partial_\mu \phi)(\partial_\nu \phi) - V(\phi))
+     %\right) + g_{00} \left( -1 \frac{1}{2}(\partial_\mu \phi)(\partial_\nu \phi) - V(\phi))
+     %\right) \\
+     %&= -2 \left(- \frac{1}{2} (\partial_0 \phi)^2 \right) + (-1) \left(- \frac{1}{2} (-1) (\partial_0 \phi)^2 - V(\phi)\right)
+     =  \frac{1}{2} \dot{\phi}^2 + V(\phi) \\
+    P &= T_{11} % = \frac{1}{2} \phi^2 - g_{11} V(\phi)
+    = \frac{1}{2} \dot{\phi}^2 - V(\phi).
+\end{align}
+
+\subsection{Axions}
+\label{sec:axions}
+One model for dark matter is the axion model.
+Axions are light pseudoscalar bosons that arise in both quantum chromodynamics (QCD)
+as well as in string theory. In this section the theoretical
+model for axions is discussed. This includes first the motivation from the strong CP problem, the origin of the axion from
+a broken symmetry and the effective potential of the axion from QCD.
+Then the mechanism for dark matter creation by axions, the misalignment mechanism, is presented
+and we take a short look at axions from the decay of cosmic strings.
+Last the $\mu$-QCD model is presented, which realizes fuzzy dark matter using axions.
+
+
+\noindent
+Because the axion mass is very small, one
+can assume that the axions form a condensate
+that can be described by the classical equations
+of motion so there is no need to quantize the
+field theory, simplifying the computations
+drastically. This is analogous to how Maxwells
+equations describe electromagnetic fields \cite[Chap. 4]{MarshAxionCosmo}.
+Therefore we can use equation \eqref{eq:klein_gordon} to describe the dynamics
+of the cosmological axion field.
+The assumption of a Friedmann background is valid, because we only look at
+the dynamics in the radiation dominated epoch, where the axion density
+is still small compared to the total energy density.
+Therefore equation \eqref{eq:klein_gordon} is the equation of motion for the axion field and we can ignore the effect of the axion density on the expansion rate.
+
+
+\subsubsection{The Strong CP Problem and Spontaneous Symmetry Breaking}
+Where does the axion field come from?
+The axion was first introduced in 1977
+by Peccei and Quinn (PQ) as a solution to the strong CP problem \cite{PQ1} \cite{PQ2}.
+After that Weinberg and Wilczek realized that this would lead to a new particle, the axion \cite{Weinberg:1977ma} \cite{Wilczek:1977pj}.
+The strong CP problem is that in principle a $\mathrm{SU}(3)$ gauge theory, like QCD, can violate CP (charge-parity)
+symmetry via the so called theta term.
+The general $\mathrm{SU}(3)$ symmetric QCD lagrangian is \cite[Chap. VII.3, Page 369]{Nutshell}
+\begin{align}
+    \label{eq:L_qcd}
+    \mathcal{L}_\mathrm{QCD} = - \frac{1}{4} G^a_{\mu \nu} G^{\mu \nu}_a - \overline{q} \left( i \slashed{D} - \mathcal{M} \right) q + \underbrace{i \frac{N_f g^2 \theta}{32 \pi^2} G_{\mu \nu}^a \tilde{G}_{\mu \nu}^a}_{= \mathcal{L}_\theta}
+\end{align}
+where $G_{\mu \nu}$ is the Gluon field strength tensor with its dual $\tilde{G}_{\mu \nu}$, $q$ is a vector of quark spinors,
+$\slashed{D}$ the covariant derivative, $\mathcal{M}$ the quark mass matrix,
+$N_f$ the number of fermions i.e. quarks, $g$ the coupling strength and $\theta$ is a free parameter modulo $2\pi$.
+The term $\mathcal{L}_\theta$ is the so called theta term of QCD. It can be written as a total derivative and therefore has no effect on the classical equations of motion nor any Feynman diagram.
+It is a topological invariant i.e. the integral
+\begin{align*}
+    \int \diff^4 x \mathcal{L}_\theta = i \theta Q
+\end{align*}
+is a winding number $Q \in \mathbb{Z}$ \cite[Sec. II, Eq. 2.6]{Leutwyler:1992yt}. The quantity $Q$ is called the topological charge.
+Nevertheless the theta term has non pertubative effects and violates CP symmetry, like giving an electric dipole moment to the neutron. Since no such dipole moment was measured, the free parameter $\theta$
+has to be very close to zero. The issue why $\theta$ is so small is called the strong CP problem and gives rise to the axion idea in the first place. The basic idea is that $\theta$ is not a free parameter
+but a dynamical field, which, using the theta term, couples to the gluon field.
+Then this field evolves in such a way, that it is dynamically forced towards zero.
+
+How does the axion field come into existence?
+We introduce a \emph{complex} scalar field $\Phi$, the PQ field, with an effective potential \cite[Eq. 2]{StringFits}
+\begin{align}
+    \label{eq:SSB_potential}
+    V(\Phi) = \lambda \left( |\Phi|^2 - \frac{f_a^2}{2} \right)^2 + \frac{\lambda}{3} T^2 |\Phi|^2,
+\end{align}
+where $\lambda$ is a parameter, $f_a$ is the axion decay constant and
+$T$ is the temperature.
+Note that this potential has a global $U(1)$ symmetry $\Phi \rightarrow e^{i \alpha} \Phi$, the PQ symmetry.
+If $T > T_\mathrm{SSB} = f_a$ this potential has a unique vacuum state at $\Phi = 0$.
+Once the temperature is small enough $T < T_\mathrm{SSB}$ the potential
+has a degenerated vacuum state as a circle around the origin of radius $\frac{f_a}{\sqrt{2}}$.
+Now the state at $\Phi = 0$ is not stable anymore and the field
+breaks the symmetry by going to some arbitrary state on the vacuum manifold.
+One can write the complex field $\Phi$ in polar coordinates as
+\begin{align}
+    \Phi = |\Phi| e^{i \theta},
+\end{align}
+Where the angle $\theta$ is called the vacuum misalignment angle
+and is related to the physical axion field by
+\begin{align}
+    \label{eq:axion_theta}
+    \phi = f_a \theta.
+\end{align}
+Initially the axion is a massless boson but below a critical temperature
+the axion acquires mass via instanton effects (discussed below in section \ref{sec:axion_mass}).
+Finally the field has enough mass to overcome Hubble friction.
+It then starts to oscillate and tends towards zero.
+This process also leads to the creation of axion particles that form dark
+matter, which is further discussed in section \ref{sec:wkb_alp} and
+\ref{sec:wkb_qcd}.
+A cartoon of this process can be found in figure \ref{fig:ssb}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{ssb.pdf}
+    \caption{
+    3D cartoons of the spontaneous symmetry breaking of the global PQ symmetry.
+    a) shows the unbroken symmetry, where the 
+    potential has a single vacuum state at $\Phi = 0$.
+    In the second diagram b) the temperature has dropped below the symmetry breaking scale and the vacuum state is no longer unique.
+    In c) the axion acquires mass and starts to oscillate.
+    % Here the field falls into some random direction into the vacuum state,
+    % breaking the symmetry. Below the confinement scale
+    % of QCD, the QCD axion acquires enough mass to overcome Hubble
+    % friction and starts to oscillate, as shown in c). This process is further 
+    % described in section \ref{sec:misalighment}
+    }
+    \label{fig:ssb}
+\end{figure}
+
+
+\subsubsection{The Potential from QCD Instantons}
+\label{sec:axion_mass}
+\label{sec:DIGA}
+
+The potential $V(\phi)$ is unknown at this point for a general axion model, but it has a minimum
+at $\phi = 0$. Using the Taylor expansion of V about $\phi = 0$, the potential is approximately given as
+\begin{align}
+    \label{eq:potential}
+    V(\phi) = \frac{1}{2} m_a^2 \phi^2
+\end{align}
+where $m_a$ is the axion mass as the coupling constant.
+The axion mass for a general model is left open as a parameter.
+There are two remarks to be made.
+First, there might be higher order or anharmonic effects.
+The potential for the QCD axion is an example for this. There we see that we obtain a
+more complicated cosine potential, with the potential \eqref{eq:potential} as the
+leading order approximation.
+Second, the axion mass can depend on the temperature of the universe like, again, in the case of the QCD axion.
+The mass of the axion depends on the temperature in the case of the QCD axion, because its rest mass is not due
+to the coupling to the Higgs field but because of the dependence of the axion field to the QCD vacuum via instanton effects.
+Lets see how one derives the potential of the QCD axion.
+This is only feasible using approximations for two cases, namely the axion mass at $T = 0$ and the potential in the high temperature case. 
+Those results can be used together as the axion potential by using the
+$\theta$ dependence from the high temperature and the zero temperature
+mass once the high temperature result would exceed the zero temperature mass.
+The exact calculations and their technical details are beyond the scope of this thesis \footnote{and the abilities of the author}.
+Because the axion field couples to the gluon field via the theta term in \eqref{eq:L_qcd},
+the energy of the vacuum state of QCD has a dependence on $\theta$ and the energy of te QCD vacuum
+is a potential energy for the axion field. This dependence has to be computed.
+The vacuum energy, normalized to be zero at $\theta = 0$, is given as
+\begin{align*}
+   \epsilon_0(\theta) = - \frac{1}{V} \log \frac{Z(\theta)}{Z(0)},
+\end{align*}
+where $V$ is the considered four volume and $Z$ the partition function of the QCD vacuum state
+\cite[Eq. 2.2]{FiniteTempQCD}.
+Note that this normalization is an arbitrary choice, made so that the misalignment mechanism works.
+That the potential $\epsilon_0(\theta)$ has its minimum at $\theta = 0$ is stated by the Vafa and Witten theorem \cite{VafaWitten}.
+The vacuum state in QCD is not unique, since for every possible topological charge $Q$
+there is a different topology and therefore a different vacuum state.
+The QCD vacuum then can be written as a superposition of the form
+\begin{align*}
+    |\theta \rangle  = \sum_{Q = - \infty}^{\infty} e^{i \theta Q} |Q \rangle.
+\end{align*}
+because the state has to be invariant under the PQ symmetry, that is a shift of $\theta \rightarrow \theta + 2 \pi$  
+changes the topological charge by $Q \rightarrow Q + 1$ and therefore $| Q \rangle \rightarrow |Q + 1 \rangle$.
+The partition function or respectively the path integral after a Wick rotation into euclidean space can then be written as
+\begin{align*}
+    Z = \sum_{Q = - \infty}^\infty e^{i \theta Q}Z_Q \, ,
+\end{align*}
+where the theta term is evaluated to the factor $e^{i Q \theta}$ and
+$Z_Q$ is the partition function for a fixed topological charge $Q$ \cite[Sec. II, Eq. 2.7]{Leutwyler:1992yt}.
+
+We now calculate the axion mass at $T = 0$.
+The square of the mass can be calculated as the prefactor of the quadratic term in the series expansion of the axion potential e.g. the vacuum expectation value at $\theta = 0$, because this term is the mass term in the Lagrangian.
+In order to calculate the vacuum energy, the partition functions for each topological sector with a fixed $Q$ have to be evaluated.
+It can be written as
+\begin{align*}
+    Z_Q &= \int [\diff G] [\diff q] [\diff \overline{q}] \exp \left( - \underbrace{\int \diff^4 x \mathcal{L}_e}_{= S_E} \right)
+     = \int [\diff G] e^{S_G} \det (i \slashed{D} + \tilde{\mathcal{M}}),
+\end{align*}
+where the euclidean Lagrange density $\mathcal{L}_e$ is the Wick rotation of $\mathcal{L}_\mathrm{QCD} - \mathcal{L}_\theta$
+\cite[Sec. II, Eq. 2.8, 2.9]{Leutwyler:1992yt} and $\tilde{\mathcal{M}} = P_L \mathcal{M} + P_R \mathcal{M}^\dagger $ using the left and right chiral
+projection operators $P_L, P_R$. The functional integral is a Grassman integral that is evaluated into an operator determinant.
+The determinant of the Dirac operator is computed in \cite[Sec. II, Eq. 2.9]{Leutwyler:1992yt} and given as
+\begin{align*}
+    \det (i \slashed{D} + \mathcal{M}) = \left( \mathrm{det}_f \mathcal{M} \right)^Q \prod_n \mathrm{det}_f \left( \lambda_n^2 + \mathcal{M} \mathcal{M}^\dagger \right),
+\end{align*}
+where $\lambda_n$ are the eigenvalues of $\slashed{D}$ who are also computed in \cite{Leutwyler:1992yt}
+and the product omits zero modes.
+It can now be seen that the $\theta$ dependence of the partition function
+is $\sim \det_f \mathcal{M} e^{i \theta / N_f}$
+where $\det_f$ is the determinant over the $N_f \times N_f$ quark mass matrix.
+Using this result one can find an effective field theory for the QCD vacuum state in term of pions, independent of the
+topological charge $Q$ as \cite[Sec. VIII, Eq 8.4]{Leutwyler:1992yt}
+\begin{align}
+    \label{eq:L_eff}
+    \mathcal{L}_\mathrm{eff} = \frac{f_\pi^2}{4} \trace ( \partial_\mu U^\dagger \partial_\mu U) + \Sigma \mathrm{Re} e^{-i \theta / N_f} \trace \mathcal{M} U^\dagger + \, ...,
+\end{align}
+where $U$ is the matrix describing the $N_f^2 - 1$ Goldstone bosons in the vacuum i.e. the pions.
+Evaluating this gives \cite[Sec. VIII, Eq. 8.15]{Leutwyler:1992yt}
+\begin{align*}
+   Z  =  \frac{2}{V \Sigma m_0} \mathrm{I}_1 (V \Sigma m_0)
+   \approx \frac{2}{V \Sigma m_0} \frac{1}{\sqrt{2 \pi V \Sigma m_0}} \exp (V \Sigma m_0),
+\end{align*}
+where $\Sigma$ is an unknown prefactor, $I_1$ is the first purely imaginary Bessel function and $m_0 = |m_u + e^{- i \theta} m_d|$,
+where $m_u$ and $m_d$ are the masses of the up and the down quark.
+The expectation value of the energy of the $\theta$ vacuum can now be computed as \cite[Sec. IX, Eq. 9.5]{Leutwyler:1992yt} \footnote{In general we have to replace $\theta$ by $N_C \theta$, where
+$N_c$ is the color-anomaly. \cite[Sec. 2.2]{MarshAxionCosmo} In this thesis we set $N_c = 1$.}
+\begin{align}
+    \label{eq:zero_temp_potential}
+   \epsilon_0(\theta) = - \frac{1}{V} \log \frac{Z(\theta)}{Z(0)} =
+   \Sigma (m_u + m_d) \left( 1 - \frac{\sqrt{m_u^2 + m_d^2 + 2 m_u m_d \cos \theta}}{m_u + m_d}\right).
+\end{align}
+From this the axion mass at $T = 0$ can be computed as \cite[Sec. IV, Eq. 9.7]{Leutwyler:1992yt}
+\begin{align}
+    \label{eq:axion_mass_at_zero_T}
+    m_a^2 f_a^2 =
+    \left. \frac{\diff^2 \epsilon_0}{\diff \theta^2} \right|_{\theta = 0} = \Sigma \frac{m_u m_d}{m_u + m_d}
+    = m_\pi^2 f_\pi^2 \frac{m_u m_d}{(m_u + m_d)^2}
+\end{align}
+where the unknown factor $\Sigma$ was replaced by computing the pion mass from the partition function of the Lagrangian in equation \eqref{eq:L_eff} as a function of $\Sigma$,
+$f_a$ is axion decay constant and $f_\pi$ is the pion decay constant.
+
+Now we consider the case of the axion mass at high temperatures.
+To compute the axion potential at finite temperatures one has to
+compute the free energy density $F$ instead of the energy density \cite[Eq. 2.10]{FiniteTempQCD}.
+This is because in this case the quark-gluon condensate also has thermal energy but not all of it is accessible as potential energy for the axion, only the free energy part $F$ is.
+It is computed as 
+\begin{align*}
+    F(\theta, T) = - \frac{1}{V} \log \frac{Z(\theta, T)}{Z(0, T)}.
+\end{align*}
+Here the time direction of the four volume $V$ is identified with the inverse temperature by Wick rotation.
+Now one computes the partition function $Z_1$ for the topological charge $Q = 1$ by using a stationary phase approximation for the euclidean action $S_\mathrm{E}$
+analogous to
+\begin{align*}
+    Z_Q = \int [\diff G] [\diff q] [\diff \overline{d}] \exp S_\mathrm{E}(Q) \approx
+    \left(  \frac{2 \pi}{S(G_0, q_0, \overline{q}_0)''}  \right)^{1/2} \exp \left( - S(G_0, q_0, \overline{q}_0) \right),
+\end{align*}
+where $S_0' = 0, S_0 > 0$,
+for the fields $G_0, q_0, \overline{q}_0$ that minimize the euclidean action $S_E$. This solution is called the instanton solution.
+Instantons are pseudoparticles within the vacuum state, that tunnel between different vacuum states.
+The partition function for a single instanton can be computed as \cite[Sec. VI]{FiniteTempQCD}
+\begin{align*}
+    Z_1 = -2 \int \diff^4 \, \rho \, n(\rho)
+\end{align*}
+where $n(\rho)$ is the instanton size distribution
+which is computed in \cite{thooft_PhysRevD.14.3432} \footnote{A heroic calculation or a Herculean calculation \cite[Page 346]{Instantons}}.
+% \begin{align*}
+%     n(\rho) = \mathrm{Some\,very\,ugly\,term}.
+% \end{align*}
+Finally the dilute gas approximation (DIGA) is applied to the instanton solution. 
+Here one assumes that the full partition function for all instantons is just the combination of 
+the partition function for a single instanton.
+One writes the topological charge as $Q = n - \overline{n}$ for the number of instantons
+$n$ and anti-instantons $\overline{n}$ and approximates the partition function as
+\cite[Chap. 7, Eq. 3.55]{Symmetry}
+\begin{align*}
+    Z \approx \sum_{n,\overline{n} = 0}^\infty \frac{1}{n! \overline{n}!} \left(Z_1 e^{i \theta}\right)^n \left(Z_1 e^{- i \theta}\right)^{\overline{n}}
+    = \exp \left( Z_1 e^{i \theta} \right) \exp \left( Z_1 e^{- i \theta} \right) = \exp (2 Z_1 \cos \theta),
+\end{align*}
+where each topological sector is seen as $n$ instantons and $\overline{n}$ anti-instantons who do not interact with each other.
+The factorial term comes from the indistinguishably of the instantons.
+Then the free energy density, i.e. the axion potential at finite temperature, is then given in this approximation as
+\begin{align}
+    \label{eq:diga_axion_potential}
+    % V(\theta, T) = \frac{2 Z_1}{V} (1 - \cos \theta) = 2 \int_0^\infty \diff \rho D(\rho) G(\pi \rho T) (1 - \cos \theta)
+    F(\theta, T) = \frac{2 Z_1}{V} (1 - \cos \theta) = 2 \int_0^\infty \diff \rho n(\rho) (1 - \cos \theta) 
+    = \frac{C}{f_a^2} \left(\frac{T}{\Lambda_\mathrm{QCD}}\right)^{-(7 + N_f / 3)}(1 - \cos \theta),
+\end{align}
+with some prefactor $C$ and the QCD confinement scale $\Lambda_\mathrm{QCD}$.
+Analogous to the zero temperature mass computation in equation \eqref{eq:axion_mass_at_zero_T}, one finds that 
+\begin{align}
+    \label{eq:axion_mass_diga}
+    m_a^2 \approx C \left(\frac{T}{\Lambda_\mathrm{QCD}}\right)^{-(7 + N_f / 3)}.
+\end{align}
+Note that the computed potential diverges at low $T$ and therefore this approximation is not applicable at low temperatures. As
+mentioned above, one can use this together with the $T = 0$ result and cut the high temperature potential
+off once it exceeds the $T = 0$ mass.
+Let's compare the derived cosine potential $1 - \cos \theta$ with the previously mentioned harmonic potential $\frac{1}{2} \theta^2$.
+Since $\frac{1}{2}\theta^2$ is the
+leading order taylor expansion of the cosine potential $1 - \cos \theta$ around 0, they agree around zero.
+For larger values of $\theta$ is cosine potential is suppressed by higher order terms and becomes more flat when $\theta \rightarrow \pi$.
+It is also interesting to compare the zero temperature with the DIGA case.
+The potential at zero temperature in eq. \eqref{eq:zero_temp_potential} also is in leading order
+the harmonic potential. In fact this approximation is much better, so that for larger $\theta$ values
+the DIGA and the zero temperature case differ significantly.
+This also happens to the low temperature potential $1 - \sqrt{\frac{1 + \cos \theta}{2}}$.
+Note that the potential from DIGA $1 - \cos \theta$ departs from the low temperature potential
+at high $\theta$.
+But this is not a problem for our further computations, since we choose the DIGA potential.
+As we see later in section \ref{sec:misalighment}, in the misalighment mechanism, the higher $\theta$ values only play a role at high temperatures, so we use the DIGA potential, in the computation of the axion relic density.
+For lower temperatures, where there might be an ambiguity, $\theta$ is always small
+enough so that both potentials agree quite well.
+A graphical comparison of both potentials can be found in figure \ref{fig:potential_plot}.
+A plot of the temperature dependence of the axion mass $m_a(T)$, including several more precise approximations, 
+can be found in figure \ref{fig:m_a_of_T_plot}. The DIGA approximation corresponds to the result by Fox et al.
+\cite{Fox:2004kb}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{potential_plot.pdf}
+    \caption{Comparison of the harmonic potential and the cosine potential for the axion. 
+    Since $\frac{1}{2}\theta^2$ is the
+    leading order taylor expansion of the cosine potentials around zero, they agree very well around zero.
+    For larger values of $\theta$ is the cosine potential from DIGA $1 - \cos \theta$ is suppressed by higher order terms and becomes more flat as $\theta \rightarrow \pi$.}
+    \label{fig:potential_plot}
+\end{figure}
+
+\newpage
+\subsubsection{Symmetry Breaking before Inflation and the Misalignment Mechanism}
+\label{sec:misalighment}
+\label{sec:initial_conditions}
+\label{sec:wkb_alp}
+\label{sec:thermo}
+
+% TODO: difference between oth scenarios
+To solve the equation of motion we have to distinguish two different cases.
+First the PQ symmetry is broken before or during inflation.
+This happens $f_a < T_\mathrm{Gibbons-Hawking} = \frac{H_I}{2 \pi}$, where
+$H_I$ is the Hubble scale at the beginning of inflation \cite[Sec. 3.2]{MarshAxionCosmo}.
+In this case the spatial dependencies can be ignored because the epoch of inflation
+removed all anisotropies. Therefore the equation of motion is
+\begin{align}
+    \label{eq:eom}
+    \ddot{\phi} + 3 H \dot{\phi} + V'(\phi) = 0.
+\end{align}
+Since the equation of motion in formula \eqref{eq:eom} is a second order ODE, one needs the initial values
+for $\phi$ and $\dot{\phi}$.
+Because $m_a \ll H(t_i)$ the friction term $\sim \dot{\phi}$ in equation \eqref{eq:eom} dominates over the
+driving force $V'(\phi) \sim m_a^2$ from the potential term at early times.
+Even if $\dot{\phi_i} \neq 0$, 
+$\dot{\phi}$ would become very small in the early evolution.
+Therefore it can be assumed that $\dot{\phi_i} = 0$.
+The initial field value $\phi_i$ is a free parameter of the model.
+The second case, where the PQ symmetry is not broken during inflation,
+is discussed in the next section but is not the focus of this thesis.
+In the symmetry breaking scenario before inflation, axion dark matter is created using the \emph{misalignment mechanism}. 
+To understand the process, we first look at a toy example, where one can solve
+the equation of motion \eqref{eq:eom} analytically.
+This is true for the simple case of a constant mass, a harmonic potential as well as a power law scale parameter (see section \ref{sec:cosmology}) \cite[Chap. 4.2, Page 25]{MarshAxionCosmo}.
+The solution in this case is given as 
+\begin{align}
+    \label{eq:power_law_solution}
+    \phi(t) = a^{-3/2} \left(\frac{t}{t_i}\right)^{1/2}\left(C_1 J_n(m_a t) + C_2 Y_n(m_a t)\right).
+\end{align}
+using the Bessel functions $J_n$ and $Y_n$.
+See appendix \ref{sec:derivation_of_the_analytic_result} for the derivation of this result.
+The solution was plotted for arbitrary values in figure \ref{fig:rad_dom_ax_field} for the radiation dominated case.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{analytic_power_law_plot.pdf}
+    \caption{Evolution of the axion field in a radiation dominated universe. This plot is a replication of figure 4 in \cite{MarshAxionCosmo}. The dashed line marks the point of $a_\mathrm{osc}$.
+    In plot a), the axion field is plotted against the normalized scale factor. The condition for the oscillation is shown in b).
+    In c) one can see the behavior of the equation of state and in d) the energy density including the result using the
+    WKB approximation in section \ref{sec:wkb_alp}. }
+    \label{fig:rad_dom_ax_field}.
+\end{figure}
+As one can see in figure \ref{fig:rad_dom_ax_field} plot a), the axion field first starts with an almost constant value, since $\dot{\phi}_i = 0$ and starts to oscillate
+at some scale factor $a_\mathrm{osc}$. After this point the energy density of the axion field seems to fall off by a power law. To quantify this observation one makes the ansatz \cite[Chap 4.3.1, Page 28]{MarshAxionCosmo}
+% Furthermore we can use the WKB approximation to gain a better understanding of the formation of the relic density
+\begin{align*}
+    \phi &= A c \, \, \Rightarrow \,\,
+    \dot{\phi} = \dot{A} c - s m_a A, \, \,
+    \ddot{\phi} = \ddot{A} c - 2 m_a \dot{A} s - m_a^2 c A
+\end{align*}
+where $A = A(t)$ is a slowly varying function of the time $t$ and using $c = \cos(m_a t + \theta)$ and 
+$s = \sin(m_a t + \theta)$. Using the properties of the axion field during the oscillation 
+$H / m_a \sim \dot{A} / m_a \sim \epsilon \ll 1$ and $\ddot{A} \ll 1$,
+we plug the ansatz into equation \eqref{eq:eom} and obtain
+\begin{align*}
+    &\ddot{A} c - 2 m_a \dot{A} s - m_a^2 c A + 3 H ( \dot{A} c - m_a s A) + m_a^2 c A = 0
+    &\Rightarrow \underbrace{\frac{c}{m_a^2} \ddot{A}}_{\approx 0} - 2 s \underbrace{\frac{\dot{A}}{m_a}}_{= \epsilon} + 3c \underbrace{\frac{H \dot{A}}{m_a^2}}_{= \epsilon^2} - 3 s A \underbrace{\frac{H}{m_a}}_{= \epsilon} = 0,
+\end{align*}
+using the properties of $A(t)$.
+This gives
+\begin{align*}
+    \frac{\dot{A}}{A} = - \frac{3}{2} H = - \frac{3}{2} \frac{\dot{a}}{a},
+\end{align*}
+in leading order.
+Using the ansatz for $A = a^n$ we get
+\begin{align*}
+    \frac{n \dot{a} a^{n - 1}}{a^n} = - \frac{3}{2} \frac{\dot{a}}{a} \Rightarrow n = - \frac{3}{2}.
+\end{align*}
+Therefore the axion field indeed scales at later times like a power law $\sim a^n = a^{-3/2}$
+and oscillates with a frequency of $\omega = m_a$ as can be seen from
+the cosine term. Therefore, the energy density oscillates with $\omega = 2 m_a$
+since it is quadratic in the field and
+the expectation value of the equation of state $w = \frac{P_a}{\rho_a} \approx 0$ and the axion density is given as
+\begin{align*}
+    \rho_a = \frac{1}{2}m_a^2\phi^2 \sim \left(a^{-3/2}\right)^2 = a^{-3}
+\end{align*}
+in this period. 
+Therefore, the axion field behaves like ordinary matter at this point and
+is just diluted by the expansion of the universe, resulting in \cite[Chap. 4.3.1, Page 28]{MarshAxionCosmo}
+\begin{align}
+    \label{eq:wkb_axion_denity}
+    \rho_a(a) = \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a} \right)^3.
+\end{align}
+This is an adiabatic invariant of its evolution.
+In total this is the misalignment mechanism. The axion starts out as a field that, due to Hubble friction from the term $3H\dot{\phi}$,
+is almost constant. In this phase the field behaves like dark energy and axions are produced.
+Once the axion acquires sufficient mass, it starts to oscillate and behaves like matter, that is diluted by the expansion.
+One can use the scaling property to derive analytic formulas for the axion density parameter in some cases \cite[Chap 4.3.1, Page 28]{MarshAxionCosmo}.
+For this, one needs a condition for $a_\mathrm{osc}$ i.e. the time where the WKB approximation can be used, that is the time where the field starts to
+oscillate.
+The oscillating phase starts when the Hubble friction term becomes negligible compared to the driving potential term,
+so the transition is at
+\begin{align}
+    \label{eq:a_osc_cond}
+    3 H(a_\mathrm{osc}) = m_a.
+\end{align}
+In general any constant factor can be used in this expression, like in figure \ref{fig:rad_dom_ax_field} the factor  $3$
+was replaced with a $2$, because this only gives a rough estimate that can be adjusted.
+
+\noindent
+Now we can use the adiabatic invariant to compute the density parameter of the 
+axion field today. This is the axion relic density.
+We assume radiation domination at $a_\mathrm{osc}$.
+Using condition \eqref{eq:a_osc_cond} and equation \eqref{eq:hubble_parameter_evo} we get
+\begin{align*}
+    \left(\frac{m_a}{3}\right)^2 = H^2 = H_0^2 \left(
+    \Omega_\mathrm{rad} \left( \frac{a_i}{a} \right)^4
+\right) \Rightarrow \frac{a_\mathrm{osc}}{a_0} = \left( \frac{9 \Omega_r H_0^2}{m_a^2} \right)^{1/4},
+\end{align*}
+and therefore
+% \begin{align*}
+%     \Omega_a &= \frac{\rho_a}{\rho_c} = \frac{1}{\rho_c} \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a_0} \right)^3
+%              &= \frac{1}{3 H_0^2 M_\mathrm{pl}^2} \frac{1}{2} m_a^2 \phi_i^2 \left( \frac{9 H_0^2 \Omega_r}{m_a^2} \right)^{3/4}
+%              &= \frac{1}{6} \left( 9 \Omega_r \right)^{3/4} \left( \frac{m_a}{H_0} \right)^{1/2} \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2.
+% \end{align*}
+\begin{align*}
+    \Omega_a = \frac{\rho_a}{\rho_c} = \frac{1}{\rho_c} \rho_a(a_\mathrm{osc}) \left( \frac{a_\mathrm{osc}}{a_0} \right)^3
+             = \frac{1}{6} \left( 9 \Omega_r \right)^{3/4} \left( \frac{m_a}{H_0} \right)^{1/2} \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2.
+\end{align*}
+A contour plot can be found in figure \ref{fig:wkb_ard} showing the computed density parameter as a function of both free parameters, the
+initial field value $\phi_i$ and the axion mass $m_a$. The area where $\Omega_a$ is greater than $\Omega_\mathrm{DM}$ is the region that is excluded for the axion parameters to be in,
+since that would contradict the observed amount of dark matter. But it is entirely possible that $\Omega_a < \Omega_\mathrm{DM}$ and not all the dark matter
+is made out of axions.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{pow_law_wkb_plot.pdf}
+    \caption{Axion Relic Density using a WKB approximation for $m_a = \mathrm{const}$
+    as a function of the initial field value $\phi_i$ and the axion mass $m_a$. The white area is excluded for the axion $\Omega_a > \Omega_\mathrm{DM}$.
+    }
+    \label{fig:wkb_ard}
+\end{figure}
+For matter domination we would find
+$\Omega_a = \frac{9}{6} \Omega_\mathrm{mat} \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2$ and
+if the field starts to oscillate at the present time $\Omega_a = \frac{1}{6} \left( \frac{m_a}{H_0} \right)^2 \left( \frac{\phi_i}{M_\mathrm{pl}} \right)^2$ \cite[Eq. 61]{MarshAxionCosmo}.
+    
+
+\subsubsection{Adiabatic Invariant for the QCD Axion}
+In order to perform a similar calculation as in section
+\ref{sec:wkb_alp},
+one needs to show that
+also for the QCD axion, where the mass is not constant, an adiabatic invariant exists,
+i.e. the number of axions is approximately conserved at some point
+in its evolution. In order to scale the density to the present one also needs to take
+the expansion of the universe into account. This can be done
+by using the entropy conservation during the expansion.
+If both of those quantities are conserved,
+this allows to scale the relic density to the present by
+\begin{align}
+    \label{eq:n_over_s}
+    \frac{n}{s} = \frac{N / a^3}{S / a^3} = \frac{N}{S} = \mathrm{const}
+    \Rightarrow n_a(\mathrm{today}) = s(\mathrm{today}) \frac{n_a(T_\mathrm{osc})}{s(T_\mathrm{osc})}.
+\end{align}
+The conservation of entropy is not specific 
+for axion cosmology and can be found in e.g. \cite{TheEarlyUniverseKolbAndTurner} and is presented in
+appendix \ref{sec:entropy_conversation}.
+Lets show that the axion number is conserved.
+This derivation follows \cite[Sec. IV, Eq. 28]{AxionCosmoRev}.
+For this, the derivative of the axion energy density from equation \eqref{eq:axion_energy_density_and_pressure} is computed as
+\begin{align*}
+    \dot{\rho} &= \dot{\theta} \ddot{\theta} + 2 m_a \dot{m_a} (1 - \cos \theta) + m_a^2 \dot{\theta} \sin \theta
+    % = \dot{\theta}(-3 H \dot{\theta} - m_a^2 \sin \theta) + 2 m_a \dot{m_a} (1 - \cos \theta) + m_a^2 \dot{\theta} \sin \theta
+    = 2 m_a \dot{m_a} (1 - \cos \theta) - 3 H \dot{\theta}^2,
+\end{align*}
+using the equation of motion \eqref{eq:eom}.
+Now one looks at the later times in the evolution of the axion field, when the axion field
+is oscillating.
+For this it is assumed
+that the axion mass $m_a$ and the Hubble parameter $H$ change slowly with time compared to the oscillation of the axion field. Therefore, the time dependence of the coefficients
+in the field equation can be neglected over the coarse of one oscillation.
+Also the average over one oscillation is used, where an overline
+is used to indicate the mean value over one oscillation.
+The need to consider the more complicated cosine potential for the QCD axion is
+only due to the early evolution, when $\phi$ is not small but
+in the oscillating epoch the approximation $\phi \ll 1 \Rightarrow V(\theta) \approx m_a^2 \theta_a^2$ can be used.
+Then the equation of motion behaves like a damped oscillator with constant coefficients and the
+virial theorem holds for the mean kinetic energy $K = \overline{\dot{\theta}^2} / 2$ and the mean potential energy $V = m_a(T)^2 \overline{\theta^2}$ as
+\begin{align*}
+    2K + V = 0 \Rightarrow \overline{\dot{\theta}^2} = m_a^2 \overline{\theta^2}.
+\end{align*}
+Then the time derivative of the axion energy density can be written as
+\begin{align*}
+    \overline{\dot{\rho}} \approx m_a \dot{m_a} \overline{\theta^2} - 3 H m_a^2 \overline{\theta^2}.
+\end{align*}
+Now considering the axion number in a comoving volume of space
+\begin{align*}
+    N = \frac{a^3 \rho_a}{m_a}
+\end{align*}
+its time derivative can be computed as
+\begin{align*}
+    \dot{N} &= \frac{a^3}{m_a} (m_a \dot{m_a} \overline{\theta^2} - 3 H m_a^2 \overline{\theta^2}) + \frac{3 \dot{a} a^2}{m_a} \left( \frac{1}{2} \overline{\dot{\theta}^2} + \frac{1}{2} m_a^2 \overline{\theta^2} \right)
+    % &= \frac{a^3}{m_a}( m_a \dot{m_a} \overline{\theta^2} - 3 \frac{\dot{a}}{a} m_a^2 \overline{\theta^2}) + \frac{3 \dot{a} a^2}{m_a} m_a^2 \overline{\theta^2} \\
+    = a^3 \dot{m_a} \overline{\theta^2} \approx 0.
+\end{align*}
+Therefore, the axion number is conserved
+and we have found the required adiabatic invariant in \eqref{eq:n_over_s}
+$n/s$.
+
+
+\subsubsection{Approximation for the Relic Density of the QCD Axion}
+\label{sec:wkb_qcd}
+Now the axion relic density can be analytically computed for the QCD axion as done
+in section \ref{sec:wkb_alp} for a general axion like particle. Radiation domination is assumed.
+First, one needs to find the temperature of the universe at the point where the
+axion field starts to oscillate.
+Using the oscillation condition from formula \eqref{eq:a_osc_cond},
+the energy density for radiation from equation \eqref{eq:energy_denstiy} and the Friedmann Equation in formula \eqref{eq:friedmann_equation}
+one obtains the relation
+\begin{align*}
+    T_\mathrm{osc} = \left( \frac{10 m_a(T_\mathrm{osc})^2 M_\mathrm{pl}^2}{\pi^2 g_{*, \rho}(T_\mathrm{osc})} \right)^{1/4}.
+\end{align*}
+Substituting the axion mass with the expression from equation \eqref{eq:axion_mass_diga} yields (numerical result for $n = 4$)
+\begin{align}
+    \label{eq:T_osc1}
+    % \\ & \Rightarrow 
+    T_\mathrm{osc} = \underbrace{\left( \left( \frac{10 M_\mathrm{pl}^2}{\pi^2 g_{*, \rho}(T_\mathrm{osc})} \right)^{1/4} C^{1/2} \Lambda_\mathrm{QCD}^{n/2} (6 \cdot 10^{-10} \, \mathrm{eV})^{1/2} \right)^{1/(1 + n/2)} }_{=: \kappa \approx 150 \, \mathrm{MeV} } \left( \frac{10^{16} \, \mathrm{GeV}}{f_a} \right)^{1/2 \cdot 1/(1 + n/2)}.
+\end{align}
+Using this the number density of the axions is computed using equation \eqref{eq:axion_energy_density_and_pressure} for the axion energy density as
+\begin{align*}
+    n_a(T_\mathrm{osc}) = \frac{\rho_a}{m_a} = \frac{1}{2} m_a(T_\mathrm{osc}) \theta_i^2 f_a^2.
+\end{align*}
+Now using equation \eqref{eq:n_over_s},
+we obtain
+\begin{align*}
+    n_a(\mathrm{today}) = \gamma \frac{s(T_0)}{s(T_\mathrm{osc})} n_a(T_\mathrm{osc}).
+\end{align*}
+The entropy density is computed using equation \eqref{eq:entropy_density}
+and the $g_*$ quantaties from appendix \ref{sec:g}.
+Now the axion relic density parameter is given as
+\begin{align}
+    \label{eq:relic_density_high_temp}
+    \Omega_a h^2 = \underbrace{
+    \frac{h^2 C (6 \cdot 10^{-10} \, \mathrm{eV})^2 (10^{16} \, \mathrm{GeV})^2 T_0^3 g_{*, s}(\mathrm{today}) \Lambda_\mathrm{QCD}^n}{2 g_{*, s}(T_\mathrm{osc}) \rho_c \kappa^{n + 3}}
+    }_{\approx 2 \cdot 10^4} \cdot \left( \frac{f_a}{10^{16} \, \mathrm{GeV}}\right) ^ {\frac{n + 3}{n + 2}} \theta_i^2.
+\end{align}
+The same computation can done for $T_\mathrm{osc} < \Lambda_\mathrm{QCD}$ by assuming that $m_a(T) \approx m_a(T = 0)$ \cite[Sec. 2.1]{Fox:2004kb}
+\begin{align*}
+    T_\mathrm{osc} \sim 950 \mathrm{MeV} \, \, \left(\frac{10^{16} \, \mathrm{GeV}}{f_a} \right)^2 \, \left(\frac{m_a(T_\mathrm{osc})}{m_a} \right)^{1/2},
+\end{align*}
+resulting in
+\begin{align}
+    \label{eq:relic_density_low_temp}
+    \Omega_a h^2 \simeq 5 \cdot 10^3 \left( \frac{f_a}{10^{16} \, \mathrm{GeV}} \right)^{3/2} \theta_i^2 \left( \frac{m_a(T_osc)}{m_a} \right)^{-1}.
+\end{align}
+A plot for the relic density as a function of the initial misalignment angle $\theta_i$
+and the axion decay constant $f_a$ can be found in figure \ref{fig:qcd_wkb_plot}.
+Both formulas \eqref{eq:relic_density_high_temp} as well as
+\eqref{eq:relic_density_low_temp} were used in their appropriate parameter ranges.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{qcd_analytic_plot.pdf}
+    \caption{Axion relic density parameter for the QCD axion
+     as a function of the initial field value $\theta_i$ and the axion decay constant $f_a$.
+   }
+    \label{fig:qcd_wkb_plot}
+\end{figure}
+
+\subsubsection{Symmetry Breaking after Inflation and Cosmic Strings}
+\label{sec:cosmic_strings}
+We now have a quick look at the other scenario, where the PQ symmetry is unbroken
+during inflation. In this case the spatial dependence of the dynamics can in general not be ignored.
+The magnitude of those effects is still open to debate \cite{GorghettoAttractivStrings}.
+If the effect of the spatial dependence is small, then one can do the same
+computation as for the broken scenario, where square of the initial misalignment angle
+$\theta_i$ is set to the mean of the square of the initial misalignment angle $\langle \phi_i^2 \rangle = \pi^2 / 3$.
+If not, the contribution from the spatial dependence dominate the
+axion relic density and we have to work with the PQ field, since the
+dynamics come into play before the PQ symmetry is broken.
+The main idea behind this, is the \emph{Kinble - Mechanism} \cite{Kibble:1976sj}.
+Initially the PQ field is in some random but smooth initial state.
+This is because the different points of the field values are
+not in casual contact, if the PQ symmetry is broken after inflation.
+In this configuration one can find closed loops, that wind the misalignment angle
+in a non trivial way, that is the winding number of the angle $\theta$ is
+not zero, if one goes around the loop once.
+If that is the case, there exists a point inside the loop where $\theta$ is undefined.
+In three dimensions those points form strings, that wind the angle nontrivial.
+% In addition to that, the color anomaly can produce artifacts, known as domain walls ?????.
+Those topological anomalies produce additional axions and
+evolve dynamically.
+This process is quite complicated and has to be simulated numerically \cite{GorghettoAttractivStrings}
+\cite{StringFits}. A plot from such a simulation \cite{StringFits} is shown in figure \ref{fig:string_simulation}, where the white parts are the strings and the blue color regions are domain walls \footnote{Domain walls come up as an another kind
+of topological defect, beside strings,
+but we do not deal with them in this thesis. They are based on the effect that one finds several possible asymptotic values of $\phi$ if $N_c \neq 1$ \cite[Sec. 2.2, Sec. 3.3.2]{MarshAxionCosmo}.
+}.
+For strings the situation might be simplified by the fact that for arbitrary initial conditions (in certain bounds)
+the field evolves towards an attractor. Therefore the produced amount of axion dark matter might be independent
+of the initial conditions \cite{GorghettoAttractivStrings}.
+
+
+
+% \textbf{?????????? TODO:}
+% A typically single string field configuration is of the form \cite[Eq. 7] {GorghettoAttractivStrings}
+% \begin{align}
+%     \label{eq:cosmic_string_field}
+%     \Phi = \frac{f_a}{\sqrt{2}} g(m_e \rho') e^{i \theta'}
+% \end{align}
+% in cylindrical coordinates $(\rho', \theta', z)$ and with a function $g(x)$ with $g(x) \rightarrow C x + \mathcal{O}(x^3)$ for $x \rightarrow 0$, $g(x) \rightarrow 1 - x^{-2} + \mathcal{O}(x^{4})$ for $x \rightarrow \infty$.
+% The mass of the radial modes of the PQ field is $m_a = f_a \sqrt{2} \sqrt{\lambda}$.
+% The energy density for such an configuration is dominated by the gradient of the angular component of the PQ field
+% $\frac{1}{2} \langle \phi^2 \rangle$ since it diverges, unlike the other components of the energy density,
+% logarithmic for $\rho' \rightarrow \infty$. This leads to the string tension \cite[Eq. 1]{GorghettoAttractivStrings}
+% \begin{align}
+%     \mu \approx \pi f_a^2 \log \left( \gamma \frac{m_r}{H} \right),
+% \end{align}
+% where $\gamma$ is some numerical factor.
+
+\noindent
+A typically single string field configuration is of the form \cite[Eq. 7]{GorghettoAttractivStrings}
+\begin{align}
+    \label{eq:cosmic_string_field}
+    \Phi = \frac{f_a}{\sqrt{2}} g(m_r \rho') e^{i \theta'}
+\end{align}
+in cylindrical coordinates $(\rho', \theta', z)$ and with some approbiote function $g$.
+The mass of the radial modes of the PQ field is $m_r = f_a \sqrt{2} \sqrt{\lambda}$.
+The energy density for such an configuration is dominated by the gradient of the angular component of the PQ field
+$\frac{1}{2} \langle \phi^2 \rangle$ since it diverges, unlike the other components of the energy density,
+logarithmic for $\rho' \rightarrow \infty$. This leads to the string tension \cite[Eq. 1]{GorghettoAttractivStrings}
+\begin{align}
+    \mu \approx \pi f_a^2 \log \left( \gamma \frac{m_r}{H} \right),
+\end{align}
+where $\gamma$ is some numerical factor.
+
+\noindent
+This configuration, as given in eq. \eqref{eq:cosmic_string_field}, can be used to create initial conditions
+with $N$ strings and the to solve eq. \eqref{eq:klein_gordon} with \eqref{eq:SSB_potential} as the potential.
+The axions radiated from the strings then have a certain momentum spectrum P(t, k), that is computed from the simulation.
+The total energy density from cosmic string then is \cite[eq. 48]{StringFits}
+\begin{align}
+   \rho_a = 2 \int \diff k P(k, t). 
+\end{align}
+% Then one computes the energy density corresponding to the axions and thus calculates
+% the additional contribution to the axion relic density \cite{GorghettoAttractivStrings}. 
+It was found in \cite{GorghettoAttractivStrings} that this indeed evolves towards an attractor solution and leads to a fitting formula for the relic density from string decay
+\cite[Eq. 87]{StringFits}
+\begin{align}
+    \label{eq:string_fit}
+    \Omega_{a, \mathrm{string}} h^2 = (2.0 \pm 1.0) \left(\frac{g_{*, \rho}(T_i)}{70} \right)^{-2(n + 2)/2(n + 4)}\left( \frac{f_a}{10^{12} \, \mathrm{GeV}} \right)^{(n + 6)/(n + 4)}\left(\frac{\Lambda_\mathrm{QCD}}{400 \, \mathrm{MeV}} \right),
+\end{align}
+where $n$ is the power law dependence of the axion mass from equation \eqref{eq:diga_axion_potential}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.65\linewidth]{strings.png}
+    \caption{An example for a string simulation. Source: \cite[Fig. 2]{StringFits}}
+    \label{fig:string_simulation}
+\end{figure}
+
+
+\subsubsection{Fuzzy Dark Matter and $\mu$-QCD in the Hidden Sector}
+\label{sec:micro_qcd}
+Some problems related to structure formation, such as the cusp-core problem, 
+might be solved by the fuzzy dark matter model \cite{FuzzyDarkMatter}, where
+scalar fields with ultra light particles with masses of order $10^{-22} \, \mathrm{eV}$ are required \cite{FuzzyDarkMatter}. 
+For fuzzy dark matter the QCD axion, with masses of order $(10^{-4} - 10^{-8}) \, \mathrm{eV}$, is too heavy. 
+Light enough axions are predicted by string theory but come with an axion decay constant, that would produce excessive amounts of dark matter.
+One model to solve this problem was proposed by Davoudiasl and Murphy \cite{microqcd}.
+The model constructs a low energy copy of the QCD sector, where the confining scale is at $\mu = 100 \, \mathrm{eV}$.
+% This kind of model is an example of a hidden sector model.
+For this, a second $\mathrm{SU}(3)$ gauge symmetry is introduced, producing 8 hidden sector gluons. Since this theory has the same gauge symmetry as
+QCD, one derives all formulas for masses of hadrons, crosssections etc.
+in analogy to QCD, avoiding long computations.
+Moreover for the fermion content of the $\mu$-QCD sector, a single quark generation in the chiral representation is assumed, setting $N_f = 1$.
+Additionally one has 
+Because of this, there are no chiral symmetries and no pions exist.
+The lightest meson for $\mu$-QCD therefore is an $\eta'$ like particle.
+One also gets a baryon $n$ for the $\mu$-QCD sector.
+The introduction of those new particles leads to a number of new
+degrees of freedom. For temperatures above $\mu$
+one gets $N' = (3 \times 4 + 4) \frac{7}{8} + 16 + 1 = 31$
+degrees of freedom,
+where the $\mu$-quark 
+has $2$ spins, $2$ particle/antiparticles and $3$ different color charges, while the gluons have $8$ different color charges and
+each $2$ polarization states.
+The hidden sector higgs has, as a scalar particle, only $1$ degree of freedom
+and the hidden sector lepton has $2$ spins and $2$ particle/antiparticles.
+Note that in the number of degrees of freedom the phasespace factor for the fermions is already included.
+For temperatures $T < \mu$ one computes that all particles decay into the $\mu$-QCD baryons, which leads to
+$N' = 4 \times \frac{7}{8} = 3.5$ degrees of freedom.
+Such additional degrees of freedom are by convention
+described by the \emph{excess number of neutrino species} $\Delta N_\mathrm{eff}$, defined as
+\cite[Sec. 4.1]{IAXOPhysics}
+\begin{align}
+    \label{eq:Delta_N_eff}
+    \rho_\mathrm{HS} = \rho_\mathrm{rad} - \rho_\gamma - \rho_\nu =
+    \frac{7}{8} \left( \frac{4}{11} \right)^{4/3} \Delta N_\mathrm{eff} \rho_\gamma.
+\end{align}
+With $\rho_\gamma = \frac{\pi^2}{30} 2 T^4$ and $\rho_\mathrm{HS} = \frac{\pi^2}{30} N' T'^4 $ from eq. \eqref{eq:energy_denstiy} we then get
+\begin{align}
+    \label{eq:DeltaN_eff_comp}
+    \Delta N_\mathrm{eff} = \left( \frac{11}{4} \right)^{4 / 3} \frac{4}{7} N' \left( \frac{T'}{T} \right)^4.
+\end{align}
+
+\noindent
+Since there are tight constraints on $\Delta N_\mathrm{eff}$ from various observations \cite{PDG} \cite{Planck},
+this hidden sector needs to have a lower temperature. 
+Phenomenological, we choose some value of $T' / T$ for temperatures $T$ above $\mu$.
+For temperatures below $\mu$, where all hidden sector particles are decayed into $n$ baryons,
+the entropy from the other particles is transferred into the $n$ baryons.
+This leads to an increase of the hidden sector temperature to
+\begin{align}
+    \label{eq:micro_qcd_temperature2}
+    T'(T < \mu) = \left(\frac{31}{3.5}\right)^{1/3} T'.
+\end{align}
+Also those new degrees of freedom have to be added to the used $g_*$ quantities in equation \eqref{eq:g_rho}.
+
+\noindent
+The $\mu$-QCD axion acquires its mass like the QCD axion from instanton effects and is given as \cite[Eq. 3]{microqcd}
+\begin{align}
+    \label{eq:micro_qcd_axion_mass_high_temp}
+    m_a(T') \approx \zeta^{N_f / 2} \kappa^{N_\mu} \left( \frac{c_N}{2 \eta} \right)^{1/2} \left(\frac{m_\psi}{\mu} \right)^{N_f / 2} \left( \frac{\mu}{\pi T'} \right)^\eta \left( \frac{\mu^2}{f_a} \right) \left( \log \left( \frac{\pi T'}{\mu} \right) \right)^{N_\mu} ,
+\end{align}
+where $\zeta \approx 1.34$, $N_\mu = 3$ the number of $\mu$ colors, $N_f = 1$, is number of $\mu$ quarks,
+$c_N \approx 0.26 / (\zeta^{N_\mu - 2}(N_\mu - 1)!(N_\mu - 2)!)$, $\kappa = (11N_\mu - 2N_f) / 6$ and
+$\eta = \kappa + N_f / 2 - 2$ is,
+in the high temperature, dilute instanton gas approximation as presented for the QCD axion in section \ref{sec:DIGA}.
+The zero temperature mass is given as \cite[Eq. 4]{microqcd}
+\begin{align}
+    \label{eq:micro_qcd_axion_zero_temp_mass}
+    m_a(T' = 0)^2 = - \frac{\langle 0 | \bar{\psi} \psi | 0 \rangle}{f_a^2 \trace (M^{-1})}
+    = - \frac{ - \mu^3 }{f_a^2 \frac{1}{\mu / 2}} = \frac{\mu^4}{2 f_a^2}.
+\end{align}
+Note that \eqref{eq:micro_qcd_axion_zero_temp_mass} is not the limiting case of \eqref{eq:micro_qcd_axion_mass_high_temp}
+as $T \rightarrow 0$ and therefore one has to switch to the zero temperature version, once the (power-law part of the) high temperature version
+exceeds the zero temperature one.
+Using this model one can, like in the QCD case, compute the axion relic density.
+
+
+
+%% \section{Axion Like Particles}
+% In the following section an analytic solution for the equation of motion is discussed.
+% \section{QCD Axion and Temperature Dependent Mass}
+% \label{sec:temerature_dependent_mass}
+% In the previous section the temperature dependence of the axion mass was ignored but
+% in case of the QCD axion the temperature dependence cannot be ignored \cite[Sec. 4.3.2, Page 30] {MarshAxionCosmo}.
+% This also means that an approximation as presented in section \ref{sec:wkb_alp} of the relic density is not possible, since the derivation of
+% the WKB approximation assumed $m_a = \mathrm{const}$.
+% In this section an alternative way of scaling the axion density from its value at $a_\mathrm{osc}$ until today is derived.
+% Then different analytic results, derived in the literature, are presented and one of them then used to
+% compute the relic density for the QCD axion approximately.
+
+\section{Methods}
+\label{sec:methods}
+In this section the methods used for the computation and analysis
+of the axion relic density are discussed.
+First the method to compute the relic density precisely
+by numerical simulation, then the MCMC technique 
+for the statistical analysis of the model
+are presented.
+
+
+\subsection{Solving the Equation of Motion}
+\label{sec:solving_the_eom_numerically}
+%TODO: explanation
+First we discuss how to solve the full model numerically, since it is not possible to do this analytically.
+For this we need to compute two quantities in the equation of motion in eq. \eqref{eq:eom},
+namely $H(t)$ and $m_a(T)$.
+The Hubble parameter $H(t)$ can be computed from the Friedmann equation in 
+eq. \eqref{eq:friedmann_equation}, where the energy density is computed, in the radiation dominated 
+universe, from the energy density in eq. \eqref{eq:energy_denstiy} as a function of 
+temperature. Likewise the mass is computed from the temperature of the universe.
+Therefore we have to compute the temperature of the universe at a given point in time.
+Finally we then can solve the equation of motion numerically and find a value 
+of $n / s$ from which we can compute the relic density like in the previous 
+section \ref{sec:wkb_qcd}.
+Those points are presented in the following sections.
+
+
+\subsubsection{Comparison of Different Axion Mass Approximations and the Lattice Result}
+To solve the equation of motion, one needs an expression for the temperature
+dependence of the axion mass.
+In section \ref{sec:DIGA} we have seen, that one obtains the axion mass at zero 
+temperature as in equation \eqref{eq:axion_mass_at_zero_T} and as a power law from the dilute instanton gas approximation as in equation \eqref{eq:diga_axion_potential}. 
+The exponent $n$ and the prefactor $C$ are computed in \cite[Sec. 2.1]{Fox:2004kb} as
+$n = -4$ and $C = 0.018 \cdot m_a(T = 0)$.
+They also computed a correction factor to the power law
+\begin{align}
+    \left( 1 - \log \frac{T}{\Lambda_\mathrm{QCD}}\right)^d
+\end{align}
+with $d \approx 1.2$ \, .
+A more precise formula for the axion mass is derived by Shellard et al. in \cite{AxionCosmoRev} using the interacting instanton liquid
+model (IILM).
+The full result for the high temperature regime of this approximation is given as \cite[Sec. III, Eq. 20]{AxionCosmoRev}
+\begin{align}
+m^2_a f^2_a = \Lambda^4
+\left\{
+ \begin{array}{l@{,\;}l}
+ \exp\left[ d^{(3)}_0 + d^{(3)}_1 \ln\frac{T}{\Lambda} + d^{(3)}_2 \left(\ln\frac{T}{\Lambda}\right)^2 + d^{(3)}_3 \left(\ln\frac{T}{\Lambda}\right)^3 \right] & T^{(3)} < T < T^{(4)}\\
+ \exp\left[ d^{(4)}_0 + d^{(4)}_1 \ln\frac{T}{\Lambda} + d^{(4)}_2 \left(\ln\frac{T}{\Lambda}\right)^2 \right] & T^{(4)} < T < T^{(5)}\\
+\exp\left[ d^{(5)}_0 + d^{(5)}_1 \ln\frac{T}{\Lambda} + d^{(5)}_2 \left(\ln\frac{T}{\Lambda}\right)^2 \right] & T^{(5)} < T < T^{(6)}\\
+\end{array}
+\right. ,
+\end{align}
+where the constants are given
+in \cite[Sec. III, Eq. 21]{AxionCosmoRev}. \footnote{There is a typo in the parameters in \cite[Sec. III, Eq. 21]{AxionCosmoRev}, $d_0^{(4)}$ should be negative but is given as positive. The positive version produces drastically wrong results.}
+In \cite{AxionCosmoRev} they also present 
+a fit, based on their IILM result, for the low temperature regime as \cite[Sec. III, Page 8, Eq. 19]{AxionCosmoRev}
+\begin{align}
+    \label{eq:m_a_low_temp_shellard}
+    m_a(T)^2 f_a^2 = 1.46 \cdot 10^{-3} \Lambda^4 \frac{1 + 0.5 \cdot T / \Lambda}{1 + (3.53 \cdot T / \Lambda)^{7.48}} \, \, \mathrm{for} \, \, 0 < T / \Lambda < 1.125,
+\end{align}
+as well as \cite[Sec III, Page 9, Eq. 22]{AxionCosmoRev} 
+\begin{align}
+    \label{eq:m_a_high_temp_shellard}
+    m_a(T)^2 f_a^2 = \frac{\alpha_a \Lambda^4}{(T / \Lambda)^n} \, \, \mathrm{for} \, \, T > \Lambda_\mathrm{QCD}
+\end{align}
+for the high temperatures with $\alpha_a = 1.68 \cdot 10^{-7}$ and $n = 6.68$.
+In those formulas from \cite{LatticQCD4Cosmo} $\Lambda$ is taken as $\Lambda = 400 \, \mathrm{MeV}$.
+
+% Note that this power law behavior is a quite general description, where the parameters, namely the
+% exponent $n$ and the prefactor $C$ as well as the energy scale involved $\Lambda_\mathrm{QCD}$
+% can be fitted to more complicated models. \footnote{This might also include non QCD couplings, like to
+% the hidden sector.}
+
+% The axion mass at absolute zero can be computed accordingly to section \ref{sec:axion_mass} using chiral pertubation theory \cite[Sec III, Page 7, Eq. 15]{AxionCosmoRev} as
+% \begin{align}
+%     \label{eq:m_a_T0}
+%     m_a(T = 0) = m_\pi f_\pi / f_a \frac{\sqrt{m_u m_d}}{m_u + m_d} m_a \approx 6 \cdot 10^{-10} \cdot \mathrm{eV} \frac{10^{16} \cdot \mathrm{GeV}}{f_a / N}.
+% \end{align}
+% where $m_u, m_d, m_\pi$ are the masses of the up and down quark as well as the neutral pion and
+% $f_\pi$ is the pion decay constant.
+% For high temperatures one can use the dilute instanton gas approximation, accordingly to section \ref{sec:DIGA}, giving
+% the mass as a function of temperature parametrized in  as
+% \begin{align}
+%     \label{eq:axion_mass1}
+%     m_a(T) = m_a C \left( \frac{\Lambda_\mathrm{QCD}}{T} \right)^{n}
+% \end{align}
+% for $T > \Lambda_\mathrm{QCD}$.
+% The exponent $n$ can be computed from equation \eqref{eq:diga_axion_potential} and is $n \approx 4$ \cite[Appendix B]{Fox:2004kb}.
+% This is done in the result from Shellard et al. \cite{LatticQCD4Cosmo} to the interacting instanton liquid model.
+% % All following numerical results are computed using this value.
+% This alternative approximation using the interacting instanton liquid model, where interactions between instantons in the QCD vacuum are not neglected, results n
+
+\noindent
+The full dependence of the axion mass on the temperature is computed in \cite{LatticQCD4Cosmo}
+using lattice QCD methods as the topological susceptibility $\chi_\mathrm{top}(T) = m_a(T)^2 f_a^2$ and is available as a table of numerical values.
+A graphical comparison of all of those results is shown in figure \ref{fig:m_a_of_T_plot}
+including the relative error with respect to the lattice result.
+One can see that at lower temperatures, below the QCD confinment scale, the axion mass becomes constant.
+For the numerical computation, the lattice result was used.
+All particle parameters are taken from \cite{PDG}.
+\begin{figure}
+    \centering
+    \includegraphics[width=\linewidth]{m_of_T_plot.pdf}
+    \caption{Comparison of different approximations and the lattice result for the axion mass as a
+    function of the temperature for $f_a = 10^{12} \, \mathrm{GeV}$.
+    The legend on the top holds for both plots. Where on the upper plot the axion mass as a function of
+    the temperature is shown, while on the lower plot the relative error in respect to the lattice result
+    is shown.}
+    \label{fig:m_a_of_T_plot}
+\end{figure}
+
+
+\subsubsection{Temperature Time Dependence}
+In order to solve the equation of motion numerically
+one needs the time dependence of the temperature
+to evaluate the axion mass at a given time.
+Alternatively the full equation of motion can be rewritten
+to have the temperature as the independent variable.
+This approach is taken from \cite[S11]{LatticQCD4Cosmo}.
+In both situations the derivative $\frac{\diff t}{\diff T}$
+is needed.
+One uses the Gibbs Duhem relation for intrinsic quantities
+\begin{align}
+    \label{eq:gibbs_duhem}
+    \rho + P = T s + \mu n,
+\end{align}
+where $P$ is the pressure, $\rho$ the energy density, $T$ the temperature, $s$ the entropy density,
+$n$ the number density and $\mu$ the chemical potential.
+In combination with the temperature dependence of the entropy density in equation
+\eqref{eq:entropy_density}
+and the friedmann equation
+in equation \eqref{eq:friedmann_equation} as well as the continuity equation \eqref{eq:cont}
+together with the equation for
+the energy density in formula \eqref{eq:energy_denstiy} are used to compute
+% \begin{align*}
+%     \frac{\diff ^2 \phi}{\diff  t^2} + 3 H \frac{\diff  \phi}{\diff  t} + V'(\phi) = 0
+% \end{align*}
+% \begin{align*}
+%     \frac{\diff  t}{\diff  T}
+%     &= \frac{\diff  \rho}{\diff  T} \frac{\diff  t}{\diff  \rho}
+%     = \frac{\frac{\diff  \rho}{\diff  T}} {\frac{\diff  \rho}{\diff  t}}
+%     = \frac{\frac{\diff }{\diff T} \frac{\pi^2}{30}g_*(T) T^4}{-3HTs}
+%     = \frac{\pi^2}{30} \frac{g_*'(T)T^4 + 4 g_*(T) T^3 }{-3HTs} \\
+%     &= \frac{\pi^2}{30} \frac{g_*'(T)T^4 + 4 g_*(T) T^3 }{-3T \frac{2 \pi^2}{45} g_{s, *}(T) T^3 \sqrt{\frac{8 \pi \rho}{3 M_\mathrm{pl}^2}}} \\
+%     &= \frac{\pi^2}{30} \frac{g_*'(T)T^4 + 4 g_*(T) T^3 }{-3T \frac{2 \pi^2}{45} g_{s, *}(T) T^3 \sqrt{\frac{8 \pi}{3 M_\mathrm{pl}^2} \frac{\pi^2}{30} g_{\rho, *} T^4}}
+% \end{align*}
+\begin{align}
+    \label{eq:dtdT}
+    \frac{\diff t}{\diff T} = - M_\mathrm{pl} \sqrt{\frac{45}{64 \pi^3}} \frac{1}{T^3 g_s(T) \sqrt{g_\rho(T)}} (T g_\rho'(T) + 4 g_\rho(T)).
+\end{align}
+One can test this relationship and the implementation of the $g_*$ quantities by computing the temperature
+of the universe as a function of time. This is done in appendix \ref{sec:temperature_universe}.
+Note that this formula is only valid in the radiation dominated universe.
+For other scenarios one has to find different relations for the temperature evolution.
+Now one could solve eq. \eqref{eq:eom} and eq. \eqref{eq:dtdT} simultaneously.
+
+\noindent
+% \subsubsection{The Equation of Motion as a Function of Temperature}
+As an alternative, as suggested by \cite[S11]{LatticQCD4Cosmo},  one can
+solve the equation of motion as a function of $T$ itself using equation \eqref{eq:dtdT}.
+This entails to change all derivatives in $t$ to derivatives in $T$ in equation \eqref{eq:eom}.
+The first derivative is
+\begin{align*}
+    \frac{\diff  \theta}{\diff  t} = \frac{\diff  \theta}{\diff  T} \frac{\diff  T}{\diff  t}
+\end{align*}
+and the second
+\begin{align*}
+    \frac{\diff ^2 \theta}{\diff  t^2} &= \frac{\diff }{\diff  t} \frac{\diff  \theta}{\diff  t}
+    = \frac{\diff }{\diff  t} \frac{\diff  T}{\diff  t} \frac{\diff  \theta}{\diff  T}
+   % = \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \theta}{\diff  T} +
+    %  \frac{\diff  T}{\diff  t} \frac{\diff }{\diff  t} \frac{\diff  \theta}{\diff  T}
+    %= \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \theta}{\diff  T} +
+      %\frac{\diff  T}{\diff  t} \frac{\diff }{\diff  T} \frac{\diff  \theta}{\diff  t} \\
+    %&= \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \theta}{\diff  T} +
+    %  \frac{\diff  T}{\diff  t} \frac{\diff }{\diff  T} \frac{\diff  T}{\diff  t} \frac{\diff  \theta}{\diff  T}
+    %= \frac{\diff ^2 T}{\diff  t^2} \frac{\diff  \theta}{\diff  T} +
+    %  \left( \frac{\diff  T}{\diff  t} \right)^2 \frac{\diff^2  \theta}{\diff  T^2} \\
+    %&= \left( \frac{\diff}{\diff t} \frac{\diff T}{\diff t} \right) \frac{\diff  \theta}{\diff  T} +
+    %  \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \theta}{\diff  T^2}
+  %  = \left( \frac{\diff}{\diff t} \left( \frac{\diff t}{\diff T} \right)^{-1} \right) \frac{\diff  \theta}{\diff  T} +
+   %   \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \theta}{\diff  T^2} \\
+  %  &= - \left(\left( \frac{\mathrm{d}}{\mathrm{d} t} \frac{\diff t}{\diff T} \right)  \left( \frac{\diff t}{\diff T} \right)^{-2} \right) \frac{\diff  \theta}{\diff  T} +
+   %   \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \theta}{\diff  T^2} \\
+    = - \left(\frac{\diff T}{\diff t} \frac{\diff^2 t}{\diff T^2} \left( \frac{\diff t}{\diff T} \right)^{-2} \right) \frac{\diff  \theta}{\diff  T} +
+      \left( \frac{\diff  t}{\diff  T} \right)^{-2} \frac{\diff^2  \theta}{\diff  T^2}.
+\end{align*}
+Substituting the derivatives in equation \eqref{eq:eom} then yields  \cite[Section S11]{LatticQCD4Cosmo}
+\begin{align}
+    \label{eq:eom_T}
+    % & \frac{\diff ^2 \theta}{\diff  t^2} + 3 H \frac{\diff  \theta}{\diff  t} + V'(\theta) = 0 \\
+    % \notag & \left(\frac{\diff T}{\diff t} \frac{\diff^2 t}{\diff T^2} \left( \frac{\diff t}{\diff T} \right)^{-2} \right) \frac{\diff \theta}{\diff T} + \left( \frac{\diff t}{\diff T} \right)^{-2} \frac{\diff^2 \theta}{\diff T^2} + 3H\frac{\diff T}{\diff t}\frac{\diff \theta}{\diff T} + V'(\theta) = 0
+    \frac{\diff^2 \theta}{\diff T^2} +
+                 \left(
+                 3H \frac{\diff t}{\diff T}
+                 - \frac{\diff^2 t}{\diff T^2} / \frac{\diff t}{\diff T}
+                 \right) \frac{\diff \theta}{\diff T} +
+                 V'(\theta) \left( \frac{\diff t}{\diff T} \right)^2 = 0.
+\end{align}
+This equation is used for the numerical computation.
+% In the rest of the project this equation will solved numerically to $T_\mathrm{osc}$ and
+% further integrated for some oscillations.
+% Then the quantity $n/s$ will be numerically taken as a mean over several oscillations
+% and then used to compute the axion relic density in the present. This allows to explore more
+% complicated potentials and cosmologies (i.e. the evolution of $H$ and $\diff t / \diff T$) that can not be solved analytically.
+
+\subsubsection{Integration of the Equation of Motion}
+Finally we can now do the integration of the equation of motion numerically.
+
+\noindent
+The integration of the equation, namely in the temperature
+form \eqref{eq:eom_T}, is done with
+the Dormand–Prince algorithm using the
+implementation from the python library SciPy \cite{scipy}.
+The integration is started from $5 T_\mathrm{osc}$ as suggested
+in \cite[Sec. S11]{LatticQCD4Cosmo} and carried out until the first zero
+crossing of the field at $T_s$.
+The value of $T_\mathrm{osc}$ is computed numerically from eq. \eqref{eq:a_osc_cond} using a value of $N = 3$.
+Note that this is only used to determine the starting point $T_\mathrm{initial}$ for the integration.
+The beginning of the oscillation is established from the first zero crossing.
+
+\noindent
+After that the field starts to oscillate.
+Then after a few oscillations the ratio $n / s$ should be conserved as discussed in section \ref{sec:wkb_qcd}.
+To make sure that this is the case, the ratio $n / s$ is computed successively over intervals of length $T_s / 5$
+until the ratio $n / s$ is constant, i.e. $\frac{\diff n / s}{\diff T} < 10^{-10} \, \mathrm{eV}^{-1}$ and
+there are at least $N_\mathrm{osc} = 3$ oscillations or equivalently $= 2 N_\mathrm{osc} + 1 = 7$ zero crossings in the integrated interval.
+
+\noindent
+During the integration it is required that $T > T_\mathrm{eq}$, since below this temperature at matter radiation equality $T_\mathrm{eq}$
+the assumption of radiation domination for the Friedmann equation and the time temperature dependence is not valid
+and would lead to wrong results. Therefore, this condition has to be checked in order to obtain reliable results.
+
+\noindent
+From the value of $n / s$, the relic density of the axion is then computed by scaling to the value of $s$ today as discussed in section \ref{sec:wkb_qcd}.
+The value of the entropy density $s$ today is dominated by photons and neutrinos \cite[Sec. 3.5]{TheEarlyUniverseKolbAndTurner}. 
+The temperature of the neutrinos can be computed, after $e^+ e^-$ annihilation and neutrino decoupling i.e. also today, as \cite[Eq. 3.86]{TheEarlyUniverseKolbAndTurner}
+\begin{align}
+    T_\nu(\mathrm{today}) = \left( \frac{4}{11} \right)^{1 / 3} T_\gamma.
+\end{align}
+Now one can use eq. \eqref{eq:entropy_density} to compute the present entropy density.
+
+\noindent
+A sample field evolution, computed numerically, can be found in figure \ref{fig:sample_field_evo}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{example_field_evolution.pdf}
+    \caption{Plot of the field evolution for $f_a = 10^{10} \, \mathrm{GeV}$
+    and $\theta_i = 10^{-5}$, simulated numerically. 
+    The compute misalighment angle as a multiple of $10^{5}$ is shown as a function of the
+    temperature in GeV.
+    The temperature axis is in log-scale.
+    }
+    \label{fig:sample_field_evo}
+\end{figure}
+
+\subsection{Bayesian Statistics and Markov Chain - Monte Carlo (MCMC)}
+\label{sec:mcmc}
+Now we want to look at what we can tell using our axion model about the parameters used in that model.
+In particular we want to find the most likely value for the axion mass $m_a$ and the axion decay constant $f_a$.
+For this we use \emph{Bayes Theorem} \cite[Sec. 1.4]{ThinkBayes}
+\begin{align}
+    \label{eq:bayes}
+    P(\Theta | M) = \frac{P(M | \Theta) P(\Theta)}{P(M)}
+\end{align}
+for a model $M$ and a vector of parameters $\Theta$.
+The probability $P(\Theta)$ is called the prior distribution for the parameters $\Theta$,
+$P(M)$ is the evidence for the model $M$ and can be set to $1$ since we don't have evidence i.e.\ it is a
+normalization factor, $P(M | \Theta)$ is called the likelihood and describes how probable the model is
+given a concrete set of parameters, $P(\Theta| M)$ is called the posterior distribution and describes
+the distribution of the used parameters if the model is true.
+The priors are chosen based on specific domain knowledge, such as other constraints on the parameter forcing a
+uniform distribution in an allowed range or if the parameter was measured a normal distribution might be chosen
+with the experimental error as the standard derivation and the measured value as the expectation value.
+The priors for all particle physics and cosmological parameters are taken like this using the mean values and errors given by the particle data group (PDG) \cite{PDG}.
+% \begin{table}[H]
+%     \centering
+%     \caption{Particle Physics and Cosmology Parameters}
+%     \begin{tabular}{c|l|l}
+%         Parameter & Value and Unceritinty & Source \\
+%         \hline
+%          &  \\
+%          &
+%     \end{tabular}
+%     \label{tab:my_label}
+% \end{table}
+The likelihood contains the constraints on the quantities predicted by the model, who are measured in reality.
+If, for example, our model predicts a quantity $Q$ as $Q_\mathrm{model}$ and the measured value of $Q$ is $Q_\mathrm{measured}$
+with an experimental error of $\sigma_Q$, then we would choose the likelihood as a normal distribution
+\begin{align*}
+    P(M | \Theta) = \frac{1}{\sqrt{2 \pi \sigma_Q^2}} \exp { \left( - \frac{(Q_\mathrm{model} - Q_\mathrm{measured})^2}{2 \sigma_Q^2} \right) }.
+\end{align*}
+Using e.q. \eqref{eq:bayes} one can now find the posterior distribution. But this is not directly calculable since the computation
+of e.g.\ $Q$ contains many complicated steps and numerical methods.
+Instead we sample the distribution using a Markov Chain - Monte Carlo Method.
+Such an algorithm constructs a Markov Chain, that is a sequence of steps where the probability for each step to occur in
+the sequence only depends on the directly previous step, where the stationary distribution of the chain is
+the desired distribution. Then one runs the chain from random initial states to approximately reach the stationary state
+and then takes some samples to approximate the distribution. A simple example for such an algorithm is the
+\emph{Metropolis Hastings Algorithm}. A much more sophisticated system is implemented in the python based
+\emph{emcee} tool \cite{emcee}, that was used throughout this thesis.
+The python tool \emph{emcee} uses several \emph{walkers} to explore the distribution.
+Each walker only explores a small subset of the parameter space and all are correlated to each other.
+Collectively they sample the distribution efficiently. This can be seen in figure \ref{fig:chains}, where
+each chain corresponds to a single walker.
+An important task when using an MCMC method is to check the chain for convergence.
+There are several technqiues for doing so.
+In this thesis only two simple methods are used. First one can inspect the chain visually. 
+As one can see in figure \ref{fig:chains}, the distribution changes from the prior distribution
+to the posterior distribution as the step number increases.
+In the end the distribution doesn't change anymore, suggesting it has converged.
+Secondly one can compute the autocorrelation function of the chain and see if it falls off fast enough with increasing step number.
+In order to produce the result of this thesis a much higher number of steps was used, than shown in figure \ref{fig:chains}.
+Since the distribution changes from the prior to the posterior distribution, one needs
+to take out the first steps of the chain, where the distribution has not yet converged, 
+to only include the correct samples. This process is called burn in and is
+indicated in figure \ref{fig:chains} as a vertical line.
+One can visually find the step, where this is the case. A typical good value for this is about
+one quarter of the total number of steps.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{chain.pdf}
+    \caption{An example of the induviual chains produced by \emph{emcee}.
+    The vertical dashed line represents the end of the burn in phase.}
+    \label{fig:chains}
+\end{figure}
+
+\newpage
+\section{Results}
+\label{sec:results}
+
+In this section the result obtained from the performed simulation using 
+the methods from section \ref{sec:solving_the_eom_numerically} are presented.
+First the axion density was computed for a relevant range of the 
+axion decay constant $f_a$ and the initial misalignment angle $\theta_i$ in section \ref{sec:numerical_result}. 
+This result was fitted in section \ref{sec:fitting}.
+Then an MCMC analysis, as presented in section \ref{sec:mcmc} was performed, including an analysis for 
+the $\mu$-QCD axion in section \ref{sec:mcmc_analysis}.
+
+\subsection{The Result of the Numerical Simulation}
+\label{sec:numerical_result}
+The axion relic density computed numerically
+for a relevant range of the axion decay constant $f_a$ and the initial field value $\theta_i$
+is shown in figure \ref{fig:numerical_QCD_result}, where is region with an excess of axion dark matter over
+the observed dark matter density is colored white.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{numerical_relic_density_cosine.pdf}
+    \caption{
+    The numerical result for the QCD axion relic density plotted as a function of the initial misalighment angle $\theta_i$ and the axion decay constant $f_a$.
+    Both axies as well as the density are logarithmic.
+    The region where the density parameter $\Omega_a$ is larger than the measured dark matter density, is colored white.
+    }
+    \label{fig:numerical_QCD_result}
+\end{figure}
+
+\subsubsection{Dark Matter from the QCD Axion}
+In order to use axions to explain all of the DM, the relic density has to be equal to the measured
+dark matter density. In figure \ref{fig:axion_as_DM_plot} a plot of the initial axion field value $\theta_i$ that produces
+the right amount of dark matter as a function of the axion decay constant $f_a$ is shown.
+This can be used to validate the simulation, by comparing the resulting plot with the plot given
+in \cite[Fig. 3]{LatticQCD4Cosmo}. Those results seem to agree. Note that is curve
+corresponds to the outline of the contour plot of the density in figure \ref{fig:qcd_wkb_plot}.
+The required value of $\theta_i$ increases with smaller decay constant $f_a$, but becomes flat at very low decay constants $f_a \sim 10^{11} \, \mathrm{GeV}$ and approaches $\pi$.
+Note that if $\theta_i \rightarrow \pi$ the axion field takes
+more and more time to start oscillating, and therefore produces
+more and more dark matter. Since lower axion decay constants $f_a$
+decrease the amount of dark matter produced, higher
+$\theta_i$ values are required to yield the correct dark matter density.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{initial_theta_for_DM.pdf}
+    \caption{Double logarithmic plot of the initial value of the misalignment angle $\theta_i$, which produces the correct amount
+    of dark matter as a function the axion decay constant $f_a$.
+    %The required value of $\theta_i$ increases with smaller decay constant $f_a$,
+    %but becomes flat at very low decay constants $f_a \sim 10^{11} \, \mathrm{GeV}$ and approaches $\pi$.
+    }
+    \label{fig:axion_as_DM_plot}
+\end{figure}
+
+\subsubsection{Anharmonic Corrections}
+The influence of the anharmonic correction is made quantative
+by the anharmonic correction function $f(\theta_i)$.
+By computing the relic density using the harmonic potential resulting in $\Omega_\mathrm{a, harmonic}$ as well as the cosine potential resulting in $\Omega_\mathrm{a, cosine}$, the
+anharmonic correction $f(\theta)$ defined as
+\begin{align}
+    f(\theta) = \frac{\Omega_\mathrm{a, cosine}}{\Omega_\mathrm{a, harmonic}},
+\end{align}
+can be computed.
+The anharmonic correction is $f(\theta) = 1$ for $\theta_i = 0$ and
+monotonically increases with $\theta_i$ and
+diverges at $\theta_i = \pi$.
+This correction is plotted in figure \ref{fig:anharmonic_correction_plot}.
+In this plot an analytical fit for the anharmonic correction,
+as given in \cite[Eq. 70]{MarshAxionCosmo} is shown. It is given as
+\begin{align}
+    f(\theta) = \left( \log \left( \frac{e}{1 - \theta^2 / \pi^2} \right) \right)^{7/6}.
+\end{align}
+One can see, that the approximation does agree with the numerical result for small angles very well and that for larger values
+the relative error is still small. Therefore, one can say that the obtained result seems to agree with the analytic result derived
+in the literature.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{anharmonic_corrections_plot.pdf}
+    \caption{
+    The anharmonic correction, that is the ratio between the
+    full cosine potential calculation and the calculation with
+    the harmonic potential as a function of the initial misalighment angle $\theta_i$.
+    The plot shows both the analytic approximation from \cite{MarshAxionCosmo} as well as the numerical computation.
+    }
+    \label{fig:anharmonic_correction_plot}
+\end{figure}
+
+\subsection{Fitting of the Numerical Result}
+\label{sec:fitting}
+The relative error to the analytic approximation
+as computed in section \ref{sec:wkb_qcd} is shown in figure \ref{fig:analytic_numerical_comparison}.
+The numerical result was computed using the harmonic
+potential, since the goal is to compare the analytic approximation and the numerical result and not the derivation from
+the anharmonic case. One can see that both results have a similar shape but are not compatible.
+In particular while the approximation works quite good for $f_a < 10^{15} \, \mathrm{GeV}$, for values above the relative error tends to be of order $100\%$.
+\noindent
+To further analyze the connection between the formula of the analytic approximation and the numerical result,
+we try to fit the numerical result using a fitting formula similar to the analytic approximation.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{qcd_numeric_analytic_comparison.pdf}
+    \caption{Logarithmic plot of the relative error of the analytic approximation to the numerical result as a function of the initial misalignment angle $\theta_i$ and the axion decay constant $f_a$.
+    %While the approximation works quite good for $f_a < 10^{15} \, \mathrm{GeV}$, for values above, the relative error tends to
+    %be of order 100\%}
+    }
+    \label{fig:analytic_numerical_comparison}
+\end{figure}
+A slight complication comes from the fact, that we have two different approximations.
+One for the case that the axion starts to oscillate at high temperatures, when one can apply the DIGA approximation in equation \eqref{eq:relic_density_high_temp}
+and one for the case when the axion starts to oscillate at low temperatures, when one can use the
+axion mass at absolute zero in equation \eqref{eq:relic_density_low_temp}.
+Those cases give different power laws in the axion decay constant $f_a$, therefore we have to interpolate between
+those power laws. After investigating several different techniques to do so, we settled on
+choosing some value of $f_a'$ and fit the range below $f_a'$ using one power-law and
+fit (separately) the range above $f_a'$ using a smoothly changing power-law.
+The total error for both fits is minimized over $f_a'$.
+Both power-laws have a quadratic dependence on the misalignment angle $\theta_i$.
+We assume that the dependence on $\theta_i$ is exact and choose the value $\theta_i' = 10^{-5}$ to do the fit.
+Therefore the fitting formula is given by
+\begin{align}
+    \label{eq:fitting_formula}
+    \boxed{
+    \Omega_a(\theta_i, f_a) = 
+    \left( \frac{\theta_i^2}{\theta_i'^2} \right)
+   \begin{cases} 
+      A f_a^p, & f_a \leq f_a' \\
+      B f_a^{\frac{r + q \left( \frac{f_a}{f_u} \right)^a}{1 + \left( \frac{f_a}{f_u} \right)^a }}, & f_a > f_a'. \\
+   \end{cases} 
+   }
+\end{align}
+A plot of the fit in shown in figure \ref{fig:fit_plot}.
+The fitted parameters are shown in table \ref{tab:fit_parameters} and the relative error of the fit to the numerical result
+for each value of the axion decay constant $f_a$ and the initial misalignment angle $\theta_i$ is shown as
+a plot in figure \ref{fig:fit_relative_error}.
+The fact that the result does not depend on the initial
+misalighment angle $\theta_i$, shows that our assumption
+of the dependence of the relic density on $\theta_i$ 
+as a quadratic one is indeed correct.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{fit_plot.pdf}
+    \caption{A double logarithmic plot of the data used for the fit of the axion relic density at $\theta_i = 10^{-5}$ and the fitted function separated in to too fits.}
+    \label{fig:fit_plot}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{fit_error_plot.pdf}
+    \caption{A logarithmic plot of the relative error of the power-law fit to the numerical result as
+    a function of the initial misalighment angle $\theta_i$ and the axion decay constant $f_a$.}
+    \label{fig:fit_relative_error}
+\end{figure}
+
+% 7/6 = 1.1666666666666667 3/2 = 1.5
+
+\begin{table}[H]
+    \caption{Parameters of the fit of the numerical result of $\Omega_a$.}
+    \centering
+    \begin{tabular}{c|l}
+        Parameter & Value \\
+        \hline
+        $A$ &   $0.00229   \pm 8 \cdot 10^{-5}$ \\
+        $p$ &   $1.178 \pm 0.002   $ \\
+        $B$ &   $0.0044585 \pm 8 \cdot 10^{-7}$ \\
+        $a$ &   $1.9 \pm 0.2       $ \\
+        $q$ &   $1.5272 \pm 0.0007 $  \\
+        $r$ &   $1.28 \pm 0.02     $ \\
+        $f_u$ & $(2.2 \pm 0.2) \cdot 10^{26} \, \mathrm{GeV}$
+    \end{tabular}
+    \label{tab:fit_parameters}
+\end{table}
+
+The most important parameters in this fit are the power law exponents.
+The first fitted power $p = 1.178 \pm 0.002$ is not compatible with the power from the analytic
+approximation $7/6 \approx 1.167$ but in a similar range. 
+The second fit, which has a smoothly changing power, has two limiting powers.
+One, $r$, for $f_a \rightarrow 0$ and one, $q$, for $f_a \rightarrow \infty$.
+The power $r$ is just used to create a better fit for the transition between both power law cases.
+The power $q$ is fitted to $q = 1.5272 \pm 0.0007$ that is also not
+compatible with the analytic result $3 / 2 = 1.5$.
+This might result from overfitting the data with the chosen fitting formula.
+
+\subsection{MCMC Analysis}
+\label{sec:mcmc_analysis}
+In this section we perform a statistical analysis of our model for the axion relic density.
+Based on the known uncertainties for the particle physics and cosmology parameters as well as
+several scenarios for the prior distributions of the axion decay constant $f_a$ and
+the initial misalignment angle $\theta_i$, we investigate using 
+the MCMC technique described in section \ref{sec:mcmc} 
+the resulting posterior distributions.
+Finally we also apply this to the $\mu$-QCD model.
+The main goal of this analysis is to find the most likely value of the
+axion mass $m_a$ (at zero temperature).
+The posterior distributions are plotted in \emph{triangle plot}.
+In those plots, one can see the individual posterior distributions for each parameter as well as
+the correlations between each pair of parameters. There the colored regions correspond to $1\sigma$ 
+and $2 \sigma$ confidence levels. The prior mean value for the parameter is indicated as a dashed
+line. The mean value of the posterior can be found on each individual distribution.
+For the QCD axion only the axion decay constant and the initial mislighment angle as well as
+the QCD confiment scale and the up quark mass are shown in the triangle plots.
+All other parameters are not shown to make the triangle plots more clear.
+
+\subsubsection{Initial Misalignment Angle $\theta_i$ and Axion Decay Constant $f_a$ Left Open}
+First of all we study the case where free parameters of our model, the initial misalignment angle $\theta_i$ and the axion decay constant, are unknown.
+In this case we expect that the most likely values in the $(\theta_i, f_a)$ plane follow
+the curve plotted in figure \ref{fig:axion_as_DM_plot}.
+This is indeed the case as one can see in the triangle plot in figure \ref{fig:qcd_free_parameter_triangle_plot},
+while one can also see that the curve starts to thin out for extreme values of $f_a$ or $\theta_i$.
+This is due to the smaller prior volume (available volume for the MCMC walker to explore this space).
+The preferred value for the axion decay constant in this case is $\log_{10} \left( f_a / \mathrm{eV} \right) \approx 20.7 \pm 0.9$.
+This corresponds to a zero temperature axion mass of  $\log_{10} (m_a(T=0) / \mathrm{eV})  \approx -4.9 \pm 0.9$. 
+Comparing this result with the distribution found in \cite[Fig. 17]{GambitAxionHoof}, one
+sees that the peak of the distribution seems to agree with this result.
+Furthermore we expect that the posterior distribution for the cosmological and particle physics
+parameters is the same as their prior distributions, since all the uncertainty in this case is in
+the free parameters, allowing no influence on the posterior distribution. This can be seen in
+figure \ref{fig:qcd_free_parameter_triangle_plot}.
+% as well as in the more detailed histogram for the
+% QCD transition scale $\Lambda_\mathrm{QCD}$ in figure \ref{fig:qcd_Lambd}.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{qcd_free_parameter_triangle_plot.pdf}
+    \caption{A triangle plot of the parameters in the QCD axion model as simulated using MCMC, where the initial misalighment angle $\theta_i$ and the axion decay constant
+    $f_a$ are open parameters.
+    The basic layout of a triangle plot is described in the introduction of section \ref{sec:mcmc_analysis}.
+    The parameters shown are the initial misalighment angle $\theta_i$, the logarithm
+    of the axion decay constant $f_a$, the confiment scale of QCD $\Lambda_\mathrm{QCD}$
+    and the mass of the up quark $m_u$.
+    }
+    \label{fig:qcd_free_parameter_triangle_plot}
+\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\linewidth]{qcd_free_paramter_Lambda_QCD_histogram.pdf}
+%     \caption{The prior for the QCD transition scale as well as the posterior from the MCMC analysis.
+%     They seem to agree.}
+%     \label{fig:qcd_Lambda_hist}
+% \end{figure}
+
+\subsubsection{Fixed Initial Misalignment Angle $\theta_i$}
+As an experiment we try to see what happens, if we remove one of our free
+parameters. Let's say we know the value of the initial misalignment angle $\theta_i$ to be $\theta_i = 1$.
+In this case we expect that the value of the other free parameter, the axion decay constant $f_a$, to be centered around the value given by the function
+in figure \ref{fig:axion_as_DM_plot} for the values to produce the dark matter density as $\log_{10} (f_a / \mathrm{eV}) \approx 21.0$.
+We find that this is the case, as one can see in the triangle plot in figure \ref{fig:qcd_fixed_theat_triangle_plot},
+as $\log_{10}(f_a / \mathrm{eV}) = 20.93 \pm 0.13$.
+Furthermore we find that also in this case, we can not make corrections for the predictions of the cosmological and particle physics parameters.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{qcd_fixed_theta_triangle_plot.pdf}
+    \caption{The triangle plot for the MCMC analysis of the QCD axion, where the initial misalignment
+    angle was fixed to $\theta_i = 1$.
+    The basic layout of a triangle plot is described in the introduction of section \ref{sec:mcmc_analysis}.
+    The parameters shown are the logarithm of the axion decay constant $f_a$, 
+    the confiment scale of QCD $\Lambda_\mathrm{QCD}$ and the mass of the up quark $m_u$.
+    }
+    \label{fig:qcd_fixed_theat_triangle_plot}
+\end{figure}
+
+\subsubsection{Measured Decay Constant $f_a$}
+A detector experiment like ARIADNE \cite{ARIADNE}, MADMAX \cite{MADMAX} or TOORAD \cite{TOORAD} would not measure the initial misalignment angle $\theta_i$ but the decay constant $f_a$.
+We are interested whether a detection of the axion and the measurement of the axion decay constant $f_a$ would allow
+any predictions about the cosmological or particle physics parameter or their uncertainties.
+For this we use a normal distribution for $f_a$ with a mean of $f_a = 10^{21} \, \mathrm{eV}$. This value is in the range of axion detector experiments
+like ARIADNE. Those experiments have a signal strength of $Q = 10^4 - 10^5$, but could be 
+increased to $Q = 10^6$ if the axion would be detected. 
+This corresponds to a standard deviation of
+\begin{align*}
+    \frac{1}{Q} = \frac{\sigma_\omega}{\omega}
+    = \frac{\sigma_m}{m} \Rightarrow
+    \sigma_m = \frac{m}{Q} \Rightarrow
+    \sigma_{f_a} = \frac{f_a}{Q} = 10^{15} \, \mathrm{eV}.
+\end{align*}
+Using this we obtain the posterior distribution shown in the triangle plot in figure \ref{fig:qcd_measured_f_a_triangle_plot}.
+As one can see the posterior distribution for $\theta_i$ centers around the value prediced by figure \ref{fig:axion_as_DM_plot}.
+The distribution for $f_a$ is unchanged,
+while for the other parameters we find that those distributions changed as one can see in figure
+\ref{fig:qcd_measured_f_a_triangle_plot}.
+Taking the mass of the up quark as an example, one can
+see that the mean value of $(2.3 \pm 0.5) \, \mathrm{MeV}$
+does not change.
+But, as one can see in the histogram in figure \ref{fig:fixed_f_a_m_u_hist}, lower values of
+the up quark mass become slightly more likely.
+Figure \ref{fig:fixed_f_a_m_u_hist} also includes 
+the posterior from the case where
+$f_a$ is not fixed. This case clearly does not 
+show this effect. Therefore, we can conclude that
+this is an effect of fixing $f_a$.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{fixed_f_a_m_u_hist.pdf}
+    \caption{Histogram of the prior and posterior distributions for the up-quark mass $m_u$
+    in the QCD axion model with measured $f_a$ as well as
+    a free $f_a$.
+    }
+    %One can see that lower values of $m_u$ become more probable but
+    %the mean value doesn't shift significantly.}
+    \label{fig:fixed_f_a_m_u_hist}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{qcd_measured_f_a_triangle_plot.pdf}
+    \caption{Triangle plot for the MCMC analysis of the QCD axion model, where
+    a mesaured value of $f_a = (10^{21} \pm 10^{15}) \, \mathrm{eV}$ was assumed.
+    The basic layout of a triangle plot is described in the introduction of section \ref{sec:mcmc_analysis}.
+    The parameters shown are the initial misalighment angle $\theta_i$, the logarithm
+    of the axion decay constant $f_a$, the confiment scale of QCD $\Lambda_\mathrm{QCD}$
+    and the mass of the up quark $m_u$.
+    }
+    \label{fig:qcd_measured_f_a_triangle_plot}
+\end{figure}
+
+
+
+\subsubsection{$\mu$-QCD}
+We now turn to the $\mu$-QCD model for fuzzy dark matter, as discussed in section \ref{sec:micro_qcd}.
+In \cite{microqcd} they present a value for the axion mass of $m_a = 10^{-22} \, \mathrm{eV}$ that could produce the right amount of dark matter, while avoiding
+the constraints set on $\Delta N_\mathrm{eff}$ by the measurement of the CMB (Cosmic Microwave Background)
+$\Delta N_\mathrm{eff}(T_\mathrm{CMB}) \leq 0.01 \pm 0.17$ \cite{Planck} and
+BBM (Bing Bang Nucleosynthesis) $\Delta N_\mathrm{eff}(T_\mathrm{BNM}) \leq 0.28 \pm 0.28$ \cite{PDG}
+with $T_\mathrm{CMB} = 2.73 \, \mathrm{K}$ and $T_\mathrm{BBM} = 1 \, \mathrm{MeV}$.
+% We know from measurement of the CMB (Cosmic Microwave Background) that
+% $\Delta N_\mathrm{eff}(T_\mathrm{CMB}) \leq 0.01 \pm 0.17$ \cite{Planck} and from
+% BBM (Bing Bang Nucleosynthesis) that $\Delta N_\mathrm{eff}(T_\mathrm{BNM}) \leq 0.28 \pm 0.28$ \cite{PDG}
+% with $T_\mathrm{CMB} = 2.73 \, \mathrm{K}$ and $T_\mathrm{BBM} = 1 \, \mathrm{MeV}$.
+% To avoid those constrains, the $\mu$-QCD sector needs to have lower temperature than the SM bath.
+% In \cite{microqcd} they find that
+% \begin{align}
+%     \label{eq:micro_qcd_temperature1}
+%     T' = T/4
+% \end{align}
+% can avoid those constrains.
+This model was also analyzed using the MCMC method.
+The MCMC analysis was performed using the analytic approximation from section \ref{sec:wkb_qcd} 
+applied to the formulas for $\mu$-QCD from section \ref{sec:micro_qcd}, due to a numerical problem with the simulation
+(see appendix \ref{sec:numerical_micro_qcd} for details).
+Note that the analytic result does not, unlike the numerical result, include the anharmonic corrections. One can see that the density is slightly suppressed in the numerical result compared to
+the analytic one for high initial misalignment angles $\theta_i$.
+The parameter of this model with their prior distributions are listed in table \ref{tab:micro_qcd_parameter_table}.
+\begin{table}[H]
+    \centering
+    \caption{}
+    \begin{tabular}{c|c|l}
+        Parameter & Value used in \cite{microqcd} & Prior Distribution \\
+        \hline
+        $\theta_i$ & open parameter & uniform in $[0, \pi]$ \\
+        $\log_{10} (f_a / \mathrm{eV})$ & $\sim 10^{16}$ GeV & log uniform in $[10^{15}, 10^{17}]$ GeV \\
+        $T' / T$ for $T > \mu$ & $\frac{1}{4}$ & uniform in $[\frac{1}{6}, \frac{1}{3}]$ \\
+        $\mu [\mathrm{eV}]$ & $100 \, \mathrm{eV}$ & log uniform in $[10, 1000] \, \mathrm{eV}$\\
+        $\zeta$ & $1.34$ & uniform around $1.34 \pm 0.1$
+    \end{tabular}
+    \label{tab:micro_qcd_parameter_table}
+\end{table}
+The resulting triangle plot can be found in figure \ref{fig:micro_qcd_triangle_plot}.
+In particular we get an expectation value of $\log_{10} (f_a / \mathrm{eV}) \approx 24.9 \pm 0.5$.
+Also the zero temperature axion mass for the $\mu$-QCD axion was computed from the sampled 
+axion decay constant $f_a$ and $\mu$-QCD confinement scale values using eq. \eqref{eq:micro_qcd_axion_zero_temp_mass}
+and plotted as a histogram in figure \ref{fig:micro_qcd_m_a_hist}.
+This shows an expectation value of $\log_{10} (m_a / \mathrm{eV}) \approx -21.32 \pm 1.27$
+for the axion mass.
+This result includes the assumed value of $m_a = 10^{-22} \, \mathrm{eV}$ in \cite{microqcd}
+and therefore confirming their result despite the fact that our analysis implies that a slightly larger mass
+is more likely.
+The result in figure \ref{fig:micro_qcd_m_a_hist} also shows that the posterior of the
+axion mass $m_a$ is the same as its prior, computed analytically from the priors of the axion decay constant $f_a$
+and the confining scale $\mu$, shown in appendix \ref{sec:axion_mass_prior}.
+This means that the constructed model indeed can create fuzzy dark matter.
+It is worth noting that the posterior of the confining scale shows that, 
+the confining scale $\mu$ seems to preferred values less than $\sim 100 \, \mathrm{eV}$, while still having
+the value used by \cite{microqcd} as the most likely value.
+An interesting result is the correlation between the axion decay constant $f_a$ and the confining scale $\mu$.
+Another interesting result is the ration of the standard model temperature and the hidden sector temperature for $T > \mu$,
+that is needed for a low enough $\Delta N_\mathrm{eff}$.
+As one can see in figure \ref{fig:micro_qcd_triangle_plot}, the expected value of $T' / T$ is $T' / T \approx 0.21 \pm 0.03$, 
+which contradicts the value proposed in \cite{microqcd} of $T' / T = 1 / 4$.
+Using formula \eqref{eq:DeltaN_eff_comp}, with the values given in \cite{microqcd} for the parameters of the model,
+we can compute the values for $\Delta N_\mathrm{eff}$ as  $\Delta N_\mathrm{eff} = 0.266$ for $T > \mu$
+and $\Delta N_\mathrm{eff} = 0.552$ for $T < \mu$.
+But those values do not avoid the constraints on $\Delta N_\mathrm{eff}$ and contradict the values given in \cite{microqcd}.
+This can be explained by the fact that in \cite{microqcd} a different definition for $\Delta N_\mathrm{eff}$ was used,
+where $\Delta N_\mathrm{eff}$ is defined as $N' T'^4 = \Delta N_\mathrm{eff} T^4$.
+Using this formula one obtains $\Delta N_\mathrm{eff} = 0.12$ for $T > \mu$ and $\Delta N_\mathrm{eff} = 0.25$ for $T < \mu$.
+Those values do avoid the constraints and match the values given in \cite{microqcd}.
+To my best understanding I would say that, the usage of equation \eqref{eq:DeltaN_eff_comp} in combination with the
+values provided by the Planck collaboration \cite{Planck} is correct and one has to choose $T' / T = 1 / 5$ to avoid the
+constraints. % , but I am not certain of that.
+The number of effective neutrino degrees of freedom is shown in figure \ref{fig:Delta_N_eff_plots}
+for 100 of the obtained samples.
+Those values in general stay within the required boundaries, except for some samples from the tail of the distribution.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{micro_qcd_triangle_plot.pdf}
+    \caption{Triangle diagram for the MCMC analysis of the $\mu$-QCD model.
+    The parameters are the initial misalignment angle $\theta_i$, the logarithm of the 
+    axion decay constant $f_a$, the ration of the hidden sector and photon temperatures
+    for a photon temperature $T > \mu$, the logarithm of the confiment scale
+    of the $\mu$-QCD sector and the parameter $\zeta$ controlling the mass 
+    of the $\mu$-QCD axion.
+    The basic layout of a triangle plot is described in the introduction of section \ref{sec:mcmc_analysis}.
+    }
+    \label{fig:micro_qcd_triangle_plot}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{micro_qcd_m_a_histogram.pdf}
+    \caption{Histogram of the posterior of the axion mass from the MCMC analysis of the $\mu$-QCD model
+    as well as the prior of the axion mass.}
+    \label{fig:micro_qcd_m_a_hist}
+\end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{delta_n_eff_micro_qcd.pdf}
+    \caption{Plot of the evolution of the $\Delta N_\mathrm{eff}$ values for 100 samples from the MCMC analysis as a function of the temperature $T$.
+    The value for the ration between the hidden sector and the photon temperature $T' / T$ 
+    for a photon temperature $T > \mu$
+    is indicated by the color of the induviual lines.}
+    \label{fig:Delta_N_eff_plots}
+\end{figure}
+
+\newpage
+\section{Conclusion}
+We present a summery of the obtained results and hint some possible further steps.
+
+\subsection{Summary of the Results}
+The theory behind the axion model including its equation of motion, its mass from QCD instantons and the misalignment mechanism
+were presented in section \ref{sec:axions}.
+Then the used techniques to compute and analyze the axion relic density were discussed in section \ref{sec:methods}.
+
+\noindent
+The QCD axion relic density was computed using interpolated lattice values for the axion mass.
+A fitting formula for this numerical result was found (eq. \eqref{eq:fitting_formula}, tab. \ref{tab:fit_parameters}) 
+improving on a previously derived analytic approximation from the literature \cite{Fox:2004kb}.
+The fit has an relative error of at least $\sim 10\%$, but at most points of order $\sim 1\%$.
+
+\noindent
+Using an MCMC analysis, I found that the most likely value of the QCD axion mass  
+is $\log_{10} (m_a(T=0) / \mathrm{eV})  \approx -4.9 \pm 0.9$ marginalized over uniform $\theta_i$ and all SM uncertainties. This result is compatible with the result found in \cite{GambitAxionHoof}.
+
+\noindent
+For the $\mu$-QCD model for fuzzy dark matter \cite{microqcd}, I found that $\log_{10} (m_a(T=0) / \mathrm{eV}) \approx -21.32 \pm 1.27$
+is the most probable value, marginalized over priors of $f_a \sim 10^{16} \, \mathrm{GeV}$ and $\mu \sim 100 \, \mathrm{eV}$.
+I found that one can avoid the constraints on the additional degrees of freedom $\Delta N_\mathrm{eff}$ 
+from the $\mu$-QCD hidden sector, if the temperature of the hidden sector is $T'= (0.21 \pm 0.03) T$ for photon temperatures $T > \mu$ at $95\%$ C.L.
+This confirms that the $\mu$-QCD model can be used to construct fuzzy dark matter.
+
+\subsection{Further Steps}
+The presented methods can be used to consider other models.
+First one could imagine an axion with a potential that has an additional cosine term with a phase shift
+but falls faster with temperature than the standard QCD potential.
+In this case the misalignment mechanism would still work, because
+the part without a minimum at $\theta = 0$ becomes negligible once the temperature is low enough.
+But the production of axion relics is suppressed, allowing larger values of the axion decay constant $f_a$.
+Another axion model is the Standard Model - Axion - Seesaw - Higgs Portal Inflation (SMASH) model \cite{SMASH}, that could solve several problems in particle physics and cosmology
+at once.
+Finallly one could consider the PQ-unbroken scenario from section \ref{sec:cosmic_strings}.
+One might use the fitting formula \eqref{eq:string_fit} to perform an MCMC analysis of the axion dark matter production in
+the post-inflationary PQ symmetry breaking scenario, such as by string decay.
+
+
+\appendix
+
+\section{Derivation of the Analytic Solution of the Equation of Motion}
+\label{sec:derivation_of_the_analytic_result}
+We solve equation \eqref{eq:eom} for the case of constant mass $m_a$, harmonic potential and a power law solution for the scale parameter $a$.
+One uses the ansatz
+\begin{align*}
+    \phi(t) &= \kappa \cdot t^m \cdot f(t) \\
+    \dot{\phi}(t) &= \kappa \left( m t^{m - 1} f + t^m \dot{f} \right) \\
+    \ddot{\phi}(t) &= \kappa \left( m (m - 1) t^{m - 2} f + 2 m t^{m - 1} \dot{f} + t^m \ddot{f} \right),
+\end{align*}
+for some constant $m$ and some function $f(t)$ and inserts it into equation \eqref{eq:eom} yielding % , dividing out $\kappa$ and gets
+\begin{align*}
+    &\Rightarrow m (m - 1) t^{m - 2} f + 2 m t^{m - 1} \dot{f} + t^m \ddot{f} + 3H \left( m t^{m - 1} f + t^m \dot{f} \right) + m_a^2 t^m f = 0 \\
+    &\Rightarrow m (m - 1) t^{- 2} f + 2 m t^{- 1} \dot{f} + \ddot{f} + 3H \left( m t^{- 1} f + t^m \dot{f} \right) + m_a^2 f = 0 \\
+    &\Rightarrow f \left( m (m - 1) t^{-2} + 3H m t^{-1} + m_a^2 \right) + \dot{f} \left( 2mt^{-1} + 3 H \right) + \ddot{f} = 0 \\
+    % &\Rightarrow f \left( m (m - 1) + 3H m t + t^2 m_a^2 \right) + \dot{f} \left( 2mt + 3 H t^2 \right) + t^2 \ddot{f} = 0 \\
+    % &\Rightarrow f \left( m (m - 1) + 3pm + t^2 m_a^2 \right) + \dot{f} \left( 2mt + 3 t p \right) + t^2 \ddot{f} = 0 \\
+    &\Rightarrow
+    f \left( m (m - 1) + 3pm + t^2 m_a^2 \right) + t \dot{f} \left( 2m + 3 p \right) + t^2 \ddot{f} = 0.
+\end{align*}
+If for the exponent $m$
+$
+    2m + 3p = 1 \iff m = - 3 / 2 p + 1 / 2
+$
+holds, then using
+\begin{align}
+    m (m - 1) + 3pm &= (-3/2p + 1/2) (-3/2p - 1/2) + 3p(-3/2p + 1/2) \\
+                    &= - (3p)^2 / 4 + p/2 - (1/2)^2
+                    = - \left(\frac{3p + 1}{2}\right)^2 =: -n^2,
+\end{align}
+one gets
+\begin{align*}
+    (t^2 m_a^2 - n^2) f + t \dot{f} + t^2 \ddot{f} = 0.
+\end{align*}
+% for some function $f$.
+This equation can be recognized as the Bessel equation and therefore the function $f$ is a linear combination of Bessel functions.
+So the solution for the equation of motion in this case is
+\begin{align*}
+    \phi(t) = a^{-3/2} \left(\frac{t}{t_i}\right)^{1/2}\left(C_1 J_n(m_a t) + C_2 Y_n(m_a t)\right)
+\end{align*}
+for $\phi(a_i) = \phi(t_i) = \phi_i$
+where $J_n$ and $Y_n$ are the Bessel function of first and second kind with $n = (3p - 1) / 2$.
+The constants $C_1$ and $C_2$ are fixed by the initial conditions from section \ref{sec:initial_conditions}.
+\newpage
+\noindent Plugging in the solution yields
+\begin{align*}
+    C_1 &= \frac{B \phi_i}{BC - AD}, \, \, \,
+    C_2 = \frac{A \phi_i}{BC - AD} \\
+    A &= \alpha J_n(m_a t_i) + m_a J_n'(m_a t_i), \, \, \,
+    B = \alpha Y_n(m_a t_i) + m_a Y_n'(m_a t_i) \\
+    C &= a_i^{-3/2} J_n(m_a t_i), \, \, \,
+    D = a_i^{-3/2} Y_n(m_a t_i) \\
+    \alpha &= \left(-\frac{3}{2} p + \frac{1}{2}\right) t_i^{-1}
+\end{align*}
+
+
+\section{Entropy Conservation}
+\label{sec:entropy_conversation}
+For entropy conservation, at least local equilibrium is required in order to used thermodynamics
+(otherwise the notion of entropy is not necessarily well defined).
+The proof from \cite[Sec. 3.3, Page. 74]{CosmologyBookMukhanov} is used and presented there.
+For a plasma to be in thermal equilibrium the expansion timescale $\tau_H$ has
+to be much larger than the timescale for collisions in the plasma $\tau_\mathrm{col}$.
+The expansion timescale is given from the Hubble parameter as
+\begin{align*}
+    \tau_H = \frac{1}{H} = \left( \frac{\pi g_{*,s} T^2}{\sqrt{90} M_\mathrm{pl}} \right)^{-1}
+    \sim \frac{1}{T^2}
+\end{align*}
+using the Friedmann equation \eqref{eq:friedmann_equation} and the
+energy density in equation \eqref{eq:energy_denstiy} for the thermal case.
+The collision timescale can be estimated from the crosssection
+$\sigma \sim \alpha^2 \lambda_c^2 \sim \alpha \frac{1}{T^2} \sim \frac{1}{T^2}$
+using the Compton wavelength $\lambda_c \sim 1 / p \sim 1 / E \sim 1 / T$
+and the number density $n \sim T^3$ as well as the velocity
+$v \sim 1$ since all particles are ultra relativistic as
+\begin{align*}
+    % \tau_c = \frac{1}{\sigma n v} \sim \frac{1}{T^{-2} T^3} = \frac{1}{T}
+    \tau_c = \frac{1}{\sigma n v} = \frac{1}{T}
+\end{align*}
+Therefore
+\begin{align*}
+    T^{-2} \gg T^{-1} \Rightarrow \tau_H \gg \tau_c
+\end{align*}
+if $T$ is high enough and then the early universe is in
+local equilibrium.
+Since this argument is using the formulas for
+the number density, energy density and velocity
+as a function of temperature it has a circular structure to it. If the universe would not be
+in local thermal equilibrium
+there wouldn't even be a well defined  temperature!
+But this argument can be seen as a proof
+that once the universe is in local equilibrium
+it stays in local equilibrium.
+Once we have established the local equilibrium
+we can proof the conservation of
+entropy following \cite[Sec. 3.4, from page 65]{TheEarlyUniverseKolbAndTurner}.
+Using the first law of thermodynamics (neglecting the chemical potential compared to the temperature) we get
+\begin{align}
+    \label{eq:first_law}
+    \diff E &= T \diff S - P \diff V
+    \Rightarrow \diff (\rho V) = T \diff S - P \diff V
+    \Rightarrow T \diff S%\diff (\rho V) + P \diff V \\ &= \diff (PV) - \diff (PV) + \diff (\rho V) + P \diff V
+    %= \diff (PV) - \diff (PV) + \diff (\rho V) + P \diff V
+    = \diff ((P + \rho) V) - V \diff P,
+\end{align}
+for a co-moving volume $V$, energy density $\rho$, pressure $P$ and entropy $S$ in this comoving volume.
+This leads to
+\begin{align*}
+    \diff S = \frac{P + \rho}{T} \diff V + V \diff (P + \rho) - V \diff P
+            = \frac{\partial S}{\partial V} \diff V + V \diff \rho
+\end{align*}
+Using a maxwell relation one obtains
+\begin{align*}
+    \frac{\partial P}{\partial T} = - \frac{\partial^2 F}{\partial T \partial V} = \frac{\partial S}{\partial V} = \frac{P + \rho}{T}
+\end{align*}
+where $F$ is the free energy and therefore
+\begin{align}
+    \label{eq:dP}
+    \diff P = \frac{\rho + P}{T} \diff T.
+\end{align}
+Using equation \eqref{eq:first_law} and \eqref{eq:dP}  $\diff S$ is given by
+\begin{align}
+    \diff S = \frac{\diff((P + \rho)V)}{T} - \frac{V\left(\frac{\rho + P}{T}\right) \diff T}{T}
+    = \diff \left( \frac{V(P + \rho)}{T} + \mathrm{const} \right)
+\end{align}
+From again the first law of thermodynamics we get for an adiabatic process ($\diff Q = 0$)
+\footnote{A homogeneous universe can't exchange heat with another system.}
+\begin{align*}
+    0 = \diff E = \diff A = - P \diff V = - (\diff (P V) - V \diff P) \\
+    \Rightarrow \diff ((\rho + P) V) = V \diff P = \frac{V(P + \rho)}{T} \diff T \\
+    \Rightarrow \diff \left( \frac{V(P + \rho)}{T} \right) = 0
+\end{align*}
+and therefore entropy is conserved.
+
+\section{The Temperature Evolution in the Radiation Dominated Universe}
+\label{sec:temperature_universe}
+Now equation \eqref{eq:dtdT} can be integrated numerically
+starting at some initial time $t_0$ and from
+$T_0$ to $T_\mathrm{end}$ resulting in the time $t$ as a function of temperature $T$
+\begin{align*}
+    t(T) = t_0 + \int_{T_0}^{T_\mathrm{end}} \frac{\diff t}{\diff T} \diff T.
+\end{align*}
+The numerical integration is done using the \textit{odeint} routine
+from the python library \textit{SciPy}. The result is shown
+as a log log plot in figure \ref{fig:T_of_t_plot}.
+Currently $t_0$ is set to $t_0 = 0$.
+% \begin{figure}[H]
+%     \centering
+%     \begin{tabular}{cc}
+%         \subfloat[\label{fig:g_plot}]{\includegraphics[width=0.5\linewidth]{g_plot.pdf}} &
+%         \subfloat[\label{fig:T_of_t_plot}]{\includegraphics[width=0.5\linewidth]{T_of_t_plot.pdf}}
+%     \end{tabular}
+%     \caption{In the left figure the interpolated values for the effective number of relativistic degrees of freedom for the energy and the entropy density are plotted against temperature. On the right the numerically integrated
+%     time temperature dependence from equation \eqref{eq:dtdT} is shown.}
+% \end{figure}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{T_of_t_plot.pdf}
+    \caption{In the left figure the interpolated values for the effective number of relativistic degrees of freedom for the energy and the entropy density are plotted against temperature. On the right the numerically integrated
+    time temperature dependence from equation \eqref{eq:dtdT} is shown.}
+    \label{fig:T_of_t_plot}
+\end{figure}
+
+
+\section{Interpolation of $g_*$ and the Axion Mass}
+% \textbf{TODO:} put the sutff about this from the main text into the appendix?
+% \subsubsection{The Relativistic Degrees of Freedom}
+\label{sec:g}
+In order to solve equation \eqref{eq:dtdT} we need the quantity $g_s(T)$ as well as $g_\rho(T)$. They can be found as a numerical table like in \cite[Table S2]{LatticQCD4Cosmo}.
+For the numerical integration of equation \eqref{eq:dtdT} needs them as continuous and differentiable
+functions. This can be achieved by interpolating them using a cubic spline interpolation, but because this creates
+some "bumps" in the interpolation function, a Pchip interpolator from the Python library \textit{SciPy} is used. This interpolator uses cubic splines as well, but loses a continuous second derivative in favour of only using monotonic cubic functions for the interpolation, avoiding those artifacts in the interpolation.
+Because the $\mu$-QCD model requires lower energy scales
+we also need $g_*$ at energies of order $\sim 1 \, \mathrm{MeV}$. Since those energies are not included in the
+computation in \cite{LatticQCD4Cosmo}, we use an interpolation formula.
+Such a formula is given in \cite[Appendix A]{AxionCosmoRev}.
+To make sure we end up with a continuous function, we match
+the fitting formula to the numerical table at the
+lowest data point in the numerical table.
+We assume that the numerical table is more exact than the
+interpolation, since the numerical table is based on 
+lattice QCD calculations.
+A plot of the result values of $g_{*, \rho}$ and $g_{*, s}$ can be 
+found in figure \ref{fig:g_plot}.
+Likewise the result for the topological susceptibility is provided as a 
+numerical table.
+The interpolation was also done using the Pchip interpolator.
+
+
+\section{Numerical Result for $\mu$-QCD}
+\label{sec:numerical_micro_qcd}
+For the $\mu$-QCD axion the relic density was also computed numerically.
+A comparison with the analytic result can be found in figure \ref{fig:micro_qcd_density_plot}.
+Note the oscillations in the numerical result. Due to those artifacts, the analytically version was used for the MCMC analysis. 
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{micro_qcd_density_plot.pdf}
+    \caption{The axion relic density for $\mu$-QCD. In the upper plot one can see the the numerical result and on the lower one the analytical approximation.
+    Note the oscillations in the numerical result. Due to those artifacts, the analytical version was used
+    for the MCMC analysis.}
+    \label{fig:micro_qcd_density_plot}
+\end{figure}
+Otherwise both result seem to agree very good.
+Note that the analytic result does not, unlike the numerical result, include the anharmonic corrections. One can see that the density is slightly suppressed in the numerical result compared to
+the analytic one for high initial misalignment angles $\theta_i$.
+%\newpage
+
+
+
+\newpage
+\section{Derivation of the Prior of the Axion Mass}
+\label{sec:axion_mass_prior}
+We want to compute the distribution of the axion mass from
+formula \eqref{eq:micro_qcd_axion_zero_temp_mass} as a 
+function of the confiment scale $\mu$ and the axion decay constant
+$f_a$.
+The prior distributions for those quantities is chosen
+to be log uniform, that is $\log_{10} (f_a / \mathrm{eV})$
+and $\log_{10} (\mu / \mathrm{eV)}$ are uniform on
+$[f_1, f_2]$ and $[\mu_1, \mu_2]$.
+For notional simplicity we define
+\begin{align*}
+    X &= \log_{10} (f_a / \mathrm{eV}) \\
+    Y &= \log_{10} (\mu / \mathrm{eV}) \\
+    A &= \log_{10} (m_a / \mathrm{eV}) \\
+    B &= \log_{10} (\mu / \mathrm{eV})
+\end{align*}
+Since $X$ and $Y$ are not correlated, their joint distribution is
+given as
+\begin{align*}
+    P(X, Y) = P(X) P(Y).
+\end{align*}
+Then we perform a variable transformation from $(X, Y)$
+to $(A, B)$. According to formula \eqref{eq:micro_qcd_axion_zero_temp_mass} 
+\begin{align*}
+   A &= 2 Y - \frac{\log_{10} 2}{2} - X \\
+   B &= Y \\
+   \Rightarrow
+   X &= 2 B - \frac{\log_{10} 2}{2} - A \\
+   Y &= B
+\end{align*}
+holds.
+Then the distribution for $(A, B)$ is computed as
+\begin{align*}
+    P(A, B) &= P(X(A, B), Y(A, B)) \left| \frac{\partial (X, Y)}{\partial (A, B)}\right| \\
+            &= P(X(A, B), Y(A, B)) \left| \frac{\partial X}{\partial A} \frac{\partial Y}{\partial B} - 
+                                          \frac{\partial X}{\partial B} \frac{\partial Y}{\partial A}\right| \\
+            &= P(X(A, B), Y(A, B)) |-1 \cdot 1 - 4 \cdot 0| \\
+            &= P_{X,Y}(2 B - \frac{\log_{10} 2}{2} - A, B) \\
+            &= P_X(2 B - \frac{\log_{10} 2}{2} - A) P_{Y}(B).
+\end{align*}
+The distribution for $A$ is computed by integrating over $B$ as
+\begin{align*}
+    P(A) &= \int_{- \infty}^{+ \infty} \diff B P(A, B) \\
+         &= \int_{- \infty}^{+ \infty} \diff B P_X(2 B - \frac{\log_{10} 2}{2} - A) P_{Y}(B).
+\end{align*}
+The integral can be evaluated by using that the distributions $P_X$ and $P_Y$ have finite support.
+This means that the integrant is zero unless the argument of $P_X$ is on the the support of $P_X$ \emph{and} the argument of 
+$P_Y$ is on the support of $P_Y$. Since the transformation from $(X,Y)$ to $(A,B)$ is monotone, we find that
+the support of the integrant of the integral is given as the intersection of the interval
+$[(f_1 + \log_{10}(2) / 2 + A) / 2, (f_2 + \log_{10}(2) / 2 + A) / 2]$ and $[\mu_1, \mu_2]$.
+The value of the integrant is given as the product of the values of both uniform distributions $P_X$ and $P_Y$.
+The resulting integral can be written down using a case discrimination, but since there is little to gain from this,
+the resulting distribution was computed using some code and plotted in figure \ref{fig:micro_qcd_m_a_hist}.
+
+\newpage
+%\bibliography{Shared.bib}{}
+%\bibliographystyle{plain}
+\printbibliography
+
+\newpage
+\pagestyle{empty}
+\section*{Acknowledgements}
+I would like to thank David Marsh (Doddy), for this interesting  project and the great supervision.
+Furthermore I thank Niklas Schwanemann, Jakob Hein, Hendrik Bruns and Stefan Rieß, who proofread my thesis.
+
+
+\end{document}
