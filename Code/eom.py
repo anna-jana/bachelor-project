@@ -9,6 +9,8 @@ import scipy.integrate as inte
 import config
 import time_temp
 
+import axion_mass
+
 class Model:
     def __init__(self, m_a_fn, g_model, potential_model, parameter=config.parameter):
         self.m_a_fn = m_a_fn
@@ -21,7 +23,7 @@ class Model:
 
 
 class Solver:
-    def __init__(self, model, theta_i, f_a, temperature_unit=1e12, from_T_osc=5, avg_start=0.8, avg_stop=0.6, N=300, eps=1e-5, num_crossings=3):
+    def __init__(self, model, theta_i, f_a, temperature_unit=1e10, from_T_osc=5, avg_start=0.8, avg_stop=0.6, N=300, eps=1e-3, num_crossings=3):
         self.model = model
         self.theta_i = theta_i
         self.f_a = f_a
@@ -73,17 +75,37 @@ class Solver:
         return np.array(T) * self.temperature_unit, theta
 
     def find_const_n_over_s(self):
-        T_s = self.solver.t
-        delta_T = (self.avg_stop - self.avg_start) * T_s
-        self.dT = delta_T / self.N
+        T_s = self.solver.t * self.temperature_unit
+
+        m_osc = self.model.m_a_fn(T_s, self.f_a)
+        Delta_t = self.num_crossings * 2 * 2*np.pi/m_osc / 4
+        #print("Delta_t =", Delta_t, "1/eV")
+        g_osc = self.model.g_model.g_rho(T_s)
+        C = np.sqrt(90*self.model.parameter.M_pl**2/(4*np.pi**2*g_osc))
+        #print("T_1 =", T_s)
+
+        def compute_Delta_T(T_1):
+            T_1 *= self.temperature_unit
+            T_2 = (Delta_t / C + T_1**(-2))**(-0.5)
+            Delta_T = T_2 - T_1
+            Delta_T /= self.temperature_unit
+            return Delta_T
+
         last_n_over_s = np.NAN
+        tries = 0
 
         while True:
+            Delta_T = compute_Delta_T(self.solver.t)
+            #print("Delta_T =", Delta_T)
+            self.dT = Delta_T / self.N
+            #print("try =", tries)
             T_values, theta_values, dthetadT_values = [], [], []
             zero_crossings = 0
             prev_sign = np.sign(self.solver.y[0])
 
             for i in range(self.N):
+                #print("i =", i)
+                #print("crossings:", zero_crossings)
                 self.solver.integrate(self.solver.t + self.dT)
                 # count zero crossings
                 sign = np.sign(self.solver.y[0])
@@ -97,19 +119,29 @@ class Solver:
             theta = np.array(theta_values)
             dthetadT = np.array(dthetadT_values) / self.temperature_unit
 
+            plt.plot(T, theta)
+            plt.show()
+
+            tries += 1
+
             if self.solver.t * self.temperature_unit < self.model.parameter.T_eq:
                 print("warning: integration over T_eq")
                 return T, theta, dthetadT, np.NAN
 
             n_over_s = self.compute_n_over_s(T, theta, dthetadT)
-            d_n_over_s_dT = (last_n_over_s - n_over_s) / (self.temperature_unit * delta_T)
+
+            change = abs((n_over_s - last_n_over_s) / (n_over_s + last_n_over_s))
+            #print("change:", change, "zero crossings:", zero_crossings)
 
             # n/s has to be conserved and we need to integrate several oscillations
-            if abs(d_n_over_s_dT) < self.eps and zero_crossings > self.num_crossings:
+            #if tries >= 3:
+                #print("bad")
+            # if (abs(d_n_over_s_dT) < self.eps and zero_crossings > self.num_crossings) or tries >= 3:
+            if change < self.eps and zero_crossings > self.num_crossings:
                 return T, theta, dthetadT, n_over_s
 
-
             last_n_over_s = n_over_s
+
 
     def compute_n_over_s(self, T, theta, dthetadT):
         delta_T = T[-1] - T[0]
